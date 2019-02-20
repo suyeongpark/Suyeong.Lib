@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Enum\" />
+    <Folder Include="Interface\" />
+    <Folder Include="Type\" />
+    <Folder Include="Class\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Suyeong.Lib.Util\Suyeong.Lib.Util.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Suyeong.Lib.Util">
+      <HintPath>..\dll\Suyeong.Lib.Util.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

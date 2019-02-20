@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data Class\Result.cs" />
+    <Compile Remove="Interface\IResult.cs" />
+    <Compile Remove="Enum\ResultType.cs" />
+    <Compile Remove="Interface\IServer.cs" />
+    <Compile Remove="Server\TcpServerManager.cs" />
+    <Compile Remove="Server\TcpResposeManager.cs" />
+    <Compile Remove="Server\TcpServerRoom.cs" />
+    <Compile Remove="Server\TcpResponseRoom.cs" />
+    <Compile Remove="Type\Result.cs" />
+    <Compile Remove="Server\TcpResponseChannel.cs" />
+    <Compile Remove="Server\TcpResponseLogin.cs" />
+    <Compile Remove="Client\TcpClientAsync.cs" />
+    <Compile Remove="TcpClient.cs" />
+    <Compile Remove="Type\TcpResponse.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interface\" />
+    <Folder Include="Enum\" />
+    <Folder Include="Type\" />
+    <Folder Include="Class\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Suyeong.Lib.Util\Suyeong.Lib.Util.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Suyeong.Lib.Util">
+      <HintPath>..\dll\Suyeong.Lib.Util.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
