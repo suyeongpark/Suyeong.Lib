@@ -1,41 +1,63 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BF537ACB-616B-44DC-AA2E-0B506B627F9A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Suyeong.Lib.Net.Tcp</RootNamespace>
+    <AssemblyName>Suyeong.Lib.Net.Tcp</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>D:\Dev\Suyeong.Lib\dlls\</OutputPath>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\dlls\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\dlls\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Data Class\Result.cs" />
-    <Compile Remove="Interface\IResult.cs" />
-    <Compile Remove="Enum\ResultType.cs" />
-    <Compile Remove="Interface\IServer.cs" />
-    <Compile Remove="Server\TcpServerManager.cs" />
-    <Compile Remove="Server\TcpResposeManager.cs" />
-    <Compile Remove="Server\TcpServerRoom.cs" />
-    <Compile Remove="Server\TcpResponseRoom.cs" />
-    <Compile Remove="Type\Result.cs" />
-    <Compile Remove="Server\TcpResponseChannel.cs" />
-    <Compile Remove="Server\TcpResponseLogin.cs" />
-    <Compile Remove="Client\TcpClientAsync.cs" />
-    <Compile Remove="TcpClient.cs" />
-    <Compile Remove="Type\TcpResponse.cs" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interface\" />
-    <Folder Include="Enum\" />
-    <Folder Include="Type\" />
-    <Folder Include="Class\" />
+    <Compile Include="Class\TcpClientHandler.cs" />
+    <Compile Include="Class\TcpClientHandlerCrypt.cs" />
+    <Compile Include="Class\TcpConnector.cs" />
+    <Compile Include="Class\TcpConnectorCrypt.cs" />
+    <Compile Include="Class\TcpStream.cs" />
+    <Compile Include="Enum\PacketType.cs" />
+    <Compile Include="Interface\ITcpClientHandler.cs" />
+    <Compile Include="Interface\ITcpConnector.cs" />
+    <Compile Include="Interface\ITcpPacket.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Type\TcpPacket.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Suyeong.Lib.Util\Suyeong.Lib.Util.csproj" />
+    <ProjectReference Include="..\Suyeong.Lib.Util\Suyeong.Lib.Util.csproj">
+      <Project>{f1049d81-a42a-4566-bec3-10677a283009}</Project>
+      <Name>Suyeong.Lib.Util</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Suyeong.Lib.Util">
-      <HintPath>..\dll\Suyeong.Lib.Util.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
