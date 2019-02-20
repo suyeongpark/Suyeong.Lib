@@ -119,7 +119,7 @@ namespace Suyeong.Lib.Util
 
         public static int GetIntFromString(string str)
         {
-            int num = 0;
+            int num = -1;
 
             if (!int.TryParse(str, out num))
             {
@@ -131,31 +131,31 @@ namespace Suyeong.Lib.Util
 
         public static float GetFloatFromString(string str)
         {
-            float num = 0f;
+            float num = -1f;
 
             if (!float.TryParse(str, out num))
             {
                 // error!
             }
 
-            return !float.IsNaN(num) ? num : 0f;
+            return !float.IsNaN(num) ? num : -1f;
         }
 
         public static double GetDoubleFromString(string str)
         {
-            double num = 0d;
+            double num = -1d;
 
             if (!double.TryParse(str, out num))
             {
                 // error!
             }
 
-            return !double.IsNaN(num) ? num : 0d;
+            return !double.IsNaN(num) ? num : -1d;
         }
 
         public static decimal GetDecimalFromString(string str)
         {
-            decimal num = 0;
+            decimal num = -1;
 
             if (!decimal.TryParse(str, out num))
             {
@@ -165,7 +165,7 @@ namespace Suyeong.Lib.Util
             return num;
         }
 
-        public static DateTime GetDateFromString(string str)
+        public static DateTime GetDateTimeFromString(string str)
         {
             DateTime dateTime = new DateTime();
 
@@ -177,7 +177,7 @@ namespace Suyeong.Lib.Util
             return dateTime;
         }
 
-        public static K GetDataFromDictionary<T, K>(Dictionary<T, K> dic, T key)
+        public static K GetValueFromDictionary<T, K>(Dictionary<T, K> dic, T key)
         {
             K value;
 
@@ -189,7 +189,7 @@ namespace Suyeong.Lib.Util
             return value;
         }
 
-        public static byte[] ObjectToBinary(object data)
+        public static byte[] SerializeObject(object data)
         {
             using (MemoryStream memoryStream = new MemoryStream())
             {
@@ -200,7 +200,7 @@ namespace Suyeong.Lib.Util
             }
         }
 
-        public static object BinaryToObject(byte[] data)
+        public static object DeserializeObject(byte[] data)
         {
             using (MemoryStream memoryStream = new MemoryStream())
             {
@@ -214,24 +214,24 @@ namespace Suyeong.Lib.Util
 
         static DataTable GetDataTableFromSeparate(string path, char[] separate, bool hasHeader, Encoding encoding)
         {
-            DataTable dataTable = new DataTable();
+            DataTable table = new DataTable();
 
             if (File.Exists(path))
             {
-                using (StreamReader rd = new StreamReader(path, encoding))
+                using (StreamReader streamReader = new StreamReader(path, encoding))
                 {
                     string[] fieldData;
                     string line;
 
-                    fieldData = rd.ReadLine().Split(separate);
+                    fieldData = streamReader.ReadLine().Split(separate);
 
                     if (hasHeader)
                     {
                         for (int i = 0; i < fieldData.Length; i++)
                         {
-                            DataColumn datecolumn = new DataColumn(fieldData[i]);
-                            datecolumn.AllowDBNull = true;
-                            dataTable.Columns.Add(datecolumn);
+                            DataColumn column = new DataColumn(fieldData[i]);
+                            column.AllowDBNull = true;
+                            table.Columns.Add(column);
                         }
                     }
                     else
@@ -239,9 +239,9 @@ namespace Suyeong.Lib.Util
                         // header가 없었다면 첫 행을 바로 row로 넣는다.
                         for (int i = 0; i < fieldData.Length; i++)
                         {
-                            DataColumn datecolumn = new DataColumn();
-                            datecolumn.AllowDBNull = true;
-                            dataTable.Columns.Add(datecolumn);
+                            DataColumn column = new DataColumn();
+                            column.AllowDBNull = true;
+                            table.Columns.Add(column);
 
                             if (string.IsNullOrWhiteSpace(fieldData[i]))
                             {
@@ -249,12 +249,12 @@ namespace Suyeong.Lib.Util
                             }
                         }
 
-                        dataTable.Rows.Add(fieldData);
+                        table.Rows.Add(fieldData);
                     }
 
-                    while (!rd.EndOfStream)
+                    while (!streamReader.EndOfStream)
                     {
-                        line = rd.ReadLine();
+                        line = streamReader.ReadLine();
 
                         if (line.Length > 0)
                         {
@@ -269,13 +269,13 @@ namespace Suyeong.Lib.Util
                                 }
                             }
 
-                            dataTable.Rows.Add(fieldData);
+                            table.Rows.Add(fieldData);
                         }
                     }
                 }
             }
 
-            return dataTable;
+            return table;
         }
 
 

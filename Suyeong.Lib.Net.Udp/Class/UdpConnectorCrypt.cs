@@ -65,7 +65,7 @@ namespace Suyeong.Lib.Net.Udp
                     {
                         // 암호해제에는 압축해제도 포함되어 있다.
                         decrypt = await Crypts.DecryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);
-                        result = Utils.BinaryToObject(decrypt) as IUdpPacket;
+                        result = Utils.DeserializeObject(decrypt) as IUdpPacket;
 
                         // callbackDic에 있었으면 클라이언트가 요청을 보낸 것에 대한 응답
                         if (this.callbackDic.TryGetValue(result.Protocol, out callback))
@@ -102,7 +102,7 @@ namespace Suyeong.Lib.Net.Udp
 
             try
             {
-                byte[] source = Utils.ObjectToBinary(packet);
+                byte[] source = Utils.SerializeObject(packet);
                 // 암호화에는 압축도 포함되어 있다.
                 byte[] encrypt = await Crypts.EncryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);
 

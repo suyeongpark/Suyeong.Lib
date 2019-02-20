@@ -59,7 +59,7 @@ namespace Suyeong.Lib.Net.Tcp
                     {
                         // 암호해제에는 압축해제도 포함되어 있다.
                         decrypt = await Crypts.DecryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);
-                        request = Utils.BinaryToObject(decrypt) as ITcpPacket;
+                        request = Utils.DeserializeObject(decrypt) as ITcpPacket;
 
                         OnRequest(this.guid, request);
                     }
@@ -76,7 +76,7 @@ namespace Suyeong.Lib.Net.Tcp
         {
             try
             {
-                byte[] source = Utils.ObjectToBinary(packet);
+                byte[] source = Utils.SerializeObject(packet);
                 byte[] encrypt = await Crypts.EncryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);  // 암호화에는 압축도 포함되어 있다.
 
                 await TcpStream.SendPacketAsync(networkStream: this.networkStream, data: encrypt);
