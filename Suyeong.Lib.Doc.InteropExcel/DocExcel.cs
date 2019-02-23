@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -8,100 +7,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
 {
     public static class DocExcel
     {
-        public static bool SaveExcelFromDataSet(DataSet dataSet, string filePath, bool hasTitle)
-        {
-            bool result = false;
-
-            Excel.Application application = null;
-            Excel.Workbook workbook = null;
-            Excel.Worksheet worksheet = null;
-
-            try
-            {
-                application = new Excel.Application();
-                workbook = application.Workbooks.Add();
-
-                for (int i = 0; i < dataSet.Tables.Count; i++)
-                {
-                    worksheet = workbook.Worksheets.Add();
-                    result = SetWorksheetFromDataTable(worksheet: worksheet, table: dataSet.Tables[i], hasTitle: hasTitle);
-                }
-
-                workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (worksheet != null)
-                {
-                    ReleaseComObject(worksheet);
-                }
-
-                if (workbook != null)
-                {
-                    workbook.Close(SaveChanges: false);
-                    ReleaseComObject(workbook);
-                }
-
-                if (application != null)
-                {
-                    application.Quit();
-                    ReleaseComObject(application);
-                }
-            }
-
-            return result;
-        }
-
-        public static bool SaveExcelFromDataTable(DataTable table, string filePath, bool hasTitle)
-        {
-            bool result = false;
-
-            Excel.Application application = null;
-            Excel.Workbook workbook = null;
-            Excel.Worksheet worksheet = null;
-
-            try
-            {
-                application = new Excel.Application();
-                workbook = application.Workbooks.Add();
-                worksheet = workbook.Worksheets.Add();
-
-                result = SetWorksheetFromDataTable(worksheet: worksheet, table: table, hasTitle: hasTitle);
-
-                workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (worksheet != null)
-                {
-                    ReleaseComObject(worksheet);
-                }
-
-                if (workbook != null)
-                {
-                    workbook.Close(SaveChanges: false);
-                    ReleaseComObject(workbook);
-                }
-
-                if (application != null)
-                {
-                    application.Quit();
-                    ReleaseComObject(application);
-                }
-            }
-
-            return result;
-        }
-
-        public static DataSet GetDataSetFromExcel(string filePath)
+        public static DataSet LoadByDataSet(string filePath)
         {
             DataSet dataSet = new DataSet();
 
@@ -115,7 +21,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
 
                 foreach (Excel.Worksheet workSheet in workbook.Worksheets)
                 {
-                    dataSet.Tables.Add(GetDataTableFromSheet(workSheet: workSheet));
+                    dataSet.Tables.Add(GetWorksheet(workSheet: workSheet));
                 }
             }
             catch (Exception)
@@ -140,7 +46,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
             return dataSet;
         }
 
-        public static DataTable GetDataTableFromExcel(string filePath, string sheetName)
+        public static DataTable LoadByDataTable(string filePath, string sheetName)
         {
             DataTable table = new DataTable();
 
@@ -154,7 +60,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
                 workbook = application.Workbooks.Open(Filename: filePath, ReadOnly: true);
                 worksheet = workbook.Worksheets[sheetName];
 
-                table = GetDataTableFromSheet(workSheet: worksheet);
+                table = GetWorksheet(workSheet: worksheet);
             }
             catch (Exception)
             {
@@ -183,7 +89,100 @@ namespace Suyeong.Lib.Doc.InteropExcel
             return table;
         }
 
-        static DataTable GetDataTableFromSheet(Excel.Worksheet workSheet)
+        public static bool SaveByDataSet(DataSet dataSet, string filePath)
+        {
+            bool result = false;
+
+            Excel.Application application = null;
+            Excel.Workbook workbook = null;
+            Excel.Worksheet worksheet = null;
+
+            try
+            {
+                application = new Excel.Application();
+                workbook = application.Workbooks.Add();
+
+                for (int i = 0; i < dataSet.Tables.Count; i++)
+                {
+                    worksheet = workbook.Worksheets.Add();
+                    result = SetWorksheet(worksheet: worksheet, table: dataSet.Tables[i]);
+                }
+
+                workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (worksheet != null)
+                {
+                    ReleaseComObject(worksheet);
+                }
+
+                if (workbook != null)
+                {
+                    workbook.Close(SaveChanges: false);
+                    ReleaseComObject(workbook);
+                }
+
+                if (application != null)
+                {
+                    application.Quit();
+                    ReleaseComObject(application);
+                }
+            }
+
+            return result;
+        }
+
+        public static bool SaveByDataTable(DataTable table, string filePath, bool hasTitle = true)
+        {
+            bool result = false;
+
+            Excel.Application application = null;
+            Excel.Workbook workbook = null;
+            Excel.Worksheet worksheet = null;
+
+            try
+            {
+                application = new Excel.Application();
+                workbook = application.Workbooks.Add();
+                worksheet = workbook.Worksheets.Add();
+
+                result = SetWorksheet(worksheet: worksheet, table: table, hasTitle: hasTitle);
+
+                workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (worksheet != null)
+                {
+                    ReleaseComObject(worksheet);
+                }
+
+                if (workbook != null)
+                {
+                    workbook.Close(SaveChanges: false);
+                    ReleaseComObject(workbook);
+                }
+
+                if (application != null)
+                {
+                    application.Quit();
+                    ReleaseComObject(application);
+                }
+            }
+
+            return result;
+        }
+
+        static DataTable GetWorksheet(Excel.Worksheet workSheet)
         {
             DataTable table = new DataTable();
 
@@ -215,7 +214,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
             return table;
         }
 
-        static bool SetWorksheetFromDataTable(Excel.Worksheet worksheet, DataTable table, bool hasTitle)
+        static bool SetWorksheet(Excel.Worksheet worksheet, DataTable table, bool hasTitle = true)
         {
             bool result = false;
 
@@ -224,7 +223,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
                 // title이 있으면 첫 줄은 header로 쓴다.
                 int rowCount = hasTitle ? table.Rows.Count + 1 : table.Rows.Count;
                 int columnCount = table.Columns.Count;
-                object[,] data = GetData(rowCount: rowCount, columnCount: columnCount, hasTitle: hasTitle, table: table);
+                object[,] data = ConvertData(rowCount: rowCount, columnCount: columnCount, hasTitle: hasTitle, table: table);
 
                 Excel.Range range = worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowCount, columnCount]];
                 range.Value = data;
@@ -239,7 +238,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
             return result;
         }
 
-        static object[,] GetData(int rowCount, int columnCount, bool hasTitle, DataTable table)
+        static object[,] ConvertData(int rowCount, int columnCount, bool hasTitle, DataTable table)
         {
             object[,] data = new object[rowCount, columnCount];
 
@@ -266,18 +265,6 @@ namespace Suyeong.Lib.Doc.InteropExcel
             }
 
             return data;
-        }
-
-        static bool CheckTitle(DataTable table)
-        {
-            List<string> columns = new List<string>();
-
-            foreach (DataColumn column in table.Columns)
-            {
-                columns.Add(column.ColumnName);
-            }
-
-            return !string.IsNullOrWhiteSpace(string.Join("", columns));
         }
 
         static void ReleaseComObject(object obj)

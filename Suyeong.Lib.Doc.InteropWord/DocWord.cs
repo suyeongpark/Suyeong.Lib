@@ -6,7 +6,7 @@ namespace Suyeong.Lib.Doc.InteropWord
 {
     public class DocWord
     {
-        public static bool SaveAsWordToPdf(string wordPath, string pdfPath)
+        public static bool ExportToPdf(string wordPath, string pdfPath)
         {
             bool result = false;
 
