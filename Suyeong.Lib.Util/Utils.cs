@@ -354,7 +354,7 @@ namespace Suyeong.Lib.Util
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }

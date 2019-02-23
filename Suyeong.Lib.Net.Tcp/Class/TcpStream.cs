@@ -31,7 +31,7 @@ namespace Suyeong.Lib.Net.Tcp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -59,7 +59,7 @@ namespace Suyeong.Lib.Net.Tcp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -123,7 +123,7 @@ namespace Suyeong.Lib.Net.Tcp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -153,7 +153,7 @@ namespace Suyeong.Lib.Net.Tcp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

@@ -34,7 +34,7 @@ namespace Suyeong.Lib.DB.Oracle
                     scalar = command.ExecuteScalar();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -64,7 +64,7 @@ namespace Suyeong.Lib.DB.Oracle
                     scalar = await command.ExecuteScalarAsync();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -98,7 +98,7 @@ namespace Suyeong.Lib.DB.Oracle
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -137,7 +137,7 @@ namespace Suyeong.Lib.DB.Oracle
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -179,7 +179,7 @@ namespace Suyeong.Lib.DB.Oracle
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -216,7 +216,7 @@ namespace Suyeong.Lib.DB.Oracle
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

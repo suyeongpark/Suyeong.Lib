@@ -21,7 +21,7 @@ namespace Suyeong.Lib.Doc.InteropWord
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -30,20 +30,20 @@ namespace Suyeong.Lib.Doc.InteropWord
                 if (document != null)
                 {
                     document.Close(SaveChanges: false);
-                    ReleaseWordObject(document);
+                    ReleaseComObject(document);
                 }
 
                 if (application != null)
                 {
                     application.Quit(SaveChanges: 0);
-                    ReleaseWordObject(application);
+                    ReleaseComObject(application);
                 }
             }
 
             return result;
         }
 
-        static void ReleaseWordObject(object obj)
+        static void ReleaseComObject(object obj)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace Suyeong.Lib.Doc.InteropWord
                     obj = null;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 obj = null;
                 throw;

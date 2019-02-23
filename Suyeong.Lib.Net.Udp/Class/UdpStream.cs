@@ -27,7 +27,7 @@ namespace Suyeong.Lib.Net.Udp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -51,7 +51,7 @@ namespace Suyeong.Lib.Net.Udp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -84,7 +84,7 @@ namespace Suyeong.Lib.Net.Udp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -112,7 +112,7 @@ namespace Suyeong.Lib.Net.Udp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -131,7 +131,7 @@ namespace Suyeong.Lib.Net.Udp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -159,7 +159,7 @@ namespace Suyeong.Lib.Net.Udp
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

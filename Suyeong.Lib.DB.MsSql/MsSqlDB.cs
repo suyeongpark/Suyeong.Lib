@@ -36,7 +36,7 @@ namespace Suyeong.Lib.DB.MsSql
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -69,7 +69,7 @@ namespace Suyeong.Lib.DB.MsSql
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -106,7 +106,7 @@ namespace Suyeong.Lib.DB.MsSql
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -147,7 +147,7 @@ namespace Suyeong.Lib.DB.MsSql
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -186,7 +186,7 @@ namespace Suyeong.Lib.DB.MsSql
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -219,7 +219,7 @@ namespace Suyeong.Lib.DB.MsSql
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -253,7 +253,7 @@ namespace Suyeong.Lib.DB.MsSql
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -286,7 +286,7 @@ namespace Suyeong.Lib.DB.MsSql
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

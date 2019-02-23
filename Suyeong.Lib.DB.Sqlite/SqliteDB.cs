@@ -34,7 +34,7 @@ namespace Suyeong.Lib.DB.Sqlite
                     scalar = command.ExecuteScalar();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -65,7 +65,7 @@ namespace Suyeong.Lib.DB.Sqlite
                     scalar = await command.ExecuteScalarAsync();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -99,7 +99,7 @@ namespace Suyeong.Lib.DB.Sqlite
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -138,7 +138,7 @@ namespace Suyeong.Lib.DB.Sqlite
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -175,7 +175,7 @@ namespace Suyeong.Lib.DB.Sqlite
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -207,7 +207,7 @@ namespace Suyeong.Lib.DB.Sqlite
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

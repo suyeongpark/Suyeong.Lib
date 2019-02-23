@@ -25,7 +25,7 @@ namespace Suyeong.Lib.Net.Ftp
                     result = memoryStream.ToArray();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -51,7 +51,7 @@ namespace Suyeong.Lib.Net.Ftp
                     result = memoryStream.ToArray();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -80,7 +80,7 @@ namespace Suyeong.Lib.Net.Ftp
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -109,7 +109,7 @@ namespace Suyeong.Lib.Net.Ftp
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

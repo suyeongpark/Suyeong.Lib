@@ -26,7 +26,7 @@ namespace Suyeong.Lib.Doc.OleDbExcel
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -50,7 +50,7 @@ namespace Suyeong.Lib.Doc.OleDbExcel
                     table = GetDataTableFromSheet(connection: connection, sheetName: sheetName);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -71,7 +71,7 @@ namespace Suyeong.Lib.Doc.OleDbExcel
                     result = SetExcelFromDataTable(table: table, conStr: conStr);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -89,7 +89,7 @@ namespace Suyeong.Lib.Doc.OleDbExcel
 
                 result = SetExcelFromDataTable(table: table, conStr: conStr);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -111,7 +111,7 @@ namespace Suyeong.Lib.Doc.OleDbExcel
                     adapter.Fill(table);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -160,7 +160,7 @@ namespace Suyeong.Lib.Doc.OleDbExcel
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

@@ -41,7 +41,7 @@ namespace Suyeong.Lib.DB.MySql
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -74,7 +74,7 @@ namespace Suyeong.Lib.DB.MySql
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -111,7 +111,7 @@ namespace Suyeong.Lib.DB.MySql
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -152,7 +152,7 @@ namespace Suyeong.Lib.DB.MySql
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -191,7 +191,7 @@ namespace Suyeong.Lib.DB.MySql
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -225,7 +225,7 @@ namespace Suyeong.Lib.DB.MySql
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
