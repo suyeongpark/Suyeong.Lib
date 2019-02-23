@@ -14,18 +14,18 @@ namespace Suyeong.Lib.Doc.InteropExcel
             Excel.Application application = null;
             Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
-            Excel.Worksheets worksheets = null;
+            Excel.Range range = null;
 
             try
             {
                 application = new Excel.Application();
                 workbooks = application.Workbooks;
                 workbook = workbooks.Open(Filename: filePath, ReadOnly: true);
-                worksheets = workbook.Worksheets as Excel.Worksheets;
 
-                foreach (Excel.Worksheet worksheet in worksheets)
+                foreach (Excel.Worksheet worksheet in workbook.Worksheets)
                 {
-                    dataSet.Tables.Add(GetWorksheet(workSheet: worksheet));
+                    range = worksheet.UsedRange;
+                    dataSet.Tables.Add(GetWorksheet(tableName: worksheet.Name, range: range));
                 }
 
                 workbook.Close();
@@ -37,25 +37,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
             }
             finally
             {
-                if (worksheets != null)
-                {
-                    Marshal.ReleaseComObject(worksheets);
-                }
-
-                if (workbook != null)
-                {
-                    Marshal.ReleaseComObject(workbook);
-                }
-
-                if (workbooks != null)
-                {
-                    Marshal.ReleaseComObject(workbooks);
-                }
-
-                if (application != null)
-                {
-                    Marshal.ReleaseComObject(application);
-                }
+                ReleaseComObjects(new object[] { range, workbook, workbooks, application, });
             }
 
             return dataSet;
@@ -68,18 +50,18 @@ namespace Suyeong.Lib.Doc.InteropExcel
             Excel.Application application = null;
             Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
-            Excel.Worksheets worksheets = null;
             Excel.Worksheet worksheet = null;
+            Excel.Range range = null;
 
             try
             {
                 application = new Excel.Application();
                 workbooks = application.Workbooks;
                 workbook = workbooks.Open(Filename: filePath, ReadOnly: true);
-                worksheets = workbook.Worksheets as Excel.Worksheets;
-                worksheet = worksheets[sheetName];
+                worksheet = workbook.Worksheets[sheetName];
+                range = worksheet.UsedRange;
 
-                table = GetWorksheet(workSheet: worksheet);
+                table = GetWorksheet(tableName: worksheet.Name, range: range);
 
                 workbook.Close();
                 application.Quit();
@@ -90,30 +72,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
             }
             finally
             {
-                if (worksheet != null)
-                {
-                    Marshal.ReleaseComObject(worksheet);
-                }
-
-                if (worksheets != null)
-                {
-                    Marshal.ReleaseComObject(worksheets);
-                }
-
-                if (workbook != null)
-                {
-                    Marshal.ReleaseComObject(workbook);
-                }
-
-                if (workbooks != null)
-                {
-                    Marshal.ReleaseComObject(workbooks);
-                }
-
-                if (application != null)
-                {
-                    Marshal.ReleaseComObject(application);
-                }
+                ReleaseComObjects(new object[] { range, worksheet, workbook, workbooks, application, });
             }
 
             return table;
@@ -126,20 +85,30 @@ namespace Suyeong.Lib.Doc.InteropExcel
             Excel.Application application = null;
             Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
-            Excel.Worksheets worksheets = null;
             Excel.Worksheet worksheet = null;
+            Excel.Range range = null;
 
             try
             {
                 application = new Excel.Application();
                 workbooks = application.Workbooks;
                 workbook = workbooks.Add();
-                worksheets = workbook.Worksheets as Excel.Worksheets;
+
+                DataTable table;
+                int rowCount, columnCount;
 
                 for (int i = 0; i < dataSet.Tables.Count; i++)
                 {
-                    worksheet = worksheets.Add();
-                    result = SetWorksheet(worksheet: worksheet, table: dataSet.Tables[i]);
+                    table = dataSet.Tables[i];
+
+                    worksheet = workbook.Worksheets.Add();
+
+                    // title이 있다고 가정.
+                    rowCount = table.Rows.Count + 1;
+                    columnCount = table.Columns.Count;
+
+                    range = worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowCount, columnCount]];
+                    range.Value = ConvertData(rowCount: rowCount, columnCount: columnCount, table: table, hasTitle: true);
                 }
 
                 workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
@@ -153,30 +122,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
             }
             finally
             {
-                if (worksheet != null)
-                {
-                    Marshal.ReleaseComObject(worksheet);
-                }
-
-                if (worksheets != null)
-                {
-                    Marshal.ReleaseComObject(worksheets);
-                }
-
-                if (workbook != null)
-                {
-                    Marshal.ReleaseComObject(workbook);
-                }
-
-                if (workbooks != null)
-                {
-                    Marshal.ReleaseComObject(workbooks);
-                }
-
-                if (application != null)
-                {
-                    Marshal.ReleaseComObject(application);
-                }
+                ReleaseComObjects(new object[] { worksheet, workbook, workbooks, application, });
             }
 
             return result;
@@ -189,23 +135,29 @@ namespace Suyeong.Lib.Doc.InteropExcel
             Excel.Application application = null;
             Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
-            Excel.Worksheets worksheets = null;
             Excel.Worksheet worksheet = null;
+            Excel.Range range = null;
 
             try
             {
                 application = new Excel.Application();
                 workbooks = application.Workbooks;
                 workbook = workbooks.Add();
-                worksheets = workbook.Worksheets as Excel.Worksheets;
-                worksheet = worksheets.Add();
+                worksheet = workbook.Worksheets.Add();
 
-                result = SetWorksheet(worksheet: worksheet, table: table, hasTitle: hasTitle);
+                // title이 있으면 첫 줄은 header로 쓴다.
+                int rowCount = hasTitle ? table.Rows.Count + 1 : table.Rows.Count;
+                int columnCount = table.Columns.Count;
+
+                range = worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowCount, columnCount]];
+                range.Value = ConvertData(rowCount: rowCount, columnCount: columnCount, table: table, hasTitle: hasTitle);
 
                 workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
 
                 workbook.Close();
                 application.Quit();
+
+                result = true;
             }
             catch (Exception)
             {
@@ -213,41 +165,15 @@ namespace Suyeong.Lib.Doc.InteropExcel
             }
             finally
             {
-                if (worksheet != null)
-                {
-                    Marshal.ReleaseComObject(worksheet);
-                }
-
-                if (worksheets != null)
-                {
-                    Marshal.ReleaseComObject(worksheets);
-                }
-
-                if (workbook != null)
-                {
-                    Marshal.ReleaseComObject(workbook);
-                }
-
-                if (workbooks != null)
-                {
-                    Marshal.ReleaseComObject(workbooks);
-                }
-
-                if (application != null)
-                {
-                    Marshal.ReleaseComObject(application);
-                }
+                ReleaseComObjects(new object[] { range, worksheet, workbook, workbooks, application, });
             }
 
             return result;
         }
 
-        static DataTable GetWorksheet(Excel.Worksheet workSheet)
+        static DataTable GetWorksheet(string tableName, Excel.Range range)
         {
-            DataTable table = new DataTable();
-
-            table.TableName = workSheet.Name;
-            Excel.Range range = workSheet.UsedRange;
+            DataTable table = new DataTable(tableName);
 
             string[] values;
             object[,] value = range.Value;
@@ -274,31 +200,7 @@ namespace Suyeong.Lib.Doc.InteropExcel
             return table;
         }
 
-        static bool SetWorksheet(Excel.Worksheet worksheet, DataTable table, bool hasTitle = true)
-        {
-            bool result = false;
-
-            try
-            {
-                // title이 있으면 첫 줄은 header로 쓴다.
-                int rowCount = hasTitle ? table.Rows.Count + 1 : table.Rows.Count;
-                int columnCount = table.Columns.Count;
-                object[,] data = ConvertData(rowCount: rowCount, columnCount: columnCount, hasTitle: hasTitle, table: table);
-
-                Excel.Range range = worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowCount, columnCount]];
-                range.Value = data;
-
-                result = true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return result;
-        }
-
-        static object[,] ConvertData(int rowCount, int columnCount, bool hasTitle, DataTable table)
+        static object[,] ConvertData(int rowCount, int columnCount, DataTable table, bool hasTitle)
         {
             object[,] data = new object[rowCount, columnCount];
 
@@ -325,6 +227,30 @@ namespace Suyeong.Lib.Doc.InteropExcel
             }
 
             return data;
+        }
+
+        static bool ReleaseComObjects(object[] objects)
+        {
+            bool result = false;
+
+            try
+            {
+                foreach (object obj in objects)
+                {
+                    if (obj != null)
+                    {
+                        Marshal.ReleaseComObject(obj);
+                    }
+                }
+
+                result = true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
         }
     }
 }
