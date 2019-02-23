@@ -4,9 +4,9 @@ using System.Data;
 using System.Data.OleDb;
 using System.IO;
 
-namespace Suyeong.Lib.Util
+namespace Suyeong.Lib.Doc.OleDbExcel
 {
-    public static class OleDB
+    public static class OleExcel
     {
         public static DataSet GetDataSetFromExcel(string filePath, string fileName, string HDR = "YES", string IMEX = "1")
         {

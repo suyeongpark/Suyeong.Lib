@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Suyeong.Lib.Office.MsWord
+namespace Suyeong.Lib.Doc.InteropPowerPoint
 {
     public class Class1
     {

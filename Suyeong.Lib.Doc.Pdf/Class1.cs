@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Suyeong.Lib.Office.MsPowerPoint
+namespace Suyeong.Lib.Doc.Pdf
 {
     public class Class1
     {
