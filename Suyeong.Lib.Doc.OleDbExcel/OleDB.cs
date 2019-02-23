@@ -8,22 +8,27 @@ namespace Suyeong.Lib.Doc.OleDbExcel
 {
     public static class OleExcel
     {
-        public static DataSet GetDataSetFromExcel(string filePath, string fileName, string HDR = "YES", string IMEX = "1")
+        public static DataSet GetDataSetFromExcel(string filePath, IEnumerable<string> sheetNames, string HDR = "YES", string IMEX = "1")
         {
-            DataSet dataSet = new DataSet(fileName);
+            DataSet dataSet = new DataSet();
 
-            string conStr = GetExcelConStr(filePath: filePath, HDR: HDR, IMEX: IMEX);
-            string commandTxt = "Select * From [" + fileName + "$]";
-
-            if (!string.IsNullOrEmpty(conStr))
+            try
             {
+                string conStr = GetExcelConStr(filePath: filePath, HDR: HDR, IMEX: IMEX);
+
                 using (OleDbConnection connection = new OleDbConnection(conStr))
-                using (OleDbCommand command = new OleDbCommand(commandTxt, connection))
-                using (OleDbDataAdapter adapter = new OleDbDataAdapter(command))
                 {
                     connection.Open();
-                    adapter.Fill(dataSet);
+
+                    foreach (string sheetName in sheetNames)
+                    {
+                        dataSet.Tables.Add(GetDataTableFromSheet(connection: connection, sheetName: sheetName));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
             return dataSet;
@@ -31,20 +36,23 @@ namespace Suyeong.Lib.Doc.OleDbExcel
 
         public static DataTable GetDataTableFromExcel(string filePath, string sheetName, string HDR = "YES", string IMEX = "1")
         {
-            DataTable table = new DataTable(sheetName);
+            DataTable table = new DataTable();
 
-            string conStr = GetExcelConStr(filePath: filePath, HDR: HDR, IMEX: IMEX);
-            string commandTxt = "Select * From [" + sheetName + "$]";
-
-            if (!string.IsNullOrEmpty(conStr))
+            try
             {
+                string conStr = GetExcelConStr(filePath: filePath, HDR: HDR, IMEX: IMEX);
+                string commandTxt = "Select * From [" + sheetName + "$]";
+
                 using (OleDbConnection connection = new OleDbConnection(conStr))
-                using (OleDbCommand command = new OleDbCommand(commandTxt, connection))
-                using (OleDbDataAdapter adapter = new OleDbDataAdapter(command))
                 {
                     connection.Open();
-                    adapter.Fill(table);
+
+                    table = GetDataTableFromSheet(connection: connection, sheetName: sheetName);
                 }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
             return table;
@@ -54,11 +62,18 @@ namespace Suyeong.Lib.Doc.OleDbExcel
         {
             bool result = false;
 
-            string conStr = GetExcelConStr(filePath: filePath, HDR: HDR, IMEX: "0");
-
-            foreach (DataTable table in dataSet.Tables)
+            try
             {
-                result = SetExcelFrom(table: table, conStr: conStr);
+                string conStr = GetExcelConStr(filePath: filePath, HDR: HDR, IMEX: "0");
+
+                foreach (DataTable table in dataSet.Tables)
+                {
+                    result = SetExcelFromDataTable(table: table, conStr: conStr);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
             return result;
@@ -66,12 +81,45 @@ namespace Suyeong.Lib.Doc.OleDbExcel
 
         public static bool SetExcelFromDataTable(DataTable table, string filePath, string HDR = "YES")
         {
-            string conStr = GetExcelConStr(filePath: filePath, HDR: HDR, IMEX: "0");
+            bool result = false;
 
-            return SetExcelFrom(table: table, conStr: conStr);
+            try
+            {
+                string conStr = GetExcelConStr(filePath: filePath, HDR: HDR, IMEX: "0");
+
+                result = SetExcelFromDataTable(table: table, conStr: conStr);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
-        static bool SetExcelFrom(DataTable table, string conStr)
+        static DataTable GetDataTableFromSheet(OleDbConnection connection, string sheetName)
+        {
+            DataTable table = new DataTable(sheetName);
+
+            try
+            {
+                string commandTxt = "Select * From [" + sheetName + "$]";
+
+                using (OleDbCommand command = new OleDbCommand(commandTxt, connection))
+                using (OleDbDataAdapter adapter = new OleDbDataAdapter(command))
+                {
+                    adapter.Fill(table);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return table;
+        }
+
+        static bool SetExcelFromDataTable(DataTable table, string conStr)
         {
             bool result = false;
 
@@ -79,7 +127,6 @@ namespace Suyeong.Lib.Doc.OleDbExcel
             {
                 List<string> columns = GetColumnNames(table: table);
                 string tableName = !string.IsNullOrWhiteSpace(table.TableName) ? table.TableName : "Sheet1";
-                string query = $"[{tableName}$] ({string.Join(", ", columns)}) values (@{string.Join(", @", columns)})";
 
                 using (OleDbConnection connection = new OleDbConnection(conStr))
                 {
@@ -90,17 +137,12 @@ namespace Suyeong.Lib.Doc.OleDbExcel
                         command.Connection = connection;
 
                         // 1. table을 만든다.
-                        command.CommandText = $"create table {query}";
-
-                        foreach (string column in columns)
-                        {
-                            command.Parameters.Add("@" + column, OleDbType.VarWChar).Value = column;
-                        }
-
+                        command.CommandText = $"create table {tableName} ([{string.Join("] Varchar(255), [", columns)}] Varchar(255))";
                         command.ExecuteNonQuery();
 
-
                         // 2. data를 넣는다.
+                        string query = $"[{tableName}$] ({string.Join(", ", columns)}) values (@{string.Join(", @", columns)})";
+
                         foreach (DataRow row in table.Rows)
                         {
                             command.CommandText = $"insert into {query}";
@@ -108,7 +150,7 @@ namespace Suyeong.Lib.Doc.OleDbExcel
                             for (int i = 0; i < row.ItemArray.Length; i++)
                             {
                                 // 실제 데이터에서는 '를 ''로 대체
-                                command.Parameters.Add("@" + columns[i], OleDbType.VarWChar).Value = row[i].ToString().Replace("'", "''");
+                                command.Parameters.Add("@" + columns[i], OleDbType.VarWChar).Value = row[i].ToString();
                             }
 
                             command.ExecuteNonQuery();
