@@ -11,15 +11,52 @@ namespace Suyeong.Lib.Net.Udp
         const int SIZE_HEADER = 4; // UDP는 Type을 보내지 않는다.
         const int MAX_SIZE = 65507;
 
-        public static void Send(UdpClient client, byte[] data)
+        public static bool Send(UdpClient client, byte[] data)
         {
-            int dataSize = data.Length;
+            bool result = false;
 
-            // 1. header를 보낸다. --udp는 header를 보내지 않는다.
-            SendHeader(client: client, dataSize: dataSize);
+            try
+            {
+                int dataSize = data.Length;
 
-            // 2. data를 보낸다.
-            SendData(client: client, dataSize: dataSize, data: data);
+                // 1. header를 보낸다. --udp는 header를 보내지 않는다.
+                SendHeader(client: client, dataSize: dataSize);
+
+                // 2. data를 보낸다.
+                SendData(client: client, dataSize: dataSize, data: data);
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+        async public static Task<bool> SendAsync(UdpClient client, byte[] data)
+        {
+            bool result = false;
+
+            try
+            {
+                int dataSize = data.Length;
+
+                // 1. header를 보낸다. 
+                await SendHeaderAsync(client: client, dataSize: dataSize);
+
+                // 2. data를 보낸다.
+                await SendDataAsync(client: client, dataSize: dataSize, data: data);
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
         public static byte[] Receive(UdpClient client, IPEndPoint endPoint)
@@ -29,17 +66,6 @@ namespace Suyeong.Lib.Net.Udp
             return dataSize > 0 ? ReceiveData(client: client, dataSize: dataSize, endPoint: endPoint) : null;
         }
 
-        async public static Task SendAsync(UdpClient client, byte[] data)
-        {
-            int dataSize = data.Length;
-
-            // 1. header를 보낸다. 
-            await SendHeaderAsync(client: client, dataSize: dataSize);
-
-            // 2. data를 보낸다.
-            await SendDataAsync(client: client, dataSize: dataSize, data: data);
-        }
-
         async public static Task<byte[]> ReceiveAsync(UdpClient client)
         {
             int dataSize = await ReceiveHeaderAsync(client: client);
@@ -47,25 +73,98 @@ namespace Suyeong.Lib.Net.Udp
             return dataSize > 0 ? await ReceiveDataAsync(client: client, dataSize: dataSize) : null;
         }
 
-        static void SendHeader(UdpClient client, int dataSize)
+        static bool SendHeader(UdpClient client, int dataSize)
         {
-            byte[] header = BitConverter.GetBytes(dataSize);
-            client.Send(header, header.Length);
+            bool result = false;
+
+            try
+            {
+                byte[] header = BitConverter.GetBytes(dataSize);
+                client.Send(header, header.Length);
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
-        static void SendData(UdpClient client, int dataSize, byte[] data)
+        static bool SendData(UdpClient client, int dataSize, byte[] data)
         {
-            int send = 0, count = 0, left = 0;
-            byte[] buffer = new byte[MAX_SIZE];
+            bool result = false;
 
-            while (send < dataSize)
+            try
             {
-                left = dataSize - send;
-                count = left < MAX_SIZE ? left : MAX_SIZE;
-                data.CopyTo(buffer, send);
-                client.Send(buffer, buffer.Length);
-                send += count;
+                int send = 0, count = 0, left = 0;
+                byte[] buffer = new byte[MAX_SIZE];
+
+                while (send < dataSize)
+                {
+                    left = dataSize - send;
+                    count = left < MAX_SIZE ? left : MAX_SIZE;
+                    data.CopyTo(buffer, send);
+                    client.Send(buffer, buffer.Length);
+                    send += count;
+                }
+
+                result = true;
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+        async static Task<bool> SendHeaderAsync(UdpClient client, int dataSize)
+        {
+            bool result = false;
+
+            try
+            {
+                byte[] header = BitConverter.GetBytes(dataSize);
+                await client.SendAsync(header, header.Length);
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+        async static Task<bool> SendDataAsync(UdpClient client, int dataSize, byte[] data)
+        {
+            bool result = false;
+
+            try
+            {
+                int send = 0, count = 0, left = 0;
+                byte[] buffer = new byte[MAX_SIZE];
+
+                while (send < dataSize)
+                {
+                    left = dataSize - send;
+                    count = left < MAX_SIZE ? left : MAX_SIZE;
+                    data.CopyTo(buffer, send);
+                    await client.SendAsync(buffer, buffer.Length);
+                    send += count;
+                }
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
         static int ReceiveHeader(UdpClient client, IPEndPoint endPoint)
@@ -91,27 +190,6 @@ namespace Suyeong.Lib.Net.Udp
             }
 
             return data;
-        }
-
-        async static Task SendHeaderAsync(UdpClient client, int dataSize)
-        {
-            byte[] header = BitConverter.GetBytes(dataSize);
-            await client.SendAsync(header, header.Length);
-        }
-
-        async static Task SendDataAsync(UdpClient client, int dataSize, byte[] data)
-        {
-            int send = 0, count = 0, left = 0;
-            byte[] buffer = new byte[MAX_SIZE];
-
-            while (send < dataSize)
-            {
-                left = dataSize - send;
-                count = left < MAX_SIZE ? left : MAX_SIZE;
-                data.CopyTo(buffer, send);
-                await client.SendAsync(buffer, buffer.Length);
-                send += count;
-            }
         }
 
         async static Task<int> ReceiveHeaderAsync(UdpClient client)

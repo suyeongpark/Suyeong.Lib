@@ -11,34 +11,60 @@ namespace Suyeong.Lib.Net.Tcp
         const int INDEX_LENGTH = 4;
         const int MAX_SIZE = 1024;
 
-        public static void SendPacket(NetworkStream networkStream, byte[] data)
+        public static bool SendPacket(NetworkStream networkStream, byte[] data)
         {
-            int dataLength = data.Length;
+            bool result = false;
 
-            // 1. header를 보낸다.
-            byte[] header = BitConverter.GetBytes(dataLength);
-            networkStream.Write(header, 0, header.Length);
+            try
+            {
+                int dataLength = data.Length;
 
-            // 2. data를 보낸다.
-            SendData(networkStream: networkStream, data: data, dataSize: dataLength);
+                // 1. header를 보낸다.
+                byte[] header = BitConverter.GetBytes(dataLength);
+                networkStream.Write(header, 0, header.Length);
 
-            // 3. flush
-            networkStream.Flush();
+                // 2. data를 보낸다.
+                SendData(networkStream: networkStream, data: data, dataSize: dataLength);
+
+                // 3. flush
+                networkStream.Flush();
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
-        async public static Task SendPacketAsync(NetworkStream networkStream, byte[] data)
+        async public static Task<bool> SendPacketAsync(NetworkStream networkStream, byte[] data)
         {
-            int dataLength = data.Length;
+            bool result = false;
 
-            // 1. header를 보낸다.
-            byte[] header = BitConverter.GetBytes(dataLength);
-            await networkStream.WriteAsync(header, 0, header.Length);
+            try
+            {
+                int dataLength = data.Length;
 
-            // 2. data를 보낸다.
-            await SendDataAsync(networkStream: networkStream, data: data, dataLength: dataLength);
+                // 1. header를 보낸다.
+                byte[] header = BitConverter.GetBytes(dataLength);
+                await networkStream.WriteAsync(header, 0, header.Length);
 
-            // 3. flush
-            await networkStream.FlushAsync().ConfigureAwait(false);
+                // 2. data를 보낸다.
+                await SendDataAsync(networkStream: networkStream, data: data, dataLength: dataLength);
+
+                // 3. flush
+                await networkStream.FlushAsync().ConfigureAwait(false);
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
         public static byte[] ReceivePacket(NetworkStream networkStream)
@@ -75,38 +101,64 @@ namespace Suyeong.Lib.Net.Tcp
             }
         }
 
-        static void SendData(NetworkStream networkStream, byte[] data, int dataSize)
+        static bool SendData(NetworkStream networkStream, byte[] data, int dataSize)
         {
-            using (MemoryStream memoryStream = new MemoryStream(data))
-            {
-                byte[] buffer;
-                int nbytes = 0;
+            bool result = false;
 
-                while (dataSize > 0)
+            try
+            {
+                using (MemoryStream memoryStream = new MemoryStream(data))
                 {
-                    buffer = new byte[MAX_SIZE < dataSize ? MAX_SIZE : dataSize];
-                    nbytes = memoryStream.Read(buffer, 0, buffer.Length);
-                    networkStream.Write(buffer, 0, buffer.Length);
-                    dataSize -= nbytes;
+                    byte[] buffer;
+                    int nbytes = 0;
+
+                    while (dataSize > 0)
+                    {
+                        buffer = new byte[MAX_SIZE < dataSize ? MAX_SIZE : dataSize];
+                        nbytes = memoryStream.Read(buffer, 0, buffer.Length);
+                        networkStream.Write(buffer, 0, buffer.Length);
+                        dataSize -= nbytes;
+                    }
                 }
+
+                result = true;
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
-        async static Task SendDataAsync(NetworkStream networkStream, byte[] data, int dataLength)
+        async static Task<bool> SendDataAsync(NetworkStream networkStream, byte[] data, int dataLength)
         {
-            using (MemoryStream memoryStream = new MemoryStream(data))
-            {
-                byte[] buffer;
-                int nbytes = 0;
+            bool result = false;
 
-                while (dataLength > 0)
+            try
+            {
+                using (MemoryStream memoryStream = new MemoryStream(data))
                 {
-                    buffer = new byte[MAX_SIZE < dataLength ? MAX_SIZE : dataLength];
-                    nbytes = await memoryStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-                    await networkStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-                    dataLength -= nbytes;
+                    byte[] buffer;
+                    int nbytes = 0;
+
+                    while (dataLength > 0)
+                    {
+                        buffer = new byte[MAX_SIZE < dataLength ? MAX_SIZE : dataLength];
+                        nbytes = await memoryStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                        await networkStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                        dataLength -= nbytes;
+                    }
                 }
+
+                result = true;
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
         static byte[] ReceiveData(NetworkStream networkStream, int dataLength)

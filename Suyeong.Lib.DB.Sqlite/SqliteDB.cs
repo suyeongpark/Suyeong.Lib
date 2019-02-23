@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SQLite;
 using System.Threading.Tasks;
 
@@ -11,125 +12,99 @@ namespace Suyeong.Lib.DB.Sqlite
             return $"Data Source={dataSource};Version=3;Pooling=True;Max Pool Size=100;Password={password};";
         }
 
-        public static string GetDataSingle(string conStr, string query, SQLiteParameter[] parameters = null)
+        public static object GetDataSingle(string conStr, string query, SQLiteParameter[] parameters = null)
         {
             object scalar = null;
 
-            using (SQLiteConnection conn = new SQLiteConnection(conStr))
-            using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+            try
             {
-                conn.Open();
-
-                if (parameters != null)
+                using (SQLiteConnection connection = new SQLiteConnection(conStr))
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
-                    foreach (SQLiteParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
+                    connection.Open();
 
-                scalar = cmd.ExecuteScalar();
+                    if (parameters != null)
+                    {
+                        foreach (SQLiteParameter parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
+                    }
+
+                    scalar = command.ExecuteScalar();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
-            return scalar?.ToString();
+            return scalar;
+        }
+
+        async public static Task<object> GetDataSingleAsync(string conStr, string query, SQLiteParameter[] parameters = null)
+        {
+            object scalar = null;
+
+            try
+            {
+
+                using (SQLiteConnection connection = new SQLiteConnection(conStr))
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    connection.Open();
+
+                    if (parameters != null)
+                    {
+                        foreach (SQLiteParameter parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
+                    }
+
+                    scalar = await command.ExecuteScalarAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return scalar;
         }
 
         public static DataTable GetDataTable(string conStr, string query, SQLiteParameter[] parameters = null)
         {
-            DataTable dataTable = new DataTable();
+            DataTable table = new DataTable();
 
-            using (SQLiteConnection conn = new SQLiteConnection(conStr))
-            using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+            try
             {
-                conn.Open();
-
-                if (parameters != null)
+                using (SQLiteConnection connection = new SQLiteConnection(conStr))
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
-                    foreach (SQLiteParameter param in parameters)
+                    connection.Open();
+
+                    if (parameters != null)
                     {
-                        cmd.Parameters.Add(param);
+                        foreach (SQLiteParameter parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
+                    }
+
+                    using (SQLiteDataAdapter adapter = new SQLiteDataAdapter())
+                    {
+                        adapter.SelectCommand = command;
+                        adapter.Fill(table);
                     }
                 }
-
-                using (SQLiteDataAdapter adapter = new SQLiteDataAdapter())
-                {
-                    adapter.SelectCommand = cmd;
-                    adapter.Fill(dataTable);
-                }
             }
-
-            return dataTable;
-        }
-
-        public static DataSet GetDataSet(string conStr, string query, SQLiteParameter[] parameters = null)
-        {
-            DataSet dataSet = new DataSet();
-
-            using (SQLiteConnection conn = new SQLiteConnection(conStr))
-            using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+            catch (Exception ex)
             {
-                conn.Open();
-
-                if (parameters != null)
-                {
-                    foreach (SQLiteParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
-
-                using (SQLiteDataAdapter adapter = new SQLiteDataAdapter())
-                {
-                    adapter.SelectCommand = cmd;
-                    adapter.Fill(dataSet);
-                }
+                throw;
             }
 
-            return dataSet;
-        }
-
-        public static bool SetQuery(string conStr, string query, SQLiteParameter[] parameters = null)
-        {
-            using (SQLiteConnection conn = new SQLiteConnection(conStr))
-            using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
-            {
-                conn.Open();
-
-                if (parameters != null)
-                {
-                    foreach (SQLiteParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
-
-                cmd.ExecuteNonQuery();
-            }
-
-            return true;
-        }
-
-        async public static Task<string> GetDataSingleAsync(string conStr, string query, SQLiteParameter[] parameters = null)
-        {
-            object scalar = null;
-
-            using (SQLiteConnection conn = new SQLiteConnection(conStr))
-            using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
-            {
-                conn.Open();
-
-                if (parameters != null)
-                {
-                    foreach (SQLiteParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
-
-                scalar = await cmd.ExecuteScalarAsync();
-            }
-
-            return scalar?.ToString();
+            return table;
         }
 
         async public static Task<DataTable> GetDataTableAsync(string conStr, string query, SQLiteParameter[] parameters = null)
@@ -137,30 +112,107 @@ namespace Suyeong.Lib.DB.Sqlite
             return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters));
         }
 
+        public static DataSet GetDataSet(string conStr, string query, SQLiteParameter[] parameters = null)
+        {
+            DataSet dataSet = new DataSet();
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(conStr))
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    connection.Open();
+
+                    if (parameters != null)
+                    {
+                        foreach (SQLiteParameter parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
+                    }
+
+                    using (SQLiteDataAdapter adapter = new SQLiteDataAdapter())
+                    {
+                        adapter.SelectCommand = command;
+                        adapter.Fill(dataSet);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return dataSet;
+        }
+
         async public static Task<DataSet> GetDataSetAsync(string conStr, string query, SQLiteParameter[] parameters = null)
         {
             return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters));
         }
 
-        async public static Task<bool> SetQueryAsync(string conStr, string query, SQLiteParameter[] parameters = null)
+        public static bool SetQuery(string conStr, string query, SQLiteParameter[] parameters = null)
         {
-            using (SQLiteConnection conn = new SQLiteConnection(conStr))
-            using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
-            {
-                conn.Open();
+            bool result = false;
 
-                if (parameters != null)
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(conStr))
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
-                    foreach (SQLiteParameter param in parameters)
+                    connection.Open();
+
+                    if (parameters != null)
                     {
-                        cmd.Parameters.Add(param);
+                        foreach (SQLiteParameter parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
                     }
+
+                    command.ExecuteNonQuery();
                 }
 
-                await cmd.ExecuteNonQueryAsync();
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
-            return true;
+            return result;
+        }
+
+        async public static Task<bool> SetQueryAsync(string conStr, string query, SQLiteParameter[] parameters = null)
+        {
+            bool result = false;
+
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(conStr))
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    connection.Open();
+
+                    if (parameters != null)
+                    {
+                        foreach (SQLiteParameter parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
+                    }
+
+                    await command.ExecuteNonQueryAsync();
+                }
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
     }
 }

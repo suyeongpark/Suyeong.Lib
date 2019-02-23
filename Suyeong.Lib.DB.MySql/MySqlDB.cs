@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
@@ -16,125 +17,106 @@ namespace Suyeong.Lib.DB.MySql
             return $"Server={server};Database={database};Uid={uid};Pwd={password};";
         }
 
-        public static string GetDataSingle(string conStr, string query, MySqlParameter[] parameters = null)
+        public static object GetDataSingle(string conStr, string query, MySqlParameter[] parameters = null)
         {
             object scalar = null;
 
-            using (MySqlConnection conn = new MySqlConnection(conStr))
-            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+            try
             {
-                conn.Open();
-
-                if (parameters != null)
+                using (MySqlConnection connection = new MySqlConnection(conStr))
                 {
-                    foreach (MySqlParameter param in parameters)
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
-                        cmd.Parameters.Add(param);
+                        if (parameters != null)
+                        {
+                            foreach (MySqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        scalar = command.ExecuteScalar();
                     }
                 }
-
-                scalar = cmd.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
-            return scalar?.ToString();
+            return scalar;
+        }
+
+        async public static Task<object> GetDataSingleAsync(string conStr, string query, MySqlParameter[] parameters = null)
+        {
+            object scalar = null;
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(conStr))
+                {
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+
+                        if (parameters != null)
+                        {
+                            foreach (MySqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        scalar = await command.ExecuteScalarAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return scalar;
         }
 
         public static DataTable GetDataTable(string conStr, string query, MySqlParameter[] parameters = null)
         {
-            DataTable dataTable = new DataTable();
+            DataTable table = new DataTable();
 
-            using (MySqlConnection conn = new MySqlConnection(conStr))
-            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+            try
             {
-                conn.Open();
-
-                if (parameters != null)
+                using (MySqlConnection connection = new MySqlConnection(conStr))
                 {
-                    foreach (MySqlParameter param in parameters)
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
-                        cmd.Parameters.Add(param);
+
+                        if (parameters != null)
+                        {
+                            foreach (MySqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                        {
+                            adapter.SelectCommand = command;
+                            adapter.Fill(table);
+                        }
                     }
                 }
-
-                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
-                {
-                    adapter.SelectCommand = cmd;
-                    adapter.Fill(dataTable);
-                }
             }
-
-            return dataTable;
-        }
-
-        public static DataSet GetDataSet(string conStr, string query, MySqlParameter[] parameters = null)
-        {
-            DataSet dataSet = new DataSet();
-
-            using (MySqlConnection conn = new MySqlConnection(conStr))
-            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+            catch (Exception ex)
             {
-                conn.Open();
-
-                if (parameters != null)
-                {
-                    foreach (MySqlParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
-
-                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
-                {
-                    adapter.SelectCommand = cmd;
-                    adapter.Fill(dataSet);
-                }
+                throw;
             }
 
-            return dataSet;
-        }
-
-        public static bool SetQuery(string conStr, string query, MySqlParameter[] parameters = null)
-        {
-            using (MySqlConnection conn = new MySqlConnection(conStr))
-            using (MySqlCommand cmd = new MySqlCommand(query, conn))
-            {
-                conn.Open();
-
-                if (parameters != null)
-                {
-                    foreach (MySqlParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
-
-                cmd.ExecuteNonQuery();
-            }
-
-            return true;
-        }
-
-        async public static Task<string> GetDataSingleAsync(string conStr, string query, MySqlParameter[] parameters = null)
-        {
-            object scalar = null;
-
-            using (MySqlConnection conn = new MySqlConnection(conStr))
-            using (MySqlCommand cmd = new MySqlCommand(query, conn))
-            {
-                conn.Open();
-
-                if (parameters != null)
-                {
-                    foreach (MySqlParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
-
-                scalar = await cmd.ExecuteScalarAsync();
-            }
-
-            return scalar?.ToString();
+            return table;
         }
 
         async public static Task<DataTable> GetDataTableAsync(string conStr, string query, MySqlParameter[] parameters = null)
@@ -142,30 +124,113 @@ namespace Suyeong.Lib.DB.MySql
             return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters));
         }
 
+        public static DataSet GetDataSet(string conStr, string query, MySqlParameter[] parameters = null)
+        {
+            DataSet dataSet = new DataSet();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(conStr))
+                {
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        if (parameters != null)
+                        {
+                            foreach (MySqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                        {
+                            adapter.SelectCommand = command;
+                            adapter.Fill(dataSet);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return dataSet;
+        }
+
         async public static Task<DataSet> GetDataSetAsync(string conStr, string query, MySqlParameter[] parameters = null)
         {
             return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters));
         }
 
-        async public static Task<bool> SetQueryAsync(string conStr, string query, MySqlParameter[] parameters = null)
+        public static bool SetQuery(string conStr, string query, MySqlParameter[] parameters = null)
         {
-            using (MySqlConnection conn = new MySqlConnection(conStr))
-            using (MySqlCommand cmd = new MySqlCommand(query, conn))
-            {
-                conn.Open();
+            bool result = false;
 
-                if (parameters != null)
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(conStr))
                 {
-                    foreach (MySqlParameter param in parameters)
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
-                        cmd.Parameters.Add(param);
+                        if (parameters != null)
+                        {
+                            foreach (MySqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        command.ExecuteNonQuery();
                     }
                 }
 
-                await cmd.ExecuteNonQueryAsync();
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
-            return true;
+            return result;
+        }
+
+        async public static Task<bool> SetQueryAsync(string conStr, string query, MySqlParameter[] parameters = null)
+        {
+            bool result = false;
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(conStr))
+                {
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        connection.Open();
+
+                        if (parameters != null)
+                        {
+                            foreach (MySqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
     }
 }

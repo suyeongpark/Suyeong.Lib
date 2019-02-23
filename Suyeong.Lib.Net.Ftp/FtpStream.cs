@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -8,68 +9,112 @@ namespace Suyeong.Lib.Net.Ftp
     {
         public static byte[] FtpDownload(string ftpPath, string user, string password)
         {
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
-            request.Method = WebRequestMethods.Ftp.DownloadFile;
-            request.Credentials = new NetworkCredential(user, password);
+            byte[] result = null;
 
-            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (MemoryStream memoryStream = new MemoryStream())
+            try
             {
-                stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
-
-        public static string FtpUpload(byte[] data, string ftpPath, string user, string password)
-        {
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
-            request.Method = WebRequestMethods.Ftp.UploadFile;
-            request.Credentials = new NetworkCredential(user, password);
-            request.ContentLength = data.Length;
-
-            using (Stream stream = request.GetRequestStream())
-            {
-                stream.Write(data, 0, data.Length);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
+                request.Method = WebRequestMethods.Ftp.DownloadFile;
+                request.Credentials = new NetworkCredential(user, password);
 
                 using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    return response.StatusDescription;
+                    stream.CopyTo(memoryStream);
+                    result = memoryStream.ToArray();
                 }
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
         async public static Task<byte[]> FtpDownloadAsync(string ftpPath, string user, string password)
         {
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
-            request.Method = WebRequestMethods.Ftp.DownloadFile;
-            request.Credentials = new NetworkCredential(user, password);
+            byte[] result = null;
 
-            using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (MemoryStream memoryStream = new MemoryStream())
+            try
             {
-                await stream.CopyToAsync(memoryStream);
-                return memoryStream.ToArray();
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
+                request.Method = WebRequestMethods.Ftp.DownloadFile;
+                request.Credentials = new NetworkCredential(user, password);
+
+                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    await stream.CopyToAsync(memoryStream);
+                    result = memoryStream.ToArray();
+                }
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+        public static string FtpUpload(byte[] data, string ftpPath, string user, string password)
+        {
+            string result = string.Empty;
+
+            try
+            {
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+                request.Credentials = new NetworkCredential(user, password);
+                request.ContentLength = data.Length;
+
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+
+                    using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                    {
+                        result = response.StatusDescription;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
         async public static Task<string> FtpUploadAsync(byte[] data, string ftpPath, string user, string password)
         {
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
-            request.Method = WebRequestMethods.Ftp.UploadFile;
-            request.Credentials = new NetworkCredential(user, password);
-            request.ContentLength = data.Length;
+            string result = string.Empty;
 
-            using (Stream stream = await request.GetRequestStreamAsync())
+            try
             {
-                await stream.WriteAsync(data, 0, data.Length);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+                request.Credentials = new NetworkCredential(user, password);
+                request.ContentLength = data.Length;
 
-                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                using (Stream stream = await request.GetRequestStreamAsync())
                 {
-                    return response.StatusDescription;
+                    await stream.WriteAsync(data, 0, data.Length);
+
+                    using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                    {
+                        result = response.StatusDescription;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
     }
 }

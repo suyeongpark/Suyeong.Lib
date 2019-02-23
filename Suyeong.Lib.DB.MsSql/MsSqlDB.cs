@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -11,147 +12,106 @@ namespace Suyeong.Lib.DB.MsSql
             return $"Persist Security Info=False;User ID={id};Password={password};Server={serverName};Database={dbName};";
         }
 
-        public static string GetDataSingle(string conStr, string query, SqlParameter[] parameters = null)
+        public static object GetDataSingle(string conStr, string query, SqlParameter[] parameters = null)
         {
             object scalar = null;
 
-            using (SqlConnection conn = new SqlConnection(conStr))
-            using (SqlCommand cmd = new SqlCommand(query, conn))
+            try
             {
-                conn.Open();
-
-                if (parameters != null)
+                using (SqlConnection connection = new SqlConnection(conStr))
                 {
-                    foreach (SqlParameter param in parameters)
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        cmd.Parameters.Add(param);
+                        if (parameters != null)
+                        {
+                            foreach (SqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        scalar = command.ExecuteScalar();
                     }
                 }
-
-                scalar = cmd.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
-            return scalar?.ToString();
+            return scalar;
+        }
+
+        async public static Task<object> GetDataSingleAsync(string conStr, string query, SqlParameter[] parameters = null)
+        {
+            object scalar = null;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(conStr))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+
+                        if (parameters != null)
+                        {
+                            foreach (SqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        scalar = await command.ExecuteScalarAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return scalar;
         }
 
         public static DataTable GetDataTable(string conStr, string query, SqlParameter[] parameters = null)
         {
-            DataTable dataTable = new DataTable();
+            DataTable table = new DataTable();
 
-            using (SqlConnection conn = new SqlConnection(conStr))
-            using (SqlCommand cmd = new SqlCommand(query, conn))
+            try
             {
-                conn.Open();
-
-                if (parameters != null)
+                using (SqlConnection connection = new SqlConnection(conStr))
                 {
-                    foreach (SqlParameter param in parameters)
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        cmd.Parameters.Add(param);
+
+                        if (parameters != null)
+                        {
+                            foreach (SqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter())
+                        {
+                            adapter.SelectCommand = command;
+                            adapter.Fill(table);
+                        }
                     }
                 }
-
-                using (SqlDataAdapter adapter = new SqlDataAdapter())
-                {
-                    adapter.SelectCommand = cmd;
-                    adapter.Fill(dataTable);
-                }
             }
-
-            return dataTable;
-        }
-
-        public static DataSet GetDataSet(string conStr, string query, SqlParameter[] parameters = null)
-        {
-            DataSet dataSet = new DataSet();
-
-            using (SqlConnection conn = new SqlConnection(conStr))
-            using (SqlCommand cmd = new SqlCommand(query, conn))
+            catch (Exception ex)
             {
-                conn.Open();
-
-                if (parameters != null)
-                {
-                    foreach (SqlParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
-
-                using (SqlDataAdapter adapter = new SqlDataAdapter())
-                {
-                    adapter.SelectCommand = cmd;
-                    adapter.Fill(dataSet);
-                }
+                throw;
             }
 
-            return dataSet;
-        }
-
-        public static bool SetQuery(string conStr, string query, SqlParameter[] parameters = null)
-        {
-            using (SqlConnection conn = new SqlConnection(conStr))
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            {
-                conn.Open();
-
-                if (parameters != null)
-                {
-                    foreach (SqlParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
-
-                cmd.ExecuteNonQuery();
-            }
-
-            return true;
-        }
-
-        public static bool SetQuery(string conStr, DataTable table)
-        {
-            using (SqlConnection conn = new SqlConnection(conStr))
-            {
-                conn.Open();
-
-                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
-                {
-                    bulkCopy.DestinationTableName = table.TableName;
-
-                    foreach (DataColumn column in table.Columns)
-                    {
-                        bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
-                    }
-
-                    bulkCopy.WriteToServer(table);
-                }
-            }
-
-            return true;
-        }
-
-        async public static Task<string> GetDataSingleAsync(string conStr, string query, SqlParameter[] parameters = null)
-        {
-            object scalar = null;
-
-            using (SqlConnection conn = new SqlConnection(conStr))
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            {
-                conn.Open();
-
-                if (parameters != null)
-                {
-                    foreach (SqlParameter param in parameters)
-                    {
-                        cmd.Parameters.Add(param);
-                    }
-                }
-
-                scalar = await cmd.ExecuteScalarAsync();
-            }
-
-            return scalar?.ToString();
+            return table;
         }
 
         async public static Task<DataTable> GetDataTableAsync(string conStr, string query, SqlParameter[] parameters = null)
@@ -159,52 +119,179 @@ namespace Suyeong.Lib.DB.MsSql
             return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters));
         }
 
+        public static DataSet GetDataSet(string conStr, string query, SqlParameter[] parameters = null)
+        {
+            DataSet dataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(conStr))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        if (parameters != null)
+                        {
+                            foreach (SqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter())
+                        {
+                            adapter.SelectCommand = command;
+                            adapter.Fill(dataSet);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return dataSet;
+        }
+
         async public static Task<DataSet> GetDataSetAsync(string conStr, string query, SqlParameter[] parameters = null)
         {
             return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters));
         }
 
-        async public static Task<bool> SetQueryAsync(string conStr, string query, SqlParameter[] parameters = null)
+        public static bool SetQuery(string conStr, string query, SqlParameter[] parameters = null)
         {
-            using (SqlConnection conn = new SqlConnection(conStr))
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            {
-                conn.Open();
+            bool result = false;
 
-                if (parameters != null)
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(conStr))
                 {
-                    foreach (SqlParameter param in parameters)
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        cmd.Parameters.Add(param);
+                        if (parameters != null)
+                        {
+                            foreach (SqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        command.ExecuteNonQuery();
                     }
                 }
 
-                await cmd.ExecuteNonQueryAsync();
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
-            return true;
+            return result;
+        }
+
+        public static bool SetQuery(string conStr, DataTable table)
+        {
+            bool result = false;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(conStr))
+                {
+                    connection.Open();
+
+                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                    {
+                        bulkCopy.DestinationTableName = table.TableName;
+
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                        }
+
+                        bulkCopy.WriteToServer(table);
+                    }
+                }
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+        async public static Task<bool> SetQueryAsync(string conStr, string query, SqlParameter[] parameters = null)
+        {
+            bool result = false;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(conStr))
+                {
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+
+                        if (parameters != null)
+                        {
+                            foreach (SqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
         }
 
         async public static Task<bool> SetQueryAsync(string conStr, DataTable table)
         {
-            using (SqlConnection conn = new SqlConnection(conStr))
+            bool result = false;
+
+            try
             {
-                conn.Open();
-
-                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
+                using (SqlConnection connection = new SqlConnection(conStr))
                 {
-                    bulkCopy.DestinationTableName = table.TableName;
+                    connection.Open();
 
-                    foreach (DataColumn column in table.Columns)
+                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
                     {
-                        bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
-                    }
+                        bulkCopy.DestinationTableName = table.TableName;
 
-                    await bulkCopy.WriteToServerAsync(table);
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                        }
+
+                        await bulkCopy.WriteToServerAsync(table);
+                    }
                 }
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
-            return true;
+            return result;
         }
     }
 }
