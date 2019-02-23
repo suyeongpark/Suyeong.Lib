@@ -19,6 +19,9 @@ namespace Suyeong.Lib.Doc.InteropWord
                 document = application.Documents.Open(FileName: wordPath, ReadOnly: true);
                 document.ExportAsFixedFormat(OutputFileName: pdfPath, ExportFormat: WdExportFormat.wdExportFormatPDF, DocStructureTags: false);
 
+                document.Close(SaveChanges: false);
+                application.Quit(SaveChanges: 0);
+
                 result = true;
             }
             catch (Exception)
@@ -29,39 +32,16 @@ namespace Suyeong.Lib.Doc.InteropWord
             {
                 if (document != null)
                 {
-                    document.Close(SaveChanges: false);
-                    ReleaseComObject(document);
+                    Marshal.ReleaseComObject(document);
                 }
 
                 if (application != null)
                 {
-                    application.Quit(SaveChanges: 0);
-                    ReleaseComObject(application);
+                    Marshal.ReleaseComObject(application);
                 }
             }
 
             return result;
-        }
-
-        static void ReleaseComObject(object obj)
-        {
-            try
-            {
-                if (obj != null)
-                {
-                    Marshal.ReleaseComObject(obj);
-                    obj = null;
-                }
-            }
-            catch (Exception)
-            {
-                obj = null;
-                throw;
-            }
-            finally
-            {
-                GC.Collect();
-            }
         }
     }
 }

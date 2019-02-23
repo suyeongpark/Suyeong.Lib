@@ -12,17 +12,24 @@ namespace Suyeong.Lib.Doc.InteropExcel
             DataSet dataSet = new DataSet();
 
             Excel.Application application = null;
+            Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
+            Excel.Worksheets worksheets = null;
 
             try
             {
                 application = new Excel.Application();
-                workbook = application.Workbooks.Open(Filename: filePath, ReadOnly: true);
+                workbooks = application.Workbooks;
+                workbook = workbooks.Open(Filename: filePath, ReadOnly: true);
+                worksheets = workbook.Worksheets as Excel.Worksheets;
 
-                foreach (Excel.Worksheet workSheet in workbook.Worksheets)
+                foreach (Excel.Worksheet worksheet in worksheets)
                 {
-                    dataSet.Tables.Add(GetWorksheet(workSheet: workSheet));
+                    dataSet.Tables.Add(GetWorksheet(workSheet: worksheet));
                 }
+
+                workbook.Close();
+                application.Quit();
             }
             catch (Exception)
             {
@@ -30,16 +37,24 @@ namespace Suyeong.Lib.Doc.InteropExcel
             }
             finally
             {
+                if (worksheets != null)
+                {
+                    Marshal.ReleaseComObject(worksheets);
+                }
+
                 if (workbook != null)
                 {
-                    workbook.Close(SaveChanges: false);
-                    ReleaseComObject(workbook);
+                    Marshal.ReleaseComObject(workbook);
+                }
+
+                if (workbooks != null)
+                {
+                    Marshal.ReleaseComObject(workbooks);
                 }
 
                 if (application != null)
                 {
-                    application.Quit();
-                    ReleaseComObject(application);
+                    Marshal.ReleaseComObject(application);
                 }
             }
 
@@ -51,16 +66,23 @@ namespace Suyeong.Lib.Doc.InteropExcel
             DataTable table = new DataTable();
 
             Excel.Application application = null;
+            Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
+            Excel.Worksheets worksheets = null;
             Excel.Worksheet worksheet = null;
 
             try
             {
                 application = new Excel.Application();
-                workbook = application.Workbooks.Open(Filename: filePath, ReadOnly: true);
-                worksheet = workbook.Worksheets[sheetName];
+                workbooks = application.Workbooks;
+                workbook = workbooks.Open(Filename: filePath, ReadOnly: true);
+                worksheets = workbook.Worksheets as Excel.Worksheets;
+                worksheet = worksheets[sheetName];
 
                 table = GetWorksheet(workSheet: worksheet);
+
+                workbook.Close();
+                application.Quit();
             }
             catch (Exception)
             {
@@ -70,19 +92,27 @@ namespace Suyeong.Lib.Doc.InteropExcel
             {
                 if (worksheet != null)
                 {
-                    ReleaseComObject(worksheet);
+                    Marshal.ReleaseComObject(worksheet);
+                }
+
+                if (worksheets != null)
+                {
+                    Marshal.ReleaseComObject(worksheets);
                 }
 
                 if (workbook != null)
                 {
-                    workbook.Close(SaveChanges: false);
-                    ReleaseComObject(workbook);
+                    Marshal.ReleaseComObject(workbook);
+                }
+
+                if (workbooks != null)
+                {
+                    Marshal.ReleaseComObject(workbooks);
                 }
 
                 if (application != null)
                 {
-                    application.Quit();
-                    ReleaseComObject(application);
+                    Marshal.ReleaseComObject(application);
                 }
             }
 
@@ -94,21 +124,28 @@ namespace Suyeong.Lib.Doc.InteropExcel
             bool result = false;
 
             Excel.Application application = null;
+            Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
+            Excel.Worksheets worksheets = null;
             Excel.Worksheet worksheet = null;
 
             try
             {
                 application = new Excel.Application();
-                workbook = application.Workbooks.Add();
+                workbooks = application.Workbooks;
+                workbook = workbooks.Add();
+                worksheets = workbook.Worksheets as Excel.Worksheets;
 
                 for (int i = 0; i < dataSet.Tables.Count; i++)
                 {
-                    worksheet = workbook.Worksheets.Add();
+                    worksheet = worksheets.Add();
                     result = SetWorksheet(worksheet: worksheet, table: dataSet.Tables[i]);
                 }
 
                 workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
+
+                workbook.Close();
+                application.Quit();
             }
             catch (Exception)
             {
@@ -118,19 +155,27 @@ namespace Suyeong.Lib.Doc.InteropExcel
             {
                 if (worksheet != null)
                 {
-                    ReleaseComObject(worksheet);
+                    Marshal.ReleaseComObject(worksheet);
+                }
+
+                if (worksheets != null)
+                {
+                    Marshal.ReleaseComObject(worksheets);
                 }
 
                 if (workbook != null)
                 {
-                    workbook.Close(SaveChanges: false);
-                    ReleaseComObject(workbook);
+                    Marshal.ReleaseComObject(workbook);
+                }
+
+                if (workbooks != null)
+                {
+                    Marshal.ReleaseComObject(workbooks);
                 }
 
                 if (application != null)
                 {
-                    application.Quit();
-                    ReleaseComObject(application);
+                    Marshal.ReleaseComObject(application);
                 }
             }
 
@@ -142,18 +187,25 @@ namespace Suyeong.Lib.Doc.InteropExcel
             bool result = false;
 
             Excel.Application application = null;
+            Excel.Workbooks workbooks = null;
             Excel.Workbook workbook = null;
+            Excel.Worksheets worksheets = null;
             Excel.Worksheet worksheet = null;
 
             try
             {
                 application = new Excel.Application();
-                workbook = application.Workbooks.Add();
-                worksheet = workbook.Worksheets.Add();
+                workbooks = application.Workbooks;
+                workbook = workbooks.Add();
+                worksheets = workbook.Worksheets as Excel.Worksheets;
+                worksheet = worksheets.Add();
 
                 result = SetWorksheet(worksheet: worksheet, table: table, hasTitle: hasTitle);
 
                 workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
+
+                workbook.Close();
+                application.Quit();
             }
             catch (Exception)
             {
@@ -163,19 +215,27 @@ namespace Suyeong.Lib.Doc.InteropExcel
             {
                 if (worksheet != null)
                 {
-                    ReleaseComObject(worksheet);
+                    Marshal.ReleaseComObject(worksheet);
+                }
+
+                if (worksheets != null)
+                {
+                    Marshal.ReleaseComObject(worksheets);
                 }
 
                 if (workbook != null)
                 {
-                    workbook.Close(SaveChanges: false);
-                    ReleaseComObject(workbook);
+                    Marshal.ReleaseComObject(workbook);
+                }
+
+                if (workbooks != null)
+                {
+                    Marshal.ReleaseComObject(workbooks);
                 }
 
                 if (application != null)
                 {
-                    application.Quit();
-                    ReleaseComObject(application);
+                    Marshal.ReleaseComObject(application);
                 }
             }
 
@@ -265,27 +325,6 @@ namespace Suyeong.Lib.Doc.InteropExcel
             }
 
             return data;
-        }
-
-        static void ReleaseComObject(object obj)
-        {
-            try
-            {
-                if (obj != null)
-                {
-                    Marshal.ReleaseComObject(obj);
-                    obj = null;
-                }
-            }
-            catch (Exception)
-            {
-                obj = null;
-                throw;
-            }
-            finally
-            {
-                GC.Collect();
-            }
         }
     }
 }
