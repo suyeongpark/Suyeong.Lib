@@ -175,26 +175,29 @@ namespace Suyeong.Lib.Doc.ExcelInterop
         {
             DataTable table = new DataTable(tableName);
 
-            string[] values;
-            object[,] value = range.Value;
-            int rowCount = value.GetLength(0);
-            int columnCount = value.GetLength(1);
-
-            for (int i = 0; i < columnCount; i++)
+            if (range.Value != null)
             {
-                table.Columns.Add(new DataColumn() { AllowDBNull = true });
-            }
+                object[,] value = range.Value;
+                string[] values;
+                int rowCount = value.GetLength(0);
+                int columnCount = value.GetLength(1);
 
-            for (int row = 0; row < rowCount; row++)
-            {
-                values = new string[columnCount];
-
-                for (int column = 0; column < columnCount; column++)
+                for (int i = 0; i < columnCount; i++)
                 {
-                    values[column] = value[row + 1, column + 1]?.ToString();
+                    table.Columns.Add(new DataColumn() { AllowDBNull = true });
                 }
 
-                table.Rows.Add(values);
+                for (int row = 0; row < rowCount; row++)
+                {
+                    values = new string[columnCount];
+
+                    for (int column = 0; column < columnCount; column++)
+                    {
+                        values[column] = value[row + 1, column + 1]?.ToString();
+                    }
+
+                    table.Rows.Add(values);
+                }
             }
 
             return table;
