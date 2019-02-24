@@ -3,9 +3,9 @@ using System.Data;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
 
-namespace Suyeong.Lib.Doc.InteropExcel
+namespace Suyeong.Lib.Doc.ExcelInterop
 {
-    public static class DocExcel
+    public static class ExcelInterop
     {
         public static DataSet LoadByDataSet(string filePath)
         {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Suyeong.Lib.Doc.InteropPowerPoint
+namespace Suyeong.Lib.Doc.PowerPointInterop
 {
-    public class Class1
+    public static class PowerPointInterop
     {
     }
 }

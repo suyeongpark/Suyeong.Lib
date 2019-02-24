@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Microsoft.Office.Interop.Word;
+using Word = Microsoft.Office.Interop.Word;
 
-namespace Suyeong.Lib.Doc.InteropWord
+namespace Suyeong.Lib.Doc.WordInterop
 {
-    public class DocWord
+    public static class WordInterop
     {
         public static bool ExportToPdf(string wordPath, string pdfPath)
         {
             bool result = false;
 
-            Application application = null;
-            Document document = null;
+            Word.Application application = null;
+            Word.Document document = null;
 
             try
             {
-                application = new Application();
+                application = new Word.Application();
                 document = application.Documents.Open(FileName: wordPath, ReadOnly: true);
-                document.ExportAsFixedFormat(OutputFileName: pdfPath, ExportFormat: WdExportFormat.wdExportFormatPDF, DocStructureTags: false);
+                document.ExportAsFixedFormat(OutputFileName: pdfPath, ExportFormat: Word.WdExportFormat.wdExportFormatPDF, DocStructureTags: false);
 
                 document.Close(SaveChanges: false);
                 application.Quit(SaveChanges: 0);

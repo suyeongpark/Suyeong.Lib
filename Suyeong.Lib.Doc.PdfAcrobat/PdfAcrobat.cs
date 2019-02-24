@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Suyeong.Lib.Doc.Pdf
+namespace Suyeong.Lib.Doc.PdfAcrobat
 {
-    public class Class1
+    public static class PdfAcrobat
     {
     }
 }
