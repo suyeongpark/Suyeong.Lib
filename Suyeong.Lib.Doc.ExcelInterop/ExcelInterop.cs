@@ -28,7 +28,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
                     dataSet.Tables.Add(GetWorksheet(tableName: worksheet.Name, range: range));
                 }
 
-                workbook.Close();
+                workbook.Close(SaveChanges: false);
                 application.Quit();
             }
             catch (Exception)
@@ -63,7 +63,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
 
                 table = GetWorksheet(tableName: worksheet.Name, range: range);
 
-                workbook.Close();
+                workbook.Close(SaveChanges: false);
                 application.Quit();
             }
             catch (Exception)
@@ -113,7 +113,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
 
                 workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
 
-                workbook.Close();
+                workbook.Close(SaveChanges: false);
                 application.Quit();
             }
             catch (Exception)
@@ -154,7 +154,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
 
                 workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
 
-                workbook.Close();
+                workbook.Close(SaveChanges: false);
                 application.Quit();
 
                 result = true;
