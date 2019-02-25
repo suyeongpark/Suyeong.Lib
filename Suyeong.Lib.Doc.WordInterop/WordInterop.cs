@@ -30,15 +30,31 @@ namespace Suyeong.Lib.Doc.WordInterop
             }
             finally
             {
-                if (document != null)
+                ReleaseComObjects(new object[] { document, application, });
+            }
+
+            return result;
+        }
+
+        static bool ReleaseComObjects(object[] objects)
+        {
+            bool result = false;
+
+            try
+            {
+                foreach (object obj in objects)
                 {
-                    Marshal.ReleaseComObject(document);
+                    if (obj != null)
+                    {
+                        Marshal.ReleaseComObject(obj);
+                    }
                 }
 
-                if (application != null)
-                {
-                    Marshal.ReleaseComObject(application);
-                }
+                result = true;
+            }
+            catch (Exception)
+            {
+                throw;
             }
 
             return result;

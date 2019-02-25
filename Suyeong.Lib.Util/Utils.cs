@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
@@ -12,6 +13,30 @@ namespace Suyeong.Lib.Util
 {
     public static class Utils
     {
+        public static bool ReleaseComObjects(object[] objects)
+        {
+            bool result = false;
+
+            try
+            {
+                foreach (object obj in objects)
+                {
+                    if (obj != null)
+                    {
+                        Marshal.ReleaseComObject(obj);
+                    }
+                }
+
+                result = true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
         public static string GetOrdinalIndicator(int num)
         {
             int rest = num % 100;
