@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.Acrobat">
+      <HintPath>..\dlls\InteropAcrobat\Interop.Acrobat.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,6 +47,8 @@
   <ItemGroup>
     <Compile Include="PdfAcrobat.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Type\PdfText.cs" />
+    <Compile Include="Type\PdfPage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
