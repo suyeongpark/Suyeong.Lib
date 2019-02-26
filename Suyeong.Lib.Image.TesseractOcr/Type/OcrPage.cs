@@ -30,4 +30,12 @@ namespace Suyeong.Lib.Image.TesseractOcr
             this.AddRange(ocrPages);
         }
     }
+
+    public class OcrPageDic : Dictionary<int, OcrPage>
+    {
+        public OcrPageDic()
+        {
+
+        }
+    }
 }

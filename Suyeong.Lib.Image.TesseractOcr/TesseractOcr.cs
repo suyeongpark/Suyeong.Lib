@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using Tesseract;
@@ -11,7 +10,34 @@ namespace Suyeong.Lib.Image.TesseractOcr
         const float LIMIT_ACCURACY = 0.5f;
         const string TESSERACT_LANGUAGE = "eng";
 
-        public static OcrPages GetOcrPages(string dataPath, IEnumerable<Bitmap> bitmaps)
+        public static OcrPageDic GetOcrPageDic(OcrInputs ocrInputs, string dataPath)
+        {
+            OcrPageDic ocrPageDic = new OcrPageDic();
+
+            if (Directory.Exists(dataPath))
+            {
+                using (TesseractEngine engine = new TesseractEngine(datapath: dataPath, language: TESSERACT_LANGUAGE, engineMode: EngineMode.TesseractAndCube))
+                {
+                    engine.DefaultPageSegMode = PageSegMode.SingleBlock;
+
+                    OcrTexts ocrTexts;
+
+                    foreach (OcrInput ocrInput in ocrInputs)
+                    {
+                        ocrTexts = ExtractOcrTexts(imagePath: ocrInput.ImagePath, engine: engine);
+                        ocrPageDic.Add(ocrInput.Index, new OcrPage(index: ocrInput.Index, width: ocrInput.Width, height: ocrInput.Height, ocrTexts: ocrTexts));
+                    }
+                }
+            }
+            else
+            {
+                throw new NullReferenceException();
+            }
+
+            return ocrPageDic;
+        }
+
+        public static OcrPages GetOcrPages(OcrInputs ocrInputs, string dataPath)
         {
             OcrPages ocrPages = new OcrPages();
 
@@ -21,11 +47,12 @@ namespace Suyeong.Lib.Image.TesseractOcr
                 {
                     engine.DefaultPageSegMode = PageSegMode.SingleBlock;
 
-                    int index = 0;
+                    OcrTexts ocrTexts;
 
-                    foreach (Bitmap bitmap in bitmaps)
+                    foreach (OcrInput ocrInput in ocrInputs)
                     {
-                        ocrPages.Add(new OcrPage(index: index++, width: bitmap.Width, height: bitmap.Height, ocrTexts: ExtractOcrPage(bitmap: bitmap, engine: engine)));
+                        ocrTexts = ExtractOcrTexts(imagePath: ocrInput.ImagePath, engine: engine);
+                        ocrPages.Add(new OcrPage(index: ocrInput.Index, width: ocrInput.Width, height: ocrInput.Height, ocrTexts: ocrTexts));
                     }
                 }
             }
@@ -37,7 +64,7 @@ namespace Suyeong.Lib.Image.TesseractOcr
             return ocrPages;
         }
 
-        public static OcrPage GetOcrPage(string dataPath, Bitmap bitmap, int pageIndex = 0)
+        public static OcrPage GetOcrPage(OcrInput ocrInput, string dataPath)
         {
             OcrPage ocrPage = new OcrPage();
 
@@ -47,7 +74,8 @@ namespace Suyeong.Lib.Image.TesseractOcr
                 {
                     engine.DefaultPageSegMode = PageSegMode.SingleBlock;
 
-                    ocrPage = new OcrPage(index: pageIndex, width: bitmap.Width, height: bitmap.Height, ocrTexts: ExtractOcrPage(bitmap: bitmap, engine: engine));
+                    OcrTexts ocrTexts = ExtractOcrTexts(imagePath: ocrInput.ImagePath, engine: engine);
+                    ocrPage = new OcrPage(index: ocrInput.Index, width: ocrInput.Width, height: ocrInput.Height, ocrTexts: ocrTexts);
                 }
             }
             else
@@ -58,13 +86,14 @@ namespace Suyeong.Lib.Image.TesseractOcr
             return ocrPage;
         }
 
-        static OcrTexts ExtractOcrPage(Bitmap bitmap, TesseractEngine engine)
+        static OcrTexts ExtractOcrTexts(string imagePath, TesseractEngine engine)
         {
             OcrTexts ocrTexts = new OcrTexts();
 
             int index = 0;
             string text;
 
+            using (Bitmap bitmap = new Bitmap(imagePath))
             using (Page page = engine.Process(image: bitmap))
             using (ResultIterator iterator = page.GetIterator())
             {

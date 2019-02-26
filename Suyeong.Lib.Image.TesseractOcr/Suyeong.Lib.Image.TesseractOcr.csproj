@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="TesseractOcr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Type\OcrInput.cs" />
     <Compile Include="Type\OcrText.cs" />
     <Compile Include="Type\OcrPage.cs" />
   </ItemGroup>
