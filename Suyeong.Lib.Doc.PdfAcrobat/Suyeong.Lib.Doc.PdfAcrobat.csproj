@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.Acrobat">
-      <HintPath>..\dlls\InteropAcrobat\Interop.Acrobat.dll</HintPath>
+      <HintPath>..\references\InteropAcrobat\Interop.Acrobat.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
