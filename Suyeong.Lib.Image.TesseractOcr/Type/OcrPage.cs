@@ -9,13 +9,13 @@ namespace Suyeong.Lib.Image.TesseractOcr
             this.Index = index;
             this.Width = width;
             this.Height = height;
-            this.PdfTexts = ocrTexts;
+            this.OcrTexts = ocrTexts;
         }
 
         public int Index { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
-        public OcrTexts PdfTexts { get; private set; }
+        public OcrTexts OcrTexts { get; private set; }
     }
 
     public class OcrPages : List<OcrPage>
