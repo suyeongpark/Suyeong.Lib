@@ -76,7 +76,8 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             object jsNumWords, jsWord;
             object[] positionArr;
             dynamic jsQuads;
-            int wordsCount, leftX, rightX, topY, bottomY;
+            int wordsCount;
+            double leftX, rightX, topY, bottomY;
             string text;
 
             jsNumWords = jso.GetType().InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod, null, jso, new object[] { pageIndex }, null);
@@ -92,12 +93,13 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                     jsQuads = jso.GetType().InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod, null, jso, new object[] { pageIndex, i }, null);
                     positionArr = jsQuads[0];
 
-                    leftX = int.Parse(positionArr[0].ToString());
-                    rightX = int.Parse(positionArr[2].ToString());
-                    topY = int.Parse(positionArr[1].ToString());
-                    bottomY = int.Parse(positionArr[5].ToString());
+                    leftX = double.Parse(positionArr[0].ToString());
+                    topY = double.Parse(positionArr[1].ToString());
+                    rightX = double.Parse(positionArr[2].ToString());
+                    bottomY = double.Parse(positionArr[5].ToString());
 
-                    pdfTexts.Add(new PdfText(index: pdfTexts.Count, x: leftX, y: topY, width: rightX - leftX, height: bottomY - topY, text: text));
+                    // pdf는 좌하단이 0,0 이라서 x, y는 좌측, 하단을 기준으로 잡는다.
+                    pdfTexts.Add(new PdfText(index: pdfTexts.Count, x: leftX, y: bottomY, width: rightX - leftX, height: topY - bottomY, text: text));
                 }
             }
 
