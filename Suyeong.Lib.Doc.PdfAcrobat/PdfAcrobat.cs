@@ -46,6 +46,45 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             return pages;
         }
 
+        /// <summary>
+        /// PDF 페이지 수가 많을 때 COM 오브젝트가 뻗는다. 강제로 돌리기 위한 메서드
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static PdfPages GetRawTextForce(string filePath)
+        {
+            PdfPages pages = new PdfPages();
+
+            AcroPDDoc acroPdDoc = null;
+
+            try
+            {
+                acroPdDoc = Activator.CreateInstance(Type.GetTypeFromProgID(PD_DOC_PROG_ID)) as AcroPDDoc;
+
+                if (acroPdDoc.Open(filePath))
+                {
+                    int pageCount = acroPdDoc.GetNumPages();
+
+                    if (pageCount > 0)
+                    {
+                        pages = GetPdfPagesForce(pageCount: pageCount, filePath: filePath, acroPdDoc: acroPdDoc);
+                    }
+                }
+
+                acroPdDoc.Close();
+            }
+            catch (Exception)
+            {
+                // 강제로 할 때는 예외를 throw 하지 않는다.
+            }
+            finally
+            {
+                ReleaseComObjects(new object[] { acroPdDoc, });
+            }
+
+            return pages;
+        }
+
         static PdfPages GetPdfPages(int pageCount, AcroPDDoc acroPdDoc)
         {
             PdfPages pdfPages = new PdfPages();
@@ -62,6 +101,46 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                 height = acroPdPage.GetSize().y;
                 rotate = acroPdPage.GetRotate();
                 pdfTexts = GetPdfTexts(pageIndex: i, jso: jso);
+
+                pdfPages.Add(new PdfPage(index: i, width: width, height: height, rotate: rotate, pdfTexts: pdfTexts));
+            }
+
+            return pdfPages;
+        }
+
+        static PdfPages GetPdfPagesForce(int pageCount, string filePath, AcroPDDoc acroPdDoc)
+        {
+            PdfPages pdfPages = new PdfPages();
+
+            AcroPDPage acroPdPage;
+            int width, height, rotate;
+            PdfTexts pdfTexts;
+            object jso = acroPdDoc.GetJSObject();
+
+            for (int i = 0; i < pageCount; i++)
+            {
+                acroPdPage = acroPdDoc.AcquirePage(i);
+                width = acroPdPage.GetSize().x;
+                height = acroPdPage.GetSize().y;
+                rotate = acroPdPage.GetRotate();
+
+                try
+                {
+                    pdfTexts = GetPdfTexts(pageIndex: i, jso: jso);
+                }
+                catch (Exception)
+                {
+                    ReleaseComObjects(new object[] { acroPdDoc, });
+
+                    // 페이지가 많으면 중간에 뻗는다. 다시 살리기 위한 코드.
+                    acroPdDoc = new AcroPDDoc();
+                    acroPdDoc = Activator.CreateInstance(Type.GetTypeFromProgID(PD_DOC_PROG_ID)) as AcroPDDoc;
+                    acroPdDoc.Open(filePath);
+                    jso = acroPdDoc.GetJSObject();
+
+                    // 살린 후에 다시 돌린다.
+                    pdfTexts = GetPdfTexts(pageIndex: i, jso: jso);
+                }
 
                 pdfPages.Add(new PdfPage(index: i, width: width, height: height, rotate: rotate, pdfTexts: pdfTexts));
             }
