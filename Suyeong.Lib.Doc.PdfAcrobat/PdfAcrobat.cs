@@ -12,153 +12,150 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
         const string JSO_GET_PAGE_NTH_WORDS = "getPageNthWord";
         const string JSO_GET_PAGE_NTH_WORD_QUADS = "getPageNthWordQuads";
 
-        public static class AcrobatTextParser
+        public static PdfPages GetRawText(string filePath)
         {
-            public static PdfPages GetRawText(string filePath)
+            PdfPages pages = new PdfPages();
+
+            AcroPDDoc acroPdDoc = null;
+
+            try
             {
-                PdfPages pages = new PdfPages();
+                acroPdDoc = Activator.CreateInstance(Type.GetTypeFromProgID(PD_DOC_PROG_ID)) as AcroPDDoc;
 
-                AcroPDDoc acroPdDoc = null;
-
-                try
+                if (acroPdDoc.Open(filePath))
                 {
-                    acroPdDoc = Activator.CreateInstance(Type.GetTypeFromProgID(PD_DOC_PROG_ID)) as AcroPDDoc;
+                    int pageCount = acroPdDoc.GetNumPages();
 
-                    if (acroPdDoc.Open(filePath))
+                    if (pageCount > 0)
                     {
-                        int pageCount = acroPdDoc.GetNumPages();
-
-                        if (pageCount > 0)
-                        {
-                            pages = GetPdfPages(pageCount: pageCount, acroPdDoc: acroPdDoc);
-                        }
+                        pages = GetPdfPages(pageCount: pageCount, acroPdDoc: acroPdDoc);
                     }
-
-                    acroPdDoc.Close();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                finally
-                {
-                    ReleaseComObjects(new object[] { acroPdDoc, });
                 }
 
-                return pages;
+                acroPdDoc.Close();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                ReleaseComObjects(new object[] { acroPdDoc, });
             }
 
-            static PdfPages GetPdfPages(int pageCount, AcroPDDoc acroPdDoc)
+            return pages;
+        }
+
+        static PdfPages GetPdfPages(int pageCount, AcroPDDoc acroPdDoc)
+        {
+            PdfPages pdfPages = new PdfPages();
+
+            AcroPDPage acroPdPage;
+            int width, height, rotate;
+            PdfTexts pdfTexts;
+            object jso = acroPdDoc.GetJSObject();
+
+            for (int i = 0; i < pageCount; i++)
             {
-                PdfPages pdfPages = new PdfPages();
+                acroPdPage = acroPdDoc.AcquirePage(i);
+                width = acroPdPage.GetSize().x;
+                height = acroPdPage.GetSize().y;
+                rotate = acroPdPage.GetRotate();
+                pdfTexts = GetPdfTexts(pageIndex: i, jso: jso);
 
-                AcroPDPage acroPdPage;
-                int width, height, rotate;
-                PdfTexts pdfTexts;
-                object jso = acroPdDoc.GetJSObject();
-
-                for (int i = 0; i < pageCount; i++)
-                {
-                    acroPdPage = acroPdDoc.AcquirePage(i);
-                    width = acroPdPage.GetSize().x;
-                    height = acroPdPage.GetSize().y;
-                    rotate = acroPdPage.GetRotate();
-                    pdfTexts = GetPdfTexts(pageIndex: i, jso: jso);
-
-                    pdfPages.Add(new PdfPage(index: i, width: width, height: height, rotate: rotate, pdfTexts: pdfTexts));
-                }
-
-                return pdfPages;
+                pdfPages.Add(new PdfPage(index: i, width: width, height: height, rotate: rotate, pdfTexts: pdfTexts));
             }
 
-            static PdfTexts GetPdfTexts(int pageIndex, object jso)
+            return pdfPages;
+        }
+
+        static PdfTexts GetPdfTexts(int pageIndex, object jso)
+        {
+            PdfTexts pdfTexts = new PdfTexts();
+
+            object jsNumWords, jsWord;
+            object[] positionArr;
+            dynamic jsQuads;
+            int wordsCount, leftX, rightX, topY, bottomY;
+            string text;
+
+            jsNumWords = jso.GetType().InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod, null, jso, new object[] { pageIndex }, null);
+            wordsCount = int.Parse(jsNumWords.ToString());
+
+            for (int i = 0; i < wordsCount; i++)
             {
-                PdfTexts pdfTexts = new PdfTexts();
+                jsWord = jso.GetType().InvokeMember(JSO_GET_PAGE_NTH_WORDS, BindingFlags.InvokeMethod, null, jso, new object[] { pageIndex, i, false }, null);
+                text = jsWord.ToString().Trim();
 
-                object jsNumWords, jsWord;
-                object[] positionArr;
-                dynamic jsQuads;
-                int wordsCount, leftX, rightX, topY, bottomY;
-                string text;
-
-                jsNumWords = jso.GetType().InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod, null, jso, new object[] { pageIndex }, null);
-                wordsCount = int.Parse(jsNumWords.ToString());
-
-                for (int i = 0; i < wordsCount; i++)
+                if (!string.IsNullOrWhiteSpace(text))
                 {
-                    jsWord = jso.GetType().InvokeMember(JSO_GET_PAGE_NTH_WORDS, BindingFlags.InvokeMethod, null, jso, new object[] { pageIndex, i, false }, null);
-                    text = jsWord.ToString().Trim();
+                    jsQuads = jso.GetType().InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod, null, jso, new object[] { pageIndex, i }, null);
+                    positionArr = jsQuads[0];
 
-                    if (!string.IsNullOrWhiteSpace(text))
-                    {
-                        jsQuads = jso.GetType().InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod, null, jso, new object[] { pageIndex, i }, null);
-                        positionArr = jsQuads[0];
+                    leftX = int.Parse(positionArr[0].ToString());
+                    rightX = int.Parse(positionArr[2].ToString());
+                    topY = int.Parse(positionArr[1].ToString());
+                    bottomY = int.Parse(positionArr[5].ToString());
 
-                        leftX = int.Parse(positionArr[0].ToString());
-                        rightX = int.Parse(positionArr[2].ToString());
-                        topY = int.Parse(positionArr[1].ToString());
-                        bottomY = int.Parse(positionArr[5].ToString());
-
-                        pdfTexts.Add(new PdfText(index: pdfTexts.Count, x: leftX, y: topY, width: rightX - leftX, height: bottomY - topY, text: text));
-                    }
+                    pdfTexts.Add(new PdfText(index: pdfTexts.Count, x: leftX, y: topY, width: rightX - leftX, height: bottomY - topY, text: text));
                 }
-
-                return pdfTexts.Count > 0 ? UpdateBraket(oldTexts: pdfTexts) : pdfTexts;
             }
 
-            // 시작 괄호 '(' 는 다음 글자와 분리되어 나오기 때문에 합치기 위한 로직
-            static PdfTexts UpdateBraket(PdfTexts oldTexts)
+            return pdfTexts.Count > 0 ? UpdateBraket(oldTexts: pdfTexts) : pdfTexts;
+        }
+
+        // 시작 괄호 '(' 는 다음 글자와 분리되어 나오기 때문에 합치기 위한 로직
+        static PdfTexts UpdateBraket(PdfTexts oldTexts)
+        {
+            PdfTexts newTexts = new PdfTexts();
+            PdfText last, current;
+            bool breketLeft = false;
+
+            for (int i = 1; i < oldTexts.Count; i++)
             {
-                PdfTexts newTexts = new PdfTexts();
-                PdfText last, current;
-                bool breketLeft = false;
+                last = oldTexts[i - 1];
+                current = oldTexts[i];
 
-                for (int i = 1; i < oldTexts.Count; i++)
+                if (breketLeft)
                 {
-                    last = oldTexts[i - 1];
-                    current = oldTexts[i];
-
-                    if (breketLeft)
-                    {
-                        newTexts.Add(last + current);
-                        breketLeft = false;
-                    }
-                    else if (char.Equals(current.Text[current.Text.Length - 1], '('))
-                    {
-                        breketLeft = true;
-                    }
-                    else
-                    {
-                        newTexts.Add(current);
-                    }
+                    newTexts.Add(last + current);
+                    breketLeft = false;
                 }
-
-                return newTexts;
+                else if (char.Equals(current.Text[current.Text.Length - 1], '('))
+                {
+                    breketLeft = true;
+                }
+                else
+                {
+                    newTexts.Add(current);
+                }
             }
 
-            static bool ReleaseComObjects(object[] objects)
+            return newTexts;
+        }
+
+        static bool ReleaseComObjects(object[] objects)
+        {
+            bool result = false;
+
+            try
             {
-                bool result = false;
-
-                try
+                foreach (object obj in objects)
                 {
-                    foreach (object obj in objects)
+                    if (obj != null)
                     {
-                        if (obj != null)
-                        {
-                            Marshal.ReleaseComObject(obj);
-                        }
+                        Marshal.ReleaseComObject(obj);
                     }
-
-                    result = true;
-                }
-                catch (Exception)
-                {
-                    throw;
                 }
 
-                return result;
+                result = true;
             }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
         }
     }
 }
