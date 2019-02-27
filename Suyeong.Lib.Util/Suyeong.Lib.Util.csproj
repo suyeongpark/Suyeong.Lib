@@ -41,13 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TypeConvert.cs" />
-    <Compile Include="Crypt.cs" />
-    <Compile Include="Deflates.cs" />
+    <Compile Include="ConvertUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextUtil.cs" />
     <Compile Include="MathUtil.cs" />
     <Compile Include="DateUtil.cs" />
+    <Compile Include="StreamUtil.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

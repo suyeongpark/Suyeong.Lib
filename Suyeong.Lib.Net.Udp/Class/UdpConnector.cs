@@ -60,7 +60,7 @@ namespace Suyeong.Lib.Net.Udp
 
                     if (source != null)
                     {
-                        decompress = await Deflates.DecompressAsync(data: source);
+                        decompress = await DeflateUtil.DecompressAsync(data: source);
                         result = Utils.DeserializeObject(decompress) as IUdpPacket;
 
                         // callbackDic에 있었으면 클라이언트가 요청을 보낸 것에 대한 응답
@@ -99,7 +99,7 @@ namespace Suyeong.Lib.Net.Udp
             try
             {
                 byte[] source = Utils.SerializeObject(packet);
-                byte[] compress = await Deflates.CompressAsync(data: source);
+                byte[] compress = await DeflateUtil.CompressAsync(data: source);
 
                 await UdpStream.SendAsync(client: this.client, data: compress);
             }

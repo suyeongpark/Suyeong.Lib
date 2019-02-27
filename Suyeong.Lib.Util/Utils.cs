@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Suyeong.Lib.Util
 {
@@ -31,29 +30,6 @@ namespace Suyeong.Lib.Util
             }
 
             return result;
-        }
-
-        public static byte[] SerializeObject(object data)
-        {
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                BinaryFormatter binaryFormatter = new BinaryFormatter();
-                binaryFormatter.Serialize(memoryStream, data);
-
-                return memoryStream.ToArray();
-            }
-        }
-
-        public static object DeserializeObject(byte[] data)
-        {
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                memoryStream.Write(data, 0, data.Length);
-                memoryStream.Position = 0;
-
-                BinaryFormatter binaryFormatter = new BinaryFormatter();
-                return binaryFormatter.Deserialize(memoryStream);
-            }
         }
 
         public static K GetValueFromDictionary<T, K>(Dictionary<T, K> dic, T key)

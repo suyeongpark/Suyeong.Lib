@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Suyeong.Lib.Util
 {
-    public static class TypeConvert
+    public static class ConvertUtil
     {
         public static double ExponentialStringToDouble(string value)
         {
@@ -93,26 +93,6 @@ namespace Suyeong.Lib.Util
             }
 
             return dateTime;
-        }
-
-        public static string ToASCII(string text)
-        {
-            return Encoding.ASCII.GetString(Encoding.Default.GetBytes(text));
-        }
-
-        public static string ToDefaultEncoding(string text)
-        {
-            return Encoding.Default.GetString(Encoding.Default.GetBytes(text));
-        }
-
-        public static string ToUtf8(string text)
-        {
-            return Encoding.UTF8.GetString(Encoding.Default.GetBytes(text));
-        }
-
-        public static string ToUnicode(string text)
-        {
-            return Encoding.Unicode.GetString(Encoding.Default.GetBytes(text));
         }
 
         public static DataTable CsvToDataTable(string filePath, bool hasHeader = true, Encoding encoding = default(Encoding))

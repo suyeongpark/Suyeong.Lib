@@ -51,7 +51,7 @@ namespace Suyeong.Lib.Net.Udp
 
                     if (source != null)
                     {
-                        decompress = await Deflates.DecompressAsync(data: source);
+                        decompress = await DeflateUtil.DecompressAsync(data: source);
                         request = Utils.DeserializeObject(decompress) as IUdpPacket;
 
                         OnRequest(request, this);
@@ -70,7 +70,7 @@ namespace Suyeong.Lib.Net.Udp
             try
             {
                 byte[] source = Utils.SerializeObject(packet);
-                byte[] compress = await Deflates.CompressAsync(data: source);
+                byte[] compress = await DeflateUtil.CompressAsync(data: source);
 
                 await UdpStream.SendAsync(client: this.client, data: compress);
             }

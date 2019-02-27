@@ -5,6 +5,26 @@ namespace Suyeong.Lib.Util
 {
     public static class TextUtil
     {
+        public static string ToASCII(string text)
+        {
+            return Encoding.ASCII.GetString(Encoding.Default.GetBytes(text));
+        }
+
+        public static string ToDefaultEncoding(string text)
+        {
+            return Encoding.Default.GetString(Encoding.Default.GetBytes(text));
+        }
+
+        public static string ToUtf8(string text)
+        {
+            return Encoding.UTF8.GetString(Encoding.Default.GetBytes(text));
+        }
+
+        public static string ToUnicode(string text)
+        {
+            return Encoding.Unicode.GetString(Encoding.Default.GetBytes(text));
+        }
+
         public static string GetOrdinalIndicator(int num)
         {
             int rest = num % 100;

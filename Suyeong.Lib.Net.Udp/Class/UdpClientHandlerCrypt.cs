@@ -55,7 +55,7 @@ namespace Suyeong.Lib.Net.Udp
                     if (source != null)
                     {
                         // 암호해제에는 압축해제도 포함되어 있다.
-                        decrypt = await Crypts.DecryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);
+                        decrypt = await CryptUtil.DecryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);
                         request = Utils.DeserializeObject(decrypt) as IUdpPacket;
 
                         OnRequest(request, this);
@@ -75,7 +75,7 @@ namespace Suyeong.Lib.Net.Udp
             {
                 byte[] source = Utils.SerializeObject(packet);
                 // 암호화에는 압축도 포함되어 있다.
-                byte[] encrypt = await Crypts.EncryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);
+                byte[] encrypt = await CryptUtil.EncryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);
 
                 await UdpStream.SendAsync(client: this.client, data: encrypt);
             }
