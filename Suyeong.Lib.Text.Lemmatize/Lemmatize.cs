@@ -4,16 +4,16 @@ namespace Suyeong.Lib.Text.Lemmatize
 {
     public class Lemmatize
     {
-        ILemmatizer lmtz;
+        ILemmatizer lemmatizer;
 
         public Lemmatize(LanguagePrebuilt language = LanguagePrebuilt.English)
         {
-            this.lmtz = new LemmatizerPrebuiltCompact(language);
+            this.lemmatizer = new LemmatizerPrebuiltCompact(language);
         }
 
         public string GetLemmaWord(string lowerWord)
         {
-            return this.lmtz.Lemmatize(lowerWord);
+            return this.lemmatizer.Lemmatize(lowerWord);
         }
     }
 }
