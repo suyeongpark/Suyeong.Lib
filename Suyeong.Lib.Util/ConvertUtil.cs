@@ -105,22 +105,22 @@ namespace Suyeong.Lib.Util
             return SeparateToDataTable(filePath: filePath, separate: new char[] { '\t' }, hasHeader: hasHeader, encoding: encoding);
         }
 
-        public static string DataSetTotCsv(DataSet dataSet)
+        public static string DataSetToCsv(DataSet dataSet)
         {
             return DataSetToSeparateValue(dataSet: dataSet, separate: ",");
         }
 
-        public static string DataSetTotTsv(DataSet dataSet)
+        public static string DataSetToTsv(DataSet dataSet)
         {
             return DataSetToSeparateValue(dataSet: dataSet, separate: "\t");
         }
 
-        public static string DataTableTotCsv(DataTable dataTable)
+        public static string DataTableToCsv(DataTable dataTable)
         {
             return DataTableToSeparateValue(dataTable: dataTable, separate: ",");
         }
 
-        public static string DataTableTotTsv(DataTable dataTable)
+        public static string DataTableToTsv(DataTable dataTable)
         {
             return DataTableToSeparateValue(dataTable: dataTable, separate: "\t");
         }
@@ -162,7 +162,7 @@ namespace Suyeong.Lib.Util
             return table;
         }
 
-        public static DataTable ListTotDataTableFieldOnly<T>(IEnumerable<T> list)
+        public static DataTable ListToDataTableFieldOnly<T>(IEnumerable<T> list)
         {
             DataTable table = new DataTable();
 
@@ -183,7 +183,7 @@ namespace Suyeong.Lib.Util
             return table;
         }
 
-        public static DataTable ListTotDataTablePropertyOnly<T>(IEnumerable<T> list)
+        public static DataTable ListToDataTablePropertyOnly<T>(IEnumerable<T> list)
         {
             DataTable table = new DataTable();
 
