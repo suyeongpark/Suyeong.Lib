@@ -25,6 +25,26 @@ namespace Suyeong.Lib.Util
             return Encoding.Unicode.GetString(Encoding.Default.GetBytes(text));
         }
 
+        public static string ToPascalCase(string text)
+        {
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                string[] words = text.Split(new char[] { ' ', }, StringSplitOptions.RemoveEmptyEntries);
+                string[] result = new string[words.Length];
+
+                for (int i = 0; i < words.Length; i++)
+                {
+                    result[i] = words[i][0].ToString().ToUpper() + words[i].Substring(1);
+                }
+
+                return string.Join(" ", result);
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
         public static string GetOrdinalIndicator(int num)
         {
             int rest = num % 100;
@@ -60,26 +80,6 @@ namespace Suyeong.Lib.Util
         public static bool IsContainTextByIgnoreCase(string source, string text)
         {
             return source.IndexOf(text, StringComparison.OrdinalIgnoreCase) > -1;
-        }
-
-        public static string ConvertTextToPascalCase(string text)
-        {
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                string[] words = text.Split(new char[] { ' ', }, StringSplitOptions.RemoveEmptyEntries);
-                string[] result = new string[words.Length];
-
-                for (int i = 0; i < words.Length; i++)
-                {
-                    result[i] = words[i][0].ToString().ToUpper() + words[i].Substring(1);
-                }
-
-                return string.Join(" ", result);
-            }
-            else
-            {
-                return string.Empty;
-            }
         }
     }
 }
