@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Suyeong.Lib.Util;
 
 namespace Suyeong.Lib.Net.Tcp
 {
@@ -54,8 +53,8 @@ namespace Suyeong.Lib.Net.Tcp
 
                     if (source != null)
                     {
-                        decompress = await Deflates.DecompressAsync(data: source);
-                        request = Utils.DeserializeObject(decompress) as ITcpPacket;
+                        decompress = await TcpDeflate.DecompressAsync(data: source);
+                        request = TcpSerialize.DeserializeObject(decompress) as ITcpPacket;
 
                         // this는 response를 받기 위한 용도
                         OnRequest(this.guid, request);
@@ -73,8 +72,8 @@ namespace Suyeong.Lib.Net.Tcp
         {
             try
             {
-                byte[] source = Utils.SerializeObject(packet);
-                byte[] compress = await Deflates.CompressAsync(data: source);
+                byte[] source = TcpSerialize.SerializeObject(packet);
+                byte[] compress = await TcpDeflate.CompressAsync(data: source);
 
                 await TcpStream.SendPacketAsync(networkStream: this.networkStream, data: compress);
             }

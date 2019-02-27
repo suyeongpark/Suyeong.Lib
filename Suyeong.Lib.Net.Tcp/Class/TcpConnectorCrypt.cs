@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Suyeong.Lib.Util;
 
 namespace Suyeong.Lib.Net.Tcp
 {
@@ -67,8 +66,8 @@ namespace Suyeong.Lib.Net.Tcp
                     if (source != null)
                     {
                         // 암호해제에는 압축해제도 포함되어 있다.
-                        decrypt = await Crypts.DecryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);
-                        result = Utils.DeserializeObject(decrypt) as ITcpPacket;
+                        decrypt = await TcpCrypt.DecryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);
+                        result = TcpSerialize.DeserializeObject(decrypt) as ITcpPacket;
 
                         // callbackDic에 있었으면 클라이언트가 요청을 보낸 것에 대한 응답
                         if (this.callbackDic.TryGetValue(result.Protocol, out callback))
@@ -105,8 +104,8 @@ namespace Suyeong.Lib.Net.Tcp
 
             try
             {
-                byte[] source = Utils.SerializeObject(packet);
-                byte[] encrypt = await Crypts.EncryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);  // 암호화에는 압축도 포함되어 있다.
+                byte[] source = TcpSerialize.SerializeObject(packet);
+                byte[] encrypt = await TcpCrypt.EncryptAsync(data: source, key: this.cryptKey, iv: this.cryptIV);  // 암호화에는 압축도 포함되어 있다.
 
                 await TcpStream.SendPacketAsync(networkStream: this.networkStream, data: encrypt);
             }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Suyeong.Lib.Util;
 
 namespace Suyeong.Lib.Net.Tcp
 {
@@ -63,8 +62,8 @@ namespace Suyeong.Lib.Net.Tcp
 
                     if (source != null)
                     {
-                        decompress = await Deflates.DecompressAsync(data: source);
-                        result = Utils.DeserializeObject(decompress) as ITcpPacket;
+                        decompress = await TcpDeflate.DecompressAsync(data: source);
+                        result = TcpSerialize.DeserializeObject(decompress) as ITcpPacket;
 
                         // callbackDic에 있었으면 클라이언트가 요청을 보낸 것에 대한 응답
                         if (this.callbackDic.TryGetValue(result.Protocol, out callback))
@@ -101,8 +100,8 @@ namespace Suyeong.Lib.Net.Tcp
 
             try
             {
-                byte[] source = Utils.SerializeObject(packet);
-                byte[] compress = await Deflates.CompressAsync(data: source);
+                byte[] source = TcpSerialize.SerializeObject(packet);
+                byte[] compress = await TcpDeflate.CompressAsync(data: source);
 
                 await TcpStream.SendPacketAsync(networkStream: this.networkStream, data: compress);
             }
