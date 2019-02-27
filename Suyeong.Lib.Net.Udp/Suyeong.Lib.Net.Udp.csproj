@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\UdpUtil.cs" />
     <Compile Include="Class\UdpClientHandler.cs" />
     <Compile Include="Class\UdpClientHandlerCrypt.cs" />
     <Compile Include="Class\UdpConnector.cs" />
@@ -52,12 +53,6 @@
     <Compile Include="Interface\IUdpPacket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Type\UdpPacket.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Suyeong.Lib.Util\Suyeong.Lib.Util.csproj">
-      <Project>{f1049d81-a42a-4566-bec3-10677a283009}</Project>
-      <Name>Suyeong.Lib.Util</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

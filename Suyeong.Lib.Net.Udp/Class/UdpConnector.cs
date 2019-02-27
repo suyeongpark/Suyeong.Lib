@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Suyeong.Lib.Util;
 
 namespace Suyeong.Lib.Net.Udp
 {
@@ -60,8 +59,8 @@ namespace Suyeong.Lib.Net.Udp
 
                     if (source != null)
                     {
-                        decompress = await DeflateUtil.DecompressAsync(data: source);
-                        result = Utils.DeserializeObject(decompress) as IUdpPacket;
+                        decompress = await UdpUtil.DecompressAsync(data: source);
+                        result = UdpUtil.DeserializeObject(decompress) as IUdpPacket;
 
                         // callbackDic에 있었으면 클라이언트가 요청을 보낸 것에 대한 응답
                         if (this.callbackDic.TryGetValue(result.Protocol, out callback))
@@ -98,8 +97,8 @@ namespace Suyeong.Lib.Net.Udp
 
             try
             {
-                byte[] source = Utils.SerializeObject(packet);
-                byte[] compress = await DeflateUtil.CompressAsync(data: source);
+                byte[] source = UdpUtil.SerializeObject(packet);
+                byte[] compress = await UdpUtil.CompressAsync(data: source);
 
                 await UdpStream.SendAsync(client: this.client, data: compress);
             }

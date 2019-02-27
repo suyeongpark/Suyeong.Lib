@@ -1,12 +1,81 @@
 ﻿using System.IO;
 using System.IO.Compression;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Suyeong.Lib.Net.Tcp
 {
-    public static class TcpCrypt
+    public static class TcpUtil
     {
+        public static byte[] SerializeObject(object data)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                binaryFormatter.Serialize(memoryStream, data);
+
+                return memoryStream.ToArray();
+            }
+        }
+
+        public static object DeserializeObject(byte[] data)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                memoryStream.Write(data, 0, data.Length);
+                memoryStream.Position = 0;
+
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                return binaryFormatter.Deserialize(memoryStream);
+            }
+        }
+        public static byte[] Compress(byte[] data)
+        {
+            MemoryStream outputStream = new MemoryStream();
+
+            using (DeflateStream deflateStream = new DeflateStream(outputStream, CompressionMode.Compress))
+            {
+                deflateStream.Write(data, 0, data.Length);
+            }
+
+            return outputStream.ToArray();
+        }
+
+        public static byte[] Decompress(byte[] data)
+        {
+            using (MemoryStream outputStream = new MemoryStream())
+            using (MemoryStream inputStream = new MemoryStream(data))
+            using (DeflateStream deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress))
+            {
+                deflateStream.CopyTo(outputStream);
+                return outputStream.ToArray();
+            }
+        }
+
+        async public static Task<byte[]> CompressAsync(byte[] data)
+        {
+            MemoryStream outputStream = new MemoryStream();
+
+            using (DeflateStream deflateStream = new DeflateStream(outputStream, CompressionMode.Compress))
+            {
+                await deflateStream.WriteAsync(data, 0, data.Length);
+            }
+
+            return outputStream.ToArray();
+        }
+
+        async public static Task<byte[]> DecompressAsync(byte[] data)
+        {
+            using (MemoryStream outputStream = new MemoryStream())
+            using (MemoryStream inputStream = new MemoryStream(data))
+            using (DeflateStream deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress))
+            {
+                await deflateStream.CopyToAsync(outputStream);
+                return outputStream.ToArray();
+            }
+        }
+
         public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
         {
             MemoryStream memoryStream = new MemoryStream();

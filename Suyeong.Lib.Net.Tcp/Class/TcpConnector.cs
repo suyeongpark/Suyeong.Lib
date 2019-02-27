@@ -62,8 +62,8 @@ namespace Suyeong.Lib.Net.Tcp
 
                     if (source != null)
                     {
-                        decompress = await TcpDeflate.DecompressAsync(data: source);
-                        result = TcpSerialize.DeserializeObject(decompress) as ITcpPacket;
+                        decompress = await TcpUtil.DecompressAsync(data: source);
+                        result = TcpUtil.DeserializeObject(decompress) as ITcpPacket;
 
                         // callbackDic에 있었으면 클라이언트가 요청을 보낸 것에 대한 응답
                         if (this.callbackDic.TryGetValue(result.Protocol, out callback))
@@ -100,8 +100,8 @@ namespace Suyeong.Lib.Net.Tcp
 
             try
             {
-                byte[] source = TcpSerialize.SerializeObject(packet);
-                byte[] compress = await TcpDeflate.CompressAsync(data: source);
+                byte[] source = TcpUtil.SerializeObject(packet);
+                byte[] compress = await TcpUtil.CompressAsync(data: source);
 
                 await TcpStream.SendPacketAsync(networkStream: this.networkStream, data: compress);
             }

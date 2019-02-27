@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Suyeong.Lib.Util;
 
 namespace Suyeong.Lib.Net.Udp
 {
@@ -51,8 +50,8 @@ namespace Suyeong.Lib.Net.Udp
 
                     if (source != null)
                     {
-                        decompress = await DeflateUtil.DecompressAsync(data: source);
-                        request = Utils.DeserializeObject(decompress) as IUdpPacket;
+                        decompress = await UdpUtil.DecompressAsync(data: source);
+                        request = UdpUtil.DeserializeObject(decompress) as IUdpPacket;
 
                         OnRequest(request, this);
                     }
@@ -69,8 +68,8 @@ namespace Suyeong.Lib.Net.Udp
         {
             try
             {
-                byte[] source = Utils.SerializeObject(packet);
-                byte[] compress = await DeflateUtil.CompressAsync(data: source);
+                byte[] source = UdpUtil.SerializeObject(packet);
+                byte[] compress = await UdpUtil.CompressAsync(data: source);
 
                 await UdpStream.SendAsync(client: this.client, data: compress);
             }

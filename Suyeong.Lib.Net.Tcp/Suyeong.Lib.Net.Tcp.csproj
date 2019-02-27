@@ -45,9 +45,7 @@
     <Compile Include="Class\TcpClientHandlerCrypt.cs" />
     <Compile Include="Class\TcpConnector.cs" />
     <Compile Include="Class\TcpConnectorCrypt.cs" />
-    <Compile Include="Class\TcpCrypt.cs" />
-    <Compile Include="Class\TcpDeflate.cs" />
-    <Compile Include="Class\TcpSerialize.cs" />
+    <Compile Include="Class\TcpUtil.cs" />
     <Compile Include="Class\TcpStream.cs" />
     <Compile Include="Enum\PacketType.cs" />
     <Compile Include="Interface\ITcpClientHandler.cs" />

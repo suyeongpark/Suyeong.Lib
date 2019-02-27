@@ -4,9 +4,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace Suyeong.Lib.Util
+namespace Suyeong.Lib.Net.Udp
 {
-    public static class StreamUtil
+    public static class UdpUtil
     {
         public static byte[] SerializeObject(object data)
         {

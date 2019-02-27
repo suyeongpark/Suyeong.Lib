@@ -53,8 +53,8 @@ namespace Suyeong.Lib.Net.Tcp
 
                     if (source != null)
                     {
-                        decompress = await TcpDeflate.DecompressAsync(data: source);
-                        request = TcpSerialize.DeserializeObject(decompress) as ITcpPacket;
+                        decompress = await TcpUtil.DecompressAsync(data: source);
+                        request = TcpUtil.DeserializeObject(decompress) as ITcpPacket;
 
                         // this는 response를 받기 위한 용도
                         OnRequest(this.guid, request);
@@ -72,8 +72,8 @@ namespace Suyeong.Lib.Net.Tcp
         {
             try
             {
-                byte[] source = TcpSerialize.SerializeObject(packet);
-                byte[] compress = await TcpDeflate.CompressAsync(data: source);
+                byte[] source = TcpUtil.SerializeObject(packet);
+                byte[] compress = await TcpUtil.CompressAsync(data: source);
 
                 await TcpStream.SendPacketAsync(networkStream: this.networkStream, data: compress);
             }
