@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Doc.WordInterop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Image.TesseractOcr", "Suyeong.Lib.Image.TesseractOcr\Suyeong.Lib.Image.TesseractOcr.csproj", "{879BB12A-7DE1-4B80-9406-98A837EA06B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Text.Lemmatize", "Suyeong.Lib.Text.Lemmatize\Suyeong.Lib.Text.Lemmatize.csproj", "{B6A176B6-33B0-48E0-950C-C63F018BC7D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{879BB12A-7DE1-4B80-9406-98A837EA06B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{879BB12A-7DE1-4B80-9406-98A837EA06B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{879BB12A-7DE1-4B80-9406-98A837EA06B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6A176B6-33B0-48E0-950C-C63F018BC7D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6A176B6-33B0-48E0-950C-C63F018BC7D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6A176B6-33B0-48E0-950C-C63F018BC7D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6A176B6-33B0-48E0-950C-C63F018BC7D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
