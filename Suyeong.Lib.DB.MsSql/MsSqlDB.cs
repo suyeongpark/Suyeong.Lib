@@ -89,7 +89,6 @@ namespace Suyeong.Lib.DB.MsSql
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-
                         if (parameters != null)
                         {
                             foreach (SqlParameter parameter in parameters)
@@ -235,10 +234,10 @@ namespace Suyeong.Lib.DB.MsSql
             {
                 using (SqlConnection connection = new SqlConnection(conStr))
                 {
+                    connection.Open();
+
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        connection.Open();
-
                         if (parameters != null)
                         {
                             foreach (SqlParameter parameter in parameters)

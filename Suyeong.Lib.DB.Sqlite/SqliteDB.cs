@@ -19,19 +19,21 @@ namespace Suyeong.Lib.DB.Sqlite
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(conStr))
-                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
                     connection.Open();
 
-                    if (parameters != null)
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
-                        foreach (SQLiteParameter parameter in parameters)
+                        if (parameters != null)
                         {
-                            command.Parameters.Add(parameter);
+                            foreach (SQLiteParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
                         }
-                    }
 
-                    scalar = command.ExecuteScalar();
+                        scalar = command.ExecuteScalar();
+                    }
                 }
             }
             catch (Exception)
@@ -50,19 +52,22 @@ namespace Suyeong.Lib.DB.Sqlite
             {
 
                 using (SQLiteConnection connection = new SQLiteConnection(conStr))
-                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
                     connection.Open();
 
-                    if (parameters != null)
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
-                        foreach (SQLiteParameter parameter in parameters)
-                        {
-                            command.Parameters.Add(parameter);
-                        }
-                    }
 
-                    scalar = await command.ExecuteScalarAsync();
+                        if (parameters != null)
+                        {
+                            foreach (SQLiteParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+
+                        scalar = await command.ExecuteScalarAsync();
+                    }
                 }
             }
             catch (Exception)
@@ -80,22 +85,24 @@ namespace Suyeong.Lib.DB.Sqlite
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(conStr))
-                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
                     connection.Open();
 
-                    if (parameters != null)
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
-                        foreach (SQLiteParameter parameter in parameters)
+                        if (parameters != null)
                         {
-                            command.Parameters.Add(parameter);
+                            foreach (SQLiteParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
                         }
-                    }
 
-                    using (SQLiteDataAdapter adapter = new SQLiteDataAdapter())
-                    {
-                        adapter.SelectCommand = command;
-                        adapter.Fill(table);
+                        using (SQLiteDataAdapter adapter = new SQLiteDataAdapter())
+                        {
+                            adapter.SelectCommand = command;
+                            adapter.Fill(table);
+                        }
                     }
                 }
             }
@@ -119,22 +126,24 @@ namespace Suyeong.Lib.DB.Sqlite
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(conStr))
-                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
                     connection.Open();
 
-                    if (parameters != null)
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
-                        foreach (SQLiteParameter parameter in parameters)
+                        if (parameters != null)
                         {
-                            command.Parameters.Add(parameter);
+                            foreach (SQLiteParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
                         }
-                    }
 
-                    using (SQLiteDataAdapter adapter = new SQLiteDataAdapter())
-                    {
-                        adapter.SelectCommand = command;
-                        adapter.Fill(dataSet);
+                        using (SQLiteDataAdapter adapter = new SQLiteDataAdapter())
+                        {
+                            adapter.SelectCommand = command;
+                            adapter.Fill(dataSet);
+                        }
                     }
                 }
             }
@@ -158,19 +167,21 @@ namespace Suyeong.Lib.DB.Sqlite
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(conStr))
-                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
                     connection.Open();
 
-                    if (parameters != null)
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
-                        foreach (SQLiteParameter parameter in parameters)
+                        if (parameters != null)
                         {
-                            command.Parameters.Add(parameter);
+                            foreach (SQLiteParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
                         }
-                    }
 
-                    command.ExecuteNonQuery();
+                        command.ExecuteNonQuery();
+                    }
                 }
 
                 result = true;
@@ -190,19 +201,21 @@ namespace Suyeong.Lib.DB.Sqlite
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(conStr))
-                using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
                     connection.Open();
 
-                    if (parameters != null)
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
-                        foreach (SQLiteParameter parameter in parameters)
+                        if (parameters != null)
                         {
-                            command.Parameters.Add(parameter);
+                            foreach (SQLiteParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
                         }
-                    }
 
-                    await command.ExecuteNonQueryAsync();
+                        await command.ExecuteNonQueryAsync();
+                    }
                 }
 
                 result = true;

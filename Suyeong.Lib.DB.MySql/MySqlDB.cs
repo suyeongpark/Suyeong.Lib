@@ -207,10 +207,10 @@ namespace Suyeong.Lib.DB.MySql
             {
                 using (MySqlConnection connection = new MySqlConnection(conStr))
                 {
+                    connection.Open();
+
                     using (MySqlCommand command = new MySqlCommand(query, connection))
                     {
-                        connection.Open();
-
                         if (parameters != null)
                         {
                             foreach (MySqlParameter parameter in parameters)
