@@ -7,7 +7,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
 {
     public static class ExcelInterop
     {
-        public static DataSet LoadByDataSet(string filePath)
+        public static DataSet LoadByDataSet(string filePath, bool hasTitle = true)
         {
             DataSet dataSet = new DataSet();
 
@@ -25,7 +25,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
                 foreach (Excel.Worksheet worksheet in workbook.Worksheets)
                 {
                     range = worksheet.UsedRange;
-                    dataSet.Tables.Add(GetWorksheet(tableName: worksheet.Name, range: range));
+                    dataSet.Tables.Add(GetWorksheet(tableName: worksheet.Name, range: range, hasTitle: hasTitle));
                 }
 
                 workbook.Close(SaveChanges: false);
@@ -43,7 +43,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
             return dataSet;
         }
 
-        public static DataTable LoadByDataTable(string filePath, string sheetName)
+        public static DataTable LoadByDataTable(string filePath, string sheetName, bool hasTitle = true)
         {
             DataTable table = new DataTable();
 
@@ -61,7 +61,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
                 worksheet = workbook.Worksheets[sheetName];
                 range = worksheet.UsedRange;
 
-                table = GetWorksheet(tableName: worksheet.Name, range: range);
+                table = GetWorksheet(tableName: worksheet.Name, range: range, hasTitle: hasTitle);
 
                 workbook.Close(SaveChanges: false);
                 application.Quit();
@@ -78,7 +78,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
             return table;
         }
 
-        public static bool SaveByDataSet(DataSet dataSet, string filePath)
+        public static bool SaveByDataSet(DataSet dataSet, string filePath, bool hasTitle = true)
         {
             bool result = false;
 
@@ -103,12 +103,12 @@ namespace Suyeong.Lib.Doc.ExcelInterop
 
                     worksheet = workbook.Worksheets.Add();
 
-                    // title이 있다고 가정.
-                    rowCount = table.Rows.Count + 1;
+                    // title이 있으면 첫 줄은 header로 쓴다.
+                    rowCount = hasTitle ? table.Rows.Count + 1 : table.Rows.Count;
                     columnCount = table.Columns.Count;
 
                     range = worksheet.Range[worksheet.Cells[1, 1], worksheet.Cells[rowCount, columnCount]];
-                    range.Value = ConvertData(rowCount: rowCount, columnCount: columnCount, table: table, hasTitle: true);
+                    range.Value = ConvertData(rowCount: rowCount, columnCount: columnCount, table: table, hasTitle: hasTitle);
                 }
 
                 workbook.SaveAs(filePath, Excel.XlFileFormat.xlWorkbookDefault);
@@ -171,7 +171,7 @@ namespace Suyeong.Lib.Doc.ExcelInterop
             return result;
         }
 
-        static DataTable GetWorksheet(string tableName, Excel.Range range)
+        static DataTable GetWorksheet(string tableName, Excel.Range range, bool hasTitle)
         {
             DataTable table = new DataTable(tableName);
 
@@ -181,13 +181,29 @@ namespace Suyeong.Lib.Doc.ExcelInterop
                 string[] values;
                 int rowCount = value.GetLength(0);
                 int columnCount = value.GetLength(1);
+                int rowStartIndex;
 
-                for (int i = 0; i < columnCount; i++)
+                // title 처리.
+                if (hasTitle)
                 {
-                    table.Columns.Add(new DataColumn() { AllowDBNull = true });
+                    for (int i = 0; i < columnCount; i++)
+                    {
+                        table.Columns.Add(new DataColumn(value[1, i + 1]?.ToString()) { AllowDBNull = true });
+                    }
+
+                    rowStartIndex = 1;
+                }
+                else
+                {
+                    for (int i = 0; i < columnCount; i++)
+                    {
+                        table.Columns.Add(new DataColumn() { AllowDBNull = true });
+                    }
+
+                    rowStartIndex = 0;
                 }
 
-                for (int row = 0; row < rowCount; row++)
+                for (int row = rowStartIndex; row < rowCount; row++)
                 {
                     values = new string[columnCount];
 
