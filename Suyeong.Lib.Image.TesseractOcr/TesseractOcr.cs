@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Text.RegularExpressions;
 using Tesseract;
 
 namespace Suyeong.Lib.Image.TesseractOcr
@@ -9,6 +10,7 @@ namespace Suyeong.Lib.Image.TesseractOcr
     {
         const float LIMIT_ACCURACY = 0.5f;
         const string TESSERACT_LANGUAGE = "eng";
+        const string REGEX_PATTERN_SPECIAL_WORD = "^[^0-9A-Za-z가-힣]{1,}$";
 
         public static OcrPageDic GetOcrPageDic(OcrInputs ocrInputs, string dataPath)
         {
@@ -111,7 +113,8 @@ namespace Suyeong.Lib.Image.TesseractOcr
                         {
                             text = iterator.GetText(PageIteratorLevel.Word).Trim();
 
-                            if (!string.IsNullOrEmpty(text))
+                            // 공백이거나 특수문자로 이루어진 텍스트는 처리하지 않는다.
+                            if (!string.IsNullOrEmpty(text) && !Regex.IsMatch(text, REGEX_PATTERN_SPECIAL_WORD))
                             {
                                 ocrTexts.Add(new OcrText(index: index++, x: rect.X1, y: rect.Y1, width: rect.Width, height: rect.Height, text: text));
                             }
