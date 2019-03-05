@@ -4,19 +4,24 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
 {
     public struct PdfText
     {
-        public PdfText(int index, double x, double y, double width, double height, string text)
+        public PdfText(int index, double leftX, double rightX, double topY, double bottomY, string text)
         {
+            // pdf는 좌하단이 0,0
             this.Index = index;
-            this.X = x;
-            this.Y = y;
-            this.Width = width;
-            this.Height = height;
+            this.LeftX = leftX;
+            this.RightX = rightX;
+            this.TopY = topY;
+            this.BottomY = bottomY;
+            this.Width = rightX - leftX;
+            this.Height = topY - bottomY;
             this.Text = text;
         }
 
         public int Index { get; private set; }
-        public double X { get; private set; }
-        public double Y { get; private set; }
+        public double LeftX { get; private set; }
+        public double RightX { get; private set; }
+        public double TopY { get; private set; }
+        public double BottomY { get; private set; }
         public double Width { get; private set; }
         public double Height { get; private set; }
         public string Text { get; private set; }
@@ -24,13 +29,13 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
         public static PdfText operator +(PdfText text1, PdfText text2)
         {
             int index = text1.Index < text2.Index ? text1.Index : text2.Index;
-            double x = text1.X < text2.X ? text1.X : text2.X;
-            double y = text1.Y < text2.Y ? text1.Y : text2.Y;
-            double width = text1.Width + text2.Width;
-            double height = text1.Height + text2.Height;
+            double leftX = text1.LeftX < text2.LeftX ? text1.LeftX : text2.LeftX;
+            double rightX = text1.RightX > text2.RightX ? text1.RightX : text2.RightX;
+            double topY = text1.TopY > text2.TopY ? text1.TopY : text2.TopY;
+            double bottomY = text1.BottomY < text2.BottomY ? text1.BottomY : text2.BottomY;
             string text = text1.Text + text2.Text;
 
-            return new PdfText(index: index, x: x, y: y, width: width, height: height, text: text);
+            return new PdfText(index: index, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, text: text);
         }
     }
 

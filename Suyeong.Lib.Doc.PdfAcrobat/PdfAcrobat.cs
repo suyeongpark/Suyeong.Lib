@@ -12,6 +12,8 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
         const string JSO_GET_PAGE_NTH_WORDS = "getPageNthWord";
         const string JSO_GET_PAGE_NTH_WORD_QUADS = "getPageNthWordQuads";
 
+        const double DISTANCE_SHORT = 0.1d;
+
         public static PdfPages GetRawText(string filePath)
         {
             PdfPages pages = new PdfPages();
@@ -172,43 +174,45 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                     jsQuads = jso.GetType().InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod, null, jso, new object[] { pageIndex, i }, null);
                     positionArr = jsQuads[0];
 
+                    // pdf는 좌하단이 0,0
                     leftX = double.Parse(positionArr[0].ToString());
                     topY = double.Parse(positionArr[1].ToString());
                     rightX = double.Parse(positionArr[2].ToString());
                     bottomY = double.Parse(positionArr[5].ToString());
 
-                    // pdf는 좌하단이 0,0 이라서 x, y는 좌측, 하단을 기준으로 잡는다.
-                    pdfTexts.Add(new PdfText(index: pdfTexts.Count, x: leftX, y: bottomY, width: rightX - leftX, height: topY - bottomY, text: text));
+                    pdfTexts.Add(new PdfText(index: pdfTexts.Count, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, text: text));
                 }
             }
 
             return pdfTexts.Count > 0 ? UpdateBraket(oldTexts: pdfTexts) : pdfTexts;
         }
 
-        // 시작 괄호 '(' 는 다음 글자와 분리되어 나오기 때문에 합치기 위한 로직
+        // 간격이 좁은 단어는 하나로 합친다.
         static PdfTexts UpdateBraket(PdfTexts oldTexts)
         {
             PdfTexts newTexts = new PdfTexts();
             PdfText last, current;
-            bool breketLeft = false;
 
-            for (int i = 1; i < oldTexts.Count; i++)
+            if (oldTexts.Count > 0)
             {
-                last = oldTexts[i - 1];
-                current = oldTexts[i];
+                // 첫 인덱스 처리
+                newTexts.Add(oldTexts[0]);
 
-                if (breketLeft)
+                for (int i = 1; i < oldTexts.Count; i++)
                 {
-                    newTexts.Add(last + current);
-                    breketLeft = false;
-                }
-                else if (char.Equals(current.Text[current.Text.Length - 1], '('))
-                {
-                    breketLeft = true;
-                }
-                else
-                {
-                    newTexts.Add(current);
+                    current = oldTexts[i];
+                    last = newTexts[newTexts.Count - 1];
+
+                    // 같은 줄이고, 간격이 좁으면
+                    if (Math.Abs(current.BottomY - last.BottomY) < DISTANCE_SHORT && current.LeftX - last.RightX < DISTANCE_SHORT)
+                    {
+                        // 마지막 것을 덮어쓴다.
+                        newTexts[newTexts.Count - 1] = last + current;
+                    }
+                    else
+                    {
+                        newTexts.Add(current);
+                    }
                 }
             }
 
