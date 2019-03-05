@@ -12,7 +12,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
         const string JSO_GET_PAGE_NTH_WORDS = "getPageNthWord";
         const string JSO_GET_PAGE_NTH_WORD_QUADS = "getPageNthWordQuads";
 
-        const double DISTANCE_SHORT = 0.1d;
+        const double DISTANCE_SHORT = 1d;
 
         public static PdfPages GetRawText(string filePath)
         {
