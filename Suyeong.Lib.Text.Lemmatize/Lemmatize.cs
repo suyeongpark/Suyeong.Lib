@@ -13,7 +13,8 @@ namespace Suyeong.Lib.Text.Lemmatize
 
         public string GetLemmaWord(string lowerWord)
         {
-            return this.lemmatizer.Lemmatize(lowerWord);
+            string result = this.lemmatizer.Lemmatize(lowerWord);
+            return string.IsNullOrWhiteSpace(result) ? lowerWord : result;
         }
     }
 }
