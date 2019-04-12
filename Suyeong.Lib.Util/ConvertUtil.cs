@@ -156,7 +156,7 @@ namespace Suyeong.Lib.Util
             {
                 values = fieldInfos.Select(field => field.GetValue(row)).ToList();
                 values.AddRange(propertyInfos.Select(property => property.GetValue(row)));
-                table.Rows.Add(values);
+                table.Rows.Add(values.ToArray());
             }
 
             return table;
@@ -177,7 +177,7 @@ namespace Suyeong.Lib.Util
 
             foreach (T row in list)
             {
-                table.Rows.Add(fieldInfos.Select(field => field.GetValue(row)));
+                table.Rows.Add(fieldInfos.Select(field => field.GetValue(row)).ToArray());
             }
 
             return table;
@@ -198,7 +198,7 @@ namespace Suyeong.Lib.Util
 
             foreach (T row in list)
             {
-                table.Rows.Add(propertyInfos.Select(property => property.GetValue(row)));
+                table.Rows.Add(propertyInfos.Select(property => property.GetValue(row)).ToArray());
             }
 
             return table;

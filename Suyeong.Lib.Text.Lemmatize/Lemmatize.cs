@@ -1,4 +1,5 @@
-﻿using LemmaSharp;
+﻿using System;
+using LemmaSharp;
 
 namespace Suyeong.Lib.Text.Lemmatize
 {
@@ -13,7 +14,17 @@ namespace Suyeong.Lib.Text.Lemmatize
 
         public string GetLemmaWord(string lowerWord)
         {
-            string result = this.lemmatizer.Lemmatize(lowerWord);
+            string result = string.Empty;
+
+            try
+            {
+                result = this.lemmatizer.Lemmatize(lowerWord);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
             return string.IsNullOrWhiteSpace(result) ? lowerWord : result;
         }
     }

@@ -58,7 +58,68 @@ namespace Suyeong.Lib.Util
 
         public static string AddNameToFilePath(string filePath, string add)
         {
-            return string.Format(@"{0}\{1}_{2}{3}", Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath), add, Path.GetExtension(filePath));
+            string dirName = Path.GetDirectoryName(filePath);
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            string extension = Path.GetExtension(filePath);
+
+            return $@"{dirName}\{fileName}_{add}{extension}";
+        }
+
+        public static string GetFileSizeUnit(long fileSize)
+        {
+            if (fileSize > Numbers.GIGA_BYTE)
+            {
+                return $"{(fileSize / Numbers.GIGA_BYTE).ToString("###.##")} GB";
+            }
+            else if (fileSize > Numbers.MEGA_BYTE)
+            {
+                return $"{(fileSize / Numbers.MEGA_BYTE).ToString("###.##")} MB";
+            }
+            else if (fileSize > Numbers.KILO_BYTE)
+            {
+                return $"{(fileSize / Numbers.KILO_BYTE).ToString("###.##")} KB";
+            }
+            else
+            {
+                return $"{fileSize} Bytes";
+            }
+        }
+
+        public static bool CreateFolder(string path)
+        {
+            bool result = false;
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            return result;
+        }
+
+        public static bool RemoveFolder(string path)
+        {
+            bool result = false;
+
+            try
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(path);
+
+                foreach (FileInfo fileInfo in directoryInfo.GetFiles())
+                {
+                    fileInfo.Delete();
+                }
+
+                directoryInfo.Delete();
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return result;
         }
     }
 }
