@@ -203,8 +203,9 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                     current = oldTexts[i];
                     last = newTexts[newTexts.Count - 1];
 
-                    // 같은 줄이고, 간격이 좁으면
-                    if (Math.Abs(current.BottomY - last.BottomY) < DISTANCE_SHORT && current.LeftX - last.RightX < DISTANCE_SHORT)
+                    // 같은 줄이고, 간격이 좁으면 합친다.
+                    // 간혹 오른쪽 것이 먼저 나오는 경우가 있어서 좌우 길이 비교할 때 abs를 취한다.
+                    if (Math.Abs(current.BottomY - last.BottomY) < DISTANCE_SHORT && Math.Abs(current.LeftX - last.RightX) < DISTANCE_SHORT)
                     {
                         // 마지막 것을 덮어쓴다.
                         newTexts[newTexts.Count - 1] = last + current;
