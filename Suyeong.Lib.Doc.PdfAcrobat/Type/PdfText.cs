@@ -4,16 +4,35 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
 {
     public struct PdfText
     {
-        public PdfText(int index, double leftX, double rightX, double topY, double bottomY, string text)
+        public PdfText(int index, double x1, double x2, double y1, double y2, string text)
         {
-            // pdf는 좌하단이 0,0
             this.Index = index;
-            this.LeftX = leftX;
-            this.RightX = rightX;
-            this.TopY = topY;
-            this.BottomY = bottomY;
-            this.Width = rightX - leftX;
-            this.Height = topY - bottomY;
+
+            // 글자 자체가 회전된 경우 문제가 되서 결국 여기서 left, right를 비교해줘야 함
+            if (x1 < x2)
+            {
+                this.LeftX = x1;
+                this.RightX = x2;
+            }
+            else
+            {
+                this.LeftX = x2;
+                this.RightX = x1;
+            }
+
+            if (y1 < y2)
+            {
+                this.TopY = y2;
+                this.BottomY = y1;
+            }
+            else
+            {
+                this.TopY = y1;
+                this.BottomY = y2;
+            }
+
+            this.Width = this.RightX - this.LeftX;
+            this.Height = this.TopY - this.BottomY;
             this.Text = text;
         }
 
@@ -35,7 +54,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             double bottomY = text1.BottomY < text2.BottomY ? text1.BottomY : text2.BottomY;
             string text = text1.Text + text2.Text;
 
-            return new PdfText(index: index, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, text: text);
+            return new PdfText(index: index, x1: leftX, x2: rightX, y1: topY, y2: bottomY, text: text);
         }
     }
 
