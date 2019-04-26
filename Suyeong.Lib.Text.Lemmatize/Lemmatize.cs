@@ -12,7 +12,23 @@ namespace Suyeong.Lib.Text.Lemmatize
             this.lemmatizer = new LemmatizerPrebuiltCompact(language);
         }
 
-        public string GetLemmaWord(string lowerWord)
+        public string GetLemmaWord(string word)
+        {
+            string result = string.Empty;
+
+            try
+            {
+                result = this.lemmatizer.Lemmatize(word.ToLower());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return string.IsNullOrWhiteSpace(result) ? word : result;
+        }
+
+        public string GetLemmaWordWithLowerWord(string lowerWord)
         {
             string result = string.Empty;
 
@@ -22,7 +38,7 @@ namespace Suyeong.Lib.Text.Lemmatize
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
             }
 
             return string.IsNullOrWhiteSpace(result) ? lowerWord : result;
