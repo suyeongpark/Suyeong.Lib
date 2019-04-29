@@ -47,6 +47,18 @@ namespace Suyeong.Lib.Util
             return num;
         }
 
+        public static long StringToLong(string str)
+        {
+            long num = -1;
+
+            if (!long.TryParse(str, out num))
+            {
+                // error!
+            }
+
+            return num;
+        }
+
         public static float StringToFloat(string str)
         {
             float num = -1f;
