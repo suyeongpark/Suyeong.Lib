@@ -35,6 +35,14 @@
       <HintPath>..\references\InteropAcrobat\Interop.Acrobat.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Interop.ACROIEHELPERLib">
+      <HintPath>..\references\InteropAcrobat\Interop.ACROIEHELPERLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.AFORMAUTLib">
+      <HintPath>..\references\InteropAcrobat\Interop.AFORMAUTLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
