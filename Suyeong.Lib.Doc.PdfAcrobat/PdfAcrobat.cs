@@ -192,14 +192,48 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             // 6 - RB Y
             // 7 - RB X
 
-            if (rotate == 90 || rotate == 270 || rotate == -90)
+            // 회전값 180일 때
+            // 0 - RB X
+            // 1 - RB Y
+            // 2 - LB X
+            // 3 - LB Y
+            // 4 - RT X
+            // 5 - RT Y
+            // 6 - LT X
+            // 7 - LT Y
+
+            // 회전값 270 일 때                    
+            // 0 - RB Y
+            // 1 - RB X
+            // 2 - LB Y
+            // 3 - LB X
+            // 4 - RT Y
+            // 5 - RT X
+            // 6 - LT Y
+            // 7 - LT X
+
+            if (rotate == 90)
             {
                 indexX1 = 1;
                 indexX2 = 7;
                 indexY1 = 0;
                 indexY2 = 6;
             }
-            else
+            else if (rotate == 180 || rotate == -180)
+            {
+                indexX1 = 6;
+                indexX2 = 0;
+                indexY1 = 7;
+                indexY2 = 1;
+            }
+            else if (rotate == 270 || rotate == -90)
+            {
+                indexX1 = 7;
+                indexX2 = 1;
+                indexY1 = 6;
+                indexY2 = 0;
+            }
+            else  // 0
             {
                 indexX1 = 0;
                 indexX2 = 6;
