@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Acrobat;
@@ -107,7 +108,10 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             object[] jsQuads, positionArr;
             string text;
             double x1, x2, y1, y2;
-            int wordsCount;
+            int wordsCount, index;
+
+            Dictionary<string, int> duplicateDic = new Dictionary<string, int>();
+            string uniqueName;
 
             jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
             wordsCount = int.Parse(jsNumWords.ToString());
@@ -128,8 +132,24 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                     y1 = double.Parse(positionArr[indexY1].ToString());
                     y2 = double.Parse(positionArr[indexY2].ToString());
 
-                    // pdf는 좌하단이 (0, 0) 이므로 큰 x가 right, 큰 y가 top
-                    pdfTexts.Add(new PdfText(index: pdfTexts.Count, x1: x1, x2: x2, y1: y1, y2: y2, text: text));
+                    // 중복되는 경우 width가 0인 경우가 많다. (전부는 아님)
+                    if (Math.Abs(x1 - x2) > 0)
+                    {
+                        pdfTexts.Add(new PdfText(index: pdfTexts.Count, x1: x1, x2: x2, y1: y1, y2: y2, text: text));
+                    }
+                    else
+                    {
+                        // width 0인 애들 중에서 가장 앞에 있는 애들은 추가
+                        // 중복된 경우 x값은 다른데, y값은 같기 때문에 이를 이용해서 텍스트와 y1, y2가 동일하면 중복된 것으로 보고 뺀다.
+                        uniqueName = $"{text}_{y1}_{y2}";
+
+                        if (!duplicateDic.ContainsKey(uniqueName))
+                        {
+                            index = pdfTexts.Count;
+                            pdfTexts.Add(new PdfText(index: index, x1: x1, x2: x2, y1: y1, y2: y2, text: text));
+                            duplicateDic.Add(uniqueName, index);
+                        }
+                    }
                 }
             }
 
