@@ -65,6 +65,12 @@ namespace Suyeong.Lib.Util
             return $@"{dirName}\{fileName}_{add}{extension}";
         }
 
+        public static string GetFilePathAddNumber(string filePath, int count = 0)
+        {
+            string copyPath = count == 0 ? filePath : AddNameToFilePath(filePath, count.ToString());
+            return !File.Exists(copyPath) ? copyPath : GetFilePathAddNumber(filePath, count + 1);
+        }
+
         public static string GetFileSizeUnit(long fileSize)
         {
             if (fileSize > Numbers.GIGA_BYTE)
