@@ -137,21 +137,16 @@ namespace Suyeong.Lib.Doc.ExcelOleDb
                         command.Connection = connection;
 
                         // 1. table을 만든다.
-                        command.CommandText = $"create table {tableName} ([{string.Join("] Varchar(255), [", columns)}] Varchar(255))";
+                        command.CommandText = $"create table [{tableName}] ({string.Join(" Varchar, ", columns)} Varchar);";
                         command.ExecuteNonQuery();
 
-                        // 2. data를 넣는다.
-                        string query = $"insert into [{tableName}] ({string.Join(", ", columns)}) values (@{string.Join(", @", columns)})";
+                        // 2. column name을 만든다.
+                        string columnNames = string.Join(", ", columns);
 
+                        // 3. data를 넣는다.
                         foreach (DataRow row in table.Rows)
                         {
-                            command.CommandText = query;
-
-                            for (int i = 0; i < row.ItemArray.Length; i++)
-                            {
-                                command.Parameters.Add("@" + columns[i], OleDbType.VarWChar).Value = row[i].ToString();
-                            }
-
+                            command.CommandText = $"insert into [{tableName}] ({columnNames}) values ('{string.Join("', '", row.ItemArray)}')";
                             command.ExecuteNonQuery();
                         }
                     }
@@ -184,17 +179,16 @@ namespace Suyeong.Lib.Doc.ExcelOleDb
         {
             string extension = Path.GetExtension(filePath).ToLower();
             string HDR = hasTitle ? "YES" : "NO";
-            string IMEX = "1";
 
             // 2007 이상용
             if (string.Equals(extension, ".xlsx"))
             {
-                return $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=\"{filePath}\";Mode=ReadWrite|Share Deny None;Extended Properties='Excel 12.0;HDR={HDR};IMEX={IMEX}';Persist Security Info=False";
+                return $"Provider=Microsoft.ACE.OLEDB.12.0;Extended Properties='Excel 12.0 XML;HDE={HDR};';Data Source={filePath};";
             }
             // 97-2003
-            else // .xls
+            else // .xls 32비트에서만 가능하다.
             {
-                return $"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=\"{filePath}\";Mode=ReadWrite|Share Deny None;Extended Properties='Excel 8.0;HDR={HDR};IMEX={IMEX}';Persist Security Info=False";
+                return $"Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties='Excel 8.0 XML;HDE={HDR};';Data Source={filePath};";
             }
         }
     }
