@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 어셈블리에 대한 일반 정보는 다음 특성 집합을 통해 
 // 제어됩니다. 어셈블리와 관련된 정보를 수정하려면
 // 이러한 특성 값을 변경하세요.
-[assembly: AssemblyTitle("Suyeong.Lib.Graphic.OpenCV")]
+[assembly: AssemblyTitle("Suyeong.Lib.GCP.Vision")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Suyeong.Lib.Graphic.OpenCV")]
+[assembly: AssemblyProduct("Suyeong.Lib.GCP.Vision")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 이 프로젝트가 COM에 노출되는 경우 다음 GUID는 typelib의 ID를 나타냅니다.
-[assembly: Guid("51367627-c72a-42af-b7db-e1eba77d5dda")]
+[assembly: Guid("8055bd75-0508-401b-9114-c68b891552b1")]
 
 // 어셈블리의 버전 정보는 다음 네 가지 값으로 구성됩니다.
 //
