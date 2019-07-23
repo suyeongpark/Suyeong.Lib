@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
+using System.Text;
 
 namespace Suyeong.Lib.Doc.ExcelOleDb
 {
@@ -146,7 +147,7 @@ namespace Suyeong.Lib.Doc.ExcelOleDb
                         // 3. data를 넣는다.
                         foreach (DataRow row in table.Rows)
                         {
-                            command.CommandText = $"insert into [{tableName}] ({columnNames}) values ('{string.Join("', '", row.ItemArray)}')";
+                            command.CommandText = $"insert into [{tableName}] ({columnNames}) values ('{GetValues(itemArray: row.ItemArray)}')";
                             command.ExecuteNonQuery();
                         }
                     }
@@ -168,11 +169,30 @@ namespace Suyeong.Lib.Doc.ExcelOleDb
 
             foreach (DataColumn column in table.Columns)
             {
-                // 타이틀에서는 ' 제거
-                columns.Add(column.ColumnName.Replace("'", ""));
+                columns.Add(ConvertQuote(text: column.ColumnName));
             }
 
             return columns;
+        }
+
+        static string GetValues(object[] itemArray)
+        {
+            StringBuilder sb = new StringBuilder();
+            string value;
+
+            for (int i = 0; i < itemArray.Length; i++)
+            {
+                value = (i < itemArray.Length - 1) ? ConvertQuote(text: itemArray[i].ToString()) + "','" : itemArray[i].ToString();
+                sb.Append(value);
+            }
+
+            return sb.ToString();
+        }
+
+        static string ConvertQuote(string text)
+        {
+            // ' 제거
+            return text.Replace("'", "''");
         }
 
         static string GetConStr(string filePath, bool hasTitle)
