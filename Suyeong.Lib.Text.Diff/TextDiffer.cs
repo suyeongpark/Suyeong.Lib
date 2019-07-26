@@ -5,9 +5,9 @@ namespace Suyeong.Lib.Text.Diff
 {
     public static class TextDiffer
     {
-        const double LIMIT = 0.5d;
+        const double SIMILAR_LIMIT = 0.65d;
 
-        public static DiffResultViews DiffTexts(IEnumerable<string> mainTexts, IEnumerable<string> subTexts, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub)
+        public static DiffResultViews DiffTexts(IEnumerable<string> mainTexts, IEnumerable<string> subTexts, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub, double similarLimit = SIMILAR_LIMIT)
         {
             resultDicMain = new DiffResultDic();
             resultDicSub = new DiffResultDic();
@@ -15,7 +15,7 @@ namespace Suyeong.Lib.Text.Diff
             Sentences mainSentences = ConvertSentences(mainTexts);
             Sentences subSentences = ConvertSentences(subTexts);
 
-            GetDiffResultDic(mainSentences: mainSentences, subSentences: subSentences, resultDicMain: out resultDicMain, resultDicSub: out resultDicSub);
+            GetDiffResultDic(mainSentences: mainSentences, subSentences: subSentences, similarLimit: similarLimit, resultDicMain: out resultDicMain, resultDicSub: out resultDicSub);
 
             return ConvertResultToViews(mains: resultDicMain.GetValues(), subs: resultDicSub.GetValues());
         }
@@ -34,7 +34,7 @@ namespace Suyeong.Lib.Text.Diff
             return sentences;
         }
 
-        static void GetDiffResultDic(Sentences mainSentences, Sentences subSentences, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub)
+        static void GetDiffResultDic(Sentences mainSentences, Sentences subSentences, double similarLimit, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub)
         {
             resultDicMain = new DiffResultDic();
             resultDicSub = new DiffResultDic();
@@ -67,7 +67,7 @@ namespace Suyeong.Lib.Text.Diff
                     {
                         intersectCount = main.Texts.Intersect(sub.Texts).Count();
 
-                        if ((double)(intersectCount * 2) / (double)(main.Texts.Length + sub.Texts.Length) > LIMIT)
+                        if ((double)(intersectCount * 2) / (double)(main.Texts.Length + sub.Texts.Length) > similarLimit)
                         {
                             resultDicMain.Add(main.Index, new DiffResult(index: main.Index, diffType: DiffType.Modified, main: main, sub: sub));
                             resultDicSub.Add(sub.Index, new DiffResult(index: sub.Index, diffType: DiffType.Modified, main: sub, sub: main));
