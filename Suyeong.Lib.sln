@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.OCR.Tesseract",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.GCP.Vision", "Suyeong.Lib.GCP.Vision\Suyeong.Lib.GCP.Vision.csproj", "{8055BD75-0508-401B-9114-C68B891552B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Text.Diff", "Suyeong.Lib.Text.Diff\Suyeong.Lib.Text.Diff.csproj", "{6359871E-96B7-4971-B4C5-B0E76C1B80CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{8055BD75-0508-401B-9114-C68B891552B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8055BD75-0508-401B-9114-C68B891552B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8055BD75-0508-401B-9114-C68B891552B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6359871E-96B7-4971-B4C5-B0E76C1B80CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6359871E-96B7-4971-B4C5-B0E76C1B80CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6359871E-96B7-4971-B4C5-B0E76C1B80CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6359871E-96B7-4971-B4C5-B0E76C1B80CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
