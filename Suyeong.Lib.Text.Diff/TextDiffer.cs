@@ -55,8 +55,8 @@ namespace Suyeong.Lib.Text.Diff
                     // 일단 동등한지 확인
                     if (string.Equals(main.Text, sub.Text))
                     {
-                        resultDicMain.Add(main.Index, new DiffResult(index: main.Index, diffType: DiffType.Same, main: main, sub: sub, sameTexts: new List<string>(), modifiedTexts: new List<string>()));
-                        resultDicSub.Add(sub.Index, new DiffResult(index: sub.Index, diffType: DiffType.Same, main: sub, sub: main, sameTexts: new List<string>(), modifiedTexts: new List<string>()));
+                        resultDicMain.Add(main.Index, new DiffResult(index: main.Index, diffType: DiffType.Same, main: main, sub: sub, sameTexts: main.Texts.ToList(), modifiedTexts: new List<string>()));
+                        resultDicSub.Add(sub.Index, new DiffResult(index: sub.Index, diffType: DiffType.Same, main: sub, sub: main, sameTexts: sub.Texts.ToList(), modifiedTexts: new List<string>()));
 
                         find = true;
                         lastIndex = i;
