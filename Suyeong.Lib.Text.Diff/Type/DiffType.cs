@@ -2,10 +2,10 @@
 {
     public enum DiffType
     {
+        None,
         Same,
         Modified,
         Removed,
         Added,
-        None,
     }
 }

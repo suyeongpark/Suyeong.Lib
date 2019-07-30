@@ -40,7 +40,7 @@ namespace Suyeong.Lib.Text.Diff
             resultDicSub = new DiffResultDic();
 
             int lastIndex = -1, intersectCount;
-            Sentence sub;
+            Sentence sub = new Sentence();
             List<string> sameTexts, modifiedTexts;
             bool find;
 
@@ -153,17 +153,17 @@ namespace Suyeong.Lib.Text.Diff
 
                     if (main.DiffType == DiffType.Removed)
                     {
-                        views.Add(new DiffResultView(index: index++, indexMain: main.Index, indexSub: -1, typeMain: main.DiffType, typeSub: DiffType.None, textMain: main.Main.Text, textSub: string.Empty, modifiedsMain: main.ModifiedTexts, modifiedsSub: new List<string>()));
+                        views.Add(new DiffResultView(index: index++, mainResult: main, subResult: new DiffResult()));
                         indexMain++;
                     }
                     else if (sub.DiffType == DiffType.Added)
                     {
-                        views.Add(new DiffResultView(index: index++, indexMain: -1, indexSub: sub.Index, typeMain: DiffType.None, typeSub: sub.DiffType, textMain: string.Empty, textSub: sub.Main.Text, modifiedsMain: new List<string>(), modifiedsSub: sub.ModifiedTexts));
+                        views.Add(new DiffResultView(index: index++, mainResult: new DiffResult(), subResult: sub));
                         indexSub++;
                     }
                     else
                     {
-                        views.Add(new DiffResultView(index: index++, indexMain: main.Index, indexSub: sub.Index, typeMain: main.DiffType, typeSub: sub.DiffType, textMain: main.Main.Text, textSub: sub.Main.Text, modifiedsMain: main.ModifiedTexts, modifiedsSub: sub.ModifiedTexts));
+                        views.Add(new DiffResultView(index: index++, mainResult: main, subResult: sub));
                         indexMain++;
                         indexSub++;
                     }
@@ -172,14 +172,14 @@ namespace Suyeong.Lib.Text.Diff
                 {
                     main = mains[indexMain];
 
-                    views.Add(new DiffResultView(index: index++, indexMain: main.Index, indexSub: 0, typeMain: main.DiffType, typeSub: DiffType.None, textMain: main.Main.Text, textSub: string.Empty, modifiedsMain: main.ModifiedTexts, modifiedsSub: new List<string>()));
+                    views.Add(new DiffResultView(index: index++, mainResult: main, subResult: new DiffResult()));
                     indexMain++;
                 }
                 else if (indexMain >= mains.Count && indexSub < subs.Count)
                 {
                     sub = subs[indexSub];
 
-                    views.Add(new DiffResultView(index: index++, indexMain: 0, indexSub: sub.Index, typeMain: DiffType.None, typeSub: sub.DiffType, textMain: string.Empty, textSub: sub.Main.Text, modifiedsMain: new List<string>(), modifiedsSub: sub.ModifiedTexts));
+                    views.Add(new DiffResultView(index: index++, mainResult: new DiffResult(), subResult: sub));
                     indexSub++;
                 }
                 else
