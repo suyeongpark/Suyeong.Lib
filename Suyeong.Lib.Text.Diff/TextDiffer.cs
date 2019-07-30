@@ -85,7 +85,7 @@ namespace Suyeong.Lib.Text.Diff
 
                 if (!find)
                 {
-                    resultDicMain.Add(main.Index, new DiffResult(index: main.Index, diffType: DiffType.Removed, main: main, sub: new Sentence(), sameTexts: new List<string>(), modifiedTexts: new List<string>()));
+                    resultDicMain.Add(main.Index, new DiffResult(index: main.Index, diffType: DiffType.Removed, main: main, sub: new Sentence(), sameTexts: new List<string>(), modifiedTexts: main.Texts.ToList()));
                 }
             }
 
@@ -94,7 +94,7 @@ namespace Suyeong.Lib.Text.Diff
             {
                 if (!resultDicSub.ContainsKey(sentence.Index))
                 {
-                    resultDicSub.Add(sentence.Index, new DiffResult(index: sentence.Index, diffType: DiffType.Added, main: sentence, sub: new Sentence(), sameTexts: new List<string>(), modifiedTexts: new List<string>()));
+                    resultDicSub.Add(sentence.Index, new DiffResult(index: sentence.Index, diffType: DiffType.Added, main: sentence, sub: new Sentence(), sameTexts: new List<string>(), modifiedTexts: sub.Texts.ToList()));
                 }
             }
 
