@@ -182,7 +182,7 @@ namespace Suyeong.Lib.Doc.ExcelOleDb
 
             for (int i = 0; i < itemArray.Length; i++)
             {
-                value = (i < itemArray.Length - 1) ? ConvertQuote(text: itemArray[i].ToString()) + "','" : itemArray[i].ToString();
+                value = (i < itemArray.Length - 1) ? ConvertQuote(text: itemArray[i].ToString()) + "','" : ConvertQuote(text: itemArray[i].ToString());
                 sb.Append(value);
             }
 
