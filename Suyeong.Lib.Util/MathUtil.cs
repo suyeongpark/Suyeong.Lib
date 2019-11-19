@@ -32,5 +32,34 @@ namespace Suyeong.Lib.Util
         {
             return (num < double.Epsilon && num > -double.Epsilon);
         }
+
+        public static bool IsPointBetweenLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
+        {
+            double crossProduct = (y - lineStartY) * (lineEndX - lineStartX) - (x - lineStartX) * (lineEndY - lineStartY);
+
+            if (Math.Abs(crossProduct) > double.Epsilon)
+            {
+                return false;
+            }
+
+            double dotProduct = (x - lineStartX) * (lineEndX - lineStartX) + (y - lineStartY) * (lineEndY - lineStartY);
+
+            if (dotProduct < 0)
+            {
+                return false;
+            }
+
+            double deltaX = lineEndX - lineStartX;
+            double deltaY = lineEndX - lineStartX;
+
+            double length = deltaX * deltaX + deltaY * deltaY;
+
+            if (dotProduct > length)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

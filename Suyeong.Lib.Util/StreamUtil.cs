@@ -30,6 +30,7 @@ namespace Suyeong.Lib.Util
                 return binaryFormatter.Deserialize(memoryStream);
             }
         }
+
         public static byte[] Compress(byte[] data)
         {
             MemoryStream outputStream = new MemoryStream();

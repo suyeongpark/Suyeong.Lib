@@ -3,54 +3,42 @@ using LemmaSharp;
 
 namespace Suyeong.Lib.Text.Lemmatize
 {
-    public static class Lemmatize
+    public class Lemmatize
     {
-        static ILemmatizer _lemmatizer;
-        static ILemmatizer Lemmatizer
-        {
-            get
-            {
-                if (_lemmatizer == null)
-                {
-                    _lemmatizer = new LemmatizerPrebuiltCompact(LanguagePrebuilt.English);
-                }
+        ILemmatizer lemmatizer;
 
-                return _lemmatizer;
-            }
+        public Lemmatize(LanguagePrebuilt language = LanguagePrebuilt.English)
+        {
+            this.lemmatizer = new LemmatizerPrebuiltCompact(language);
         }
 
-        public static void Init(LanguagePrebuilt langage)
-        {
-            _lemmatizer = new LemmatizerPrebuiltCompact(langage);
-        }
-
-        public static string GetLemmaWord(string word)
+        public string GetLemmaWord(string word)
         {
             string result = string.Empty;
 
             try
             {
-                result = Lemmatizer.Lemmatize(word.ToLower());
+                result = this.lemmatizer.Lemmatize(word.ToLower());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex);
             }
 
             return string.IsNullOrWhiteSpace(result) ? word : result;
         }
 
-        public static string GetLemmaWordWithLowerWord(string lowerWord)
+        public string GetLemmaWordWithLowerWord(string lowerWord)
         {
             string result = string.Empty;
 
             try
             {
-                result = Lemmatizer.Lemmatize(lowerWord);
+                result = this.lemmatizer.Lemmatize(lowerWord);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex);
             }
 
             return string.IsNullOrWhiteSpace(result) ? lowerWord : result;

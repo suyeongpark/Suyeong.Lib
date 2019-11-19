@@ -94,7 +94,7 @@ namespace Suyeong.Lib.Text.Diff
             {
                 if (!resultDicSub.ContainsKey(sentence.Index))
                 {
-                    resultDicSub.Add(sentence.Index, new DiffResult(index: sentence.Index, diffType: DiffType.Added, main: sentence, sub: new Sentence(), sameTexts: new List<string>(), modifiedTexts: sub.Texts.ToList()));
+                    resultDicSub.Add(sentence.Index, new DiffResult(index: sentence.Index, diffType: DiffType.Added, main: sentence, sub: new Sentence(), sameTexts: new List<string>(), modifiedTexts: sentence.Texts.ToList()));
                 }
             }
 

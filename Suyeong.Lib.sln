@@ -33,9 +33,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Text.Lemmatize"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.OCR.Tesseract", "Suyeong.Lib.OCR.Tesseract\Suyeong.Lib.OCR.Tesseract.csproj", "{E7B8BBFE-5805-4041-A2A9-8D206126B573}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.GCP.Vision", "Suyeong.Lib.GCP.Vision\Suyeong.Lib.GCP.Vision.csproj", "{8055BD75-0508-401B-9114-C68B891552B1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Text.Diff", "Suyeong.Lib.Text.Diff\Suyeong.Lib.Text.Diff.csproj", "{6359871E-96B7-4971-B4C5-B0E76C1B80CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.GoogleVision.Translate", "Suyeong.Lib.GoogleVision.Translate\Suyeong.Lib.GoogleVision.Translate.csproj", "{14A11E75-BC6F-4E22-82C6-349988F142C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.GoogleVision.OCR", "Suyeong.Lib.GoogleVision.OCR\Suyeong.Lib.GoogleVision.OCR.csproj", "{BD0809A4-D983-443B-87A1-3B5A095716C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Google.Translate", "Suyeong.Lib.Google.Translate\Suyeong.Lib.Google.Translate.csproj", "{165CF48A-F204-4DEC-B322-8A5E668660D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,14 +107,22 @@ Global
 		{E7B8BBFE-5805-4041-A2A9-8D206126B573}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7B8BBFE-5805-4041-A2A9-8D206126B573}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7B8BBFE-5805-4041-A2A9-8D206126B573}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8055BD75-0508-401B-9114-C68B891552B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8055BD75-0508-401B-9114-C68B891552B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8055BD75-0508-401B-9114-C68B891552B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8055BD75-0508-401B-9114-C68B891552B1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6359871E-96B7-4971-B4C5-B0E76C1B80CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6359871E-96B7-4971-B4C5-B0E76C1B80CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6359871E-96B7-4971-B4C5-B0E76C1B80CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6359871E-96B7-4971-B4C5-B0E76C1B80CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14A11E75-BC6F-4E22-82C6-349988F142C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14A11E75-BC6F-4E22-82C6-349988F142C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14A11E75-BC6F-4E22-82C6-349988F142C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14A11E75-BC6F-4E22-82C6-349988F142C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD0809A4-D983-443B-87A1-3B5A095716C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD0809A4-D983-443B-87A1-3B5A095716C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD0809A4-D983-443B-87A1-3B5A095716C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD0809A4-D983-443B-87A1-3B5A095716C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{165CF48A-F204-4DEC-B322-8A5E668660D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{165CF48A-F204-4DEC-B322-8A5E668660D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{165CF48A-F204-4DEC-B322-8A5E668660D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{165CF48A-F204-4DEC-B322-8A5E668660D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

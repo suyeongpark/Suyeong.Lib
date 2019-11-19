@@ -65,7 +65,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             PdfPages pdfPages = new PdfPages();
 
             CAcroPDPage acroPdPage;
-            int width, height, rotate, indexX1, indexX2, indexY1, indexY2;
+            int width, height, rotate;
             PdfTexts pdfTexts;
             object jso = acroPdDoc.GetJSObject();
 
@@ -75,11 +75,21 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                 width = acroPdPage.GetSize().x;
                 height = acroPdPage.GetSize().y;
                 rotate = acroPdPage.GetRotate();
-                FindPositionIndex(rotate: rotate, indexX1: out indexX1, indexX2: out indexX2, indexY1: out indexY1, indexY2: out indexY2);
 
                 try
                 {
-                    pdfTexts = GetPdfTexts(pageIndex: i, indexX1: indexX1, indexX2: indexX2, indexY1: indexY1, indexY2: indexY2, jso: jso);
+                    if (rotate == 90)
+                    {
+                        pdfTexts = GetPdfTexts90(pageIndex: i, pageRotate: rotate, pageHeight: height, jso: jso);
+                    }
+                    else if (rotate == 270)
+                    {
+                        pdfTexts = GetPdfTexts270(pageIndex: i, pageRotate: rotate, pageWidth: width, jso: jso);
+                    }
+                    else
+                    {
+                        pdfTexts = GetPdfTextsDefault(pageIndex: i, jso: jso);
+                    }
                 }
                 catch (Exception)
                 {
@@ -90,7 +100,18 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                     jso = acroPdDoc.GetJSObject();
 
                     // 살린 후에 해당 페이지를 다시 돌린다.
-                    pdfTexts = GetPdfTexts(pageIndex: i, indexX1: indexX1, indexX2: indexX2, indexY1: indexY1, indexY2: indexY2, jso: jso);
+                    if (rotate == 90)
+                    {
+                        pdfTexts = GetPdfTexts90(pageIndex: i, pageRotate: rotate, pageHeight: height, jso: jso);
+                    }
+                    else if (rotate == 270)
+                    {
+                        pdfTexts = GetPdfTexts270(pageIndex: i, pageRotate: rotate, pageWidth: width, jso: jso);
+                    }
+                    else
+                    {
+                        pdfTexts = GetPdfTextsDefault(pageIndex: i, jso: jso);
+                    }
                 }
 
                 pdfPages.Add(new PdfPage(index: i, width: width, height: height, rotate: rotate, pdfTexts: pdfTexts));
@@ -99,22 +120,19 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             return pdfPages;
         }
 
-        static PdfTexts GetPdfTexts(int pageIndex, int indexX1, int indexX2, int indexY1, int indexY2, object jso)
+        static PdfTexts GetPdfTextsDefault(int pageIndex, object jso)
         {
             PdfTexts pdfTexts = new PdfTexts();
 
             Type type = jso.GetType();
-            object jsNumWords, jsWord;
-            object[] jsQuads, positionArr;
+            object jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
+            int wordsCount = int.Parse(jsNumWords.ToString());
+
+            object jsWord;
+            object[] jsQuads;
             string text;
-            double x1, x2, y1, y2;
-            int wordsCount, index;
-
-            Dictionary<string, int> duplicateDic = new Dictionary<string, int>();
-            string uniqueName;
-
-            jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
-            wordsCount = int.Parse(jsNumWords.ToString());
+            double leftX, rightX, topY, bottomY;
+            int rotate;
 
             for (int i = 0; i < wordsCount; i++)
             {
@@ -124,32 +142,93 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                 if (!string.IsNullOrWhiteSpace(text))
                 {
                     jsQuads = type.InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex, i }, null) as object[];
-                    positionArr = jsQuads[0] as object[];
 
-                    // 텍스트 자체가 회전된 경우가 있는데, 당장은 처리 못 함.
-                    x1 = double.Parse(positionArr[indexX1].ToString());
-                    x2 = double.Parse(positionArr[indexX2].ToString());
-                    y1 = double.Parse(positionArr[indexY1].ToString());
-                    y2 = double.Parse(positionArr[indexY2].ToString());
+                    FindPositionByHorizontal(jsQuads: jsQuads, leftX: out leftX, rightX: out rightX, topY: out topY, bottomY: out bottomY);
+                    rotate = GetRotate(jsQuads: jsQuads, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, indexX: 0, indexY: 1);
 
-                    // 중복되는 경우 width가 0인 경우가 많다. (전부는 아님)
-                    if (Math.Abs(x1 - x2) > 0)
-                    {
-                        pdfTexts.Add(new PdfText(index: pdfTexts.Count, x1: x1, x2: x2, y1: y1, y2: y2, text: text));
-                    }
-                    else
-                    {
-                        // width 0인 애들 중에서 가장 앞에 있는 애들은 추가
-                        // 중복된 경우 x값은 다른데, y값은 같기 때문에 이를 이용해서 텍스트와 y1, y2가 동일하면 중복된 것으로 보고 뺀다.
-                        uniqueName = $"{text}_{y1}_{y2}";
+                    pdfTexts.Add(new PdfText(index: pdfTexts.Count, rotate: rotate, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, text: text));
+                }
+            }
 
-                        if (!duplicateDic.ContainsKey(uniqueName))
-                        {
-                            index = pdfTexts.Count;
-                            pdfTexts.Add(new PdfText(index: index, x1: x1, x2: x2, y1: y1, y2: y2, text: text));
-                            duplicateDic.Add(uniqueName, index);
-                        }
-                    }
+            return pdfTexts.Count > 0 ? UpdateBraket(oldTexts: pdfTexts) : pdfTexts;
+        }
+
+        static PdfTexts GetPdfTexts90(int pageIndex, int pageRotate, int pageHeight, object jso)
+        {
+            PdfTexts pdfTexts = new PdfTexts();
+
+            Type type = jso.GetType();
+            object jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
+            int wordsCount = int.Parse(jsNumWords.ToString());
+
+            object jsWord;
+            object[] jsQuads;
+            string text;
+            double leftX, rightX, topY, bottomY, tempTopY, tempBottomY;
+            int rotate;
+
+            for (int i = 0; i < wordsCount; i++)
+            {
+                jsWord = type.InvokeMember(JSO_GET_PAGE_NTH_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex, i, false }, null);
+                text = jsWord.ToString().Trim();
+
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    jsQuads = type.InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex, i }, null) as object[];
+
+                    FindPositionByVertical(jsQuads: jsQuads, leftX: out leftX, rightX: out rightX, topY: out topY, bottomY: out bottomY);
+                    rotate = GetRotate(jsQuads: jsQuads, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, indexX: 1, indexY: 0) - pageRotate;
+                    rotate = rotate < 0 ? rotate + 360 : rotate;
+
+                    // 90도 뒤집어진 경우엔 y축을 기준으로 뒤집는다.
+                    tempTopY = pageHeight - topY;
+                    tempBottomY = pageHeight - bottomY;
+                    topY = tempBottomY;
+                    bottomY = tempTopY;
+
+                    // pdf는 좌하단이 (0, 0) 이므로 큰 x가 right, 큰 y가 top
+                    pdfTexts.Add(new PdfText(index: pdfTexts.Count, rotate: rotate, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, text: text));
+                }
+            }
+
+            return pdfTexts.Count > 0 ? UpdateBraket(oldTexts: pdfTexts) : pdfTexts;
+        }
+
+        static PdfTexts GetPdfTexts270(int pageIndex, int pageRotate, int pageWidth, object jso)
+        {
+            PdfTexts pdfTexts = new PdfTexts();
+
+            Type type = jso.GetType();
+            object jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
+            int wordsCount = int.Parse(jsNumWords.ToString());
+
+            object jsWord;
+            object[] jsQuads;
+            string text;
+            double leftX, rightX, topY, bottomY, tempLeftX, tempRightX;
+            int rotate;
+
+            for (int i = 0; i < wordsCount; i++)
+            {
+                jsWord = type.InvokeMember(JSO_GET_PAGE_NTH_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex, i, false }, null);
+                text = jsWord.ToString().Trim();
+
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    jsQuads = type.InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex, i }, null) as object[];
+
+                    FindPositionByVertical(jsQuads: jsQuads, leftX: out leftX, rightX: out rightX, topY: out topY, bottomY: out bottomY);
+                    rotate = GetRotate(jsQuads: jsQuads, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, indexX: 1, indexY: 0) - pageRotate;
+                    rotate = rotate < 0 ? rotate + 360 : rotate;
+
+                    // 270도 뒤집어진 경우엔 x축을 기준으로 뒤집는다.
+                    tempLeftX = pageWidth - leftX;
+                    tempRightX = pageWidth - rightX;
+                    leftX = tempRightX;
+                    rightX = tempLeftX;
+
+                    // pdf는 좌하단이 (0, 0) 이므로 큰 x가 right, 큰 y가 top
+                    pdfTexts.Add(new PdfText(index: pdfTexts.Count, rotate: rotate, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, text: text));
                 }
             }
 
@@ -173,7 +252,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                     last = newTexts[newTexts.Count - 1];
 
                     // 같은 줄이고, 간격이 좁으면
-                    if (Math.Abs(current.BottomY - last.BottomY) < DISTANCE_SHORT && current.LeftX - last.RightX < DISTANCE_SHORT)
+                    if (Math.Abs(current.BottomY - last.BottomY) < DISTANCE_SHORT && Math.Abs(current.LeftX - last.RightX) < DISTANCE_SHORT)
                     {
                         // 마지막 것을 덮어쓴다.
                         newTexts[newTexts.Count - 1] = last + current;
@@ -188,10 +267,116 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             return newTexts;
         }
 
-        static void FindPositionIndex(int rotate, out int indexX1, out int indexX2, out int indexY1, out int indexY2)
+        static void FindPositionByHorizontal(object[] jsQuads, out double leftX, out double rightX, out double topY, out double bottomY)
         {
-            indexX1 = indexX2 = indexY1 = indexY2 = -1;
+            leftX = double.MaxValue;
+            rightX = double.MinValue;
+            topY = double.MinValue;
+            bottomY = double.MaxValue;
 
+            int count;
+            double value;
+
+            // 세로인 경우 jsQuads가 여러개 나온다.
+            foreach (object[] positionArr in jsQuads)
+            {
+                count = 0;
+
+                foreach (object position in positionArr)
+                {
+                    value = double.Parse(position.ToString());
+
+                    // 회전값이 0일때 짝수가 x, 홀수가 y
+                    // 홀수
+                    if (count == 1)
+                    {
+                        if (value < bottomY)
+                        {
+                            bottomY = value;
+                        }
+
+                        if (value > topY)
+                        {
+                            topY = value;
+                        }
+
+                        count = 0;
+                    }
+                    // 짝수
+                    else
+                    {
+                        if (value < leftX)
+                        {
+                            leftX = value;
+                        }
+
+                        if (value > rightX)
+                        {
+                            rightX = value;
+                        }
+
+                        count++;
+                    }
+                }
+            }
+        }
+
+        static void FindPositionByVertical(object[] jsQuads, out double leftX, out double rightX, out double topY, out double bottomY)
+        {
+            leftX = double.MaxValue;
+            rightX = double.MinValue;
+            topY = double.MinValue;
+            bottomY = double.MaxValue;
+
+            int count;
+            double value;
+
+            // 세로인 경우 jsQuads가 여러개 나온다.
+            foreach (object[] positionArr in jsQuads)
+            {
+                count = 0;
+
+                foreach (object position in positionArr)
+                {
+                    value = double.Parse(position.ToString());
+
+                    // 회전값이 0일때 짝수가 y, 홀수가 x
+                    // 홀수
+                    if (count == 1)
+                    {
+                        if (value < leftX)
+                        {
+                            leftX = value;
+                        }
+
+                        if (value > rightX)
+                        {
+                            rightX = value;
+                        }
+
+                        count = 0;
+                    }
+                    // 짝수
+                    else
+                    {
+                        if (value < bottomY)
+                        {
+                            bottomY = value;
+                        }
+
+                        if (value > topY)
+                        {
+                            topY = value;
+                        }
+
+                        count++;
+                    }
+                }
+            }
+        }
+
+        static int GetRotate(object[] jsQuads, double leftX, double rightX, double topY, double bottomY, int indexX, int indexY)
+        {
             // 회전값 0일 때
             // 0 - LT X
             // 1 - LT Y
@@ -232,33 +417,34 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             // 6 - LT Y
             // 7 - LT X
 
-            if (rotate == 90)
+            object[] positionArr = jsQuads[0] as object[];
+            double val0 = double.Parse(positionArr[0].ToString());
+            double val2 = double.Parse(positionArr[2].ToString());
+            double val6 = double.Parse(positionArr[6].ToString());
+
+            // 0과 2가 같다는 것은 둘이 y이라는 뜻
+            if (val0 == val2)
             {
-                indexX1 = 1;
-                indexX2 = 7;
-                indexY1 = 0;
-                indexY2 = 6;
+                // 문서 자체가 회전된 경우에 잘 안맞는 것 같다. 위의 예시대로라면 val0이 val6 보다 크면 90도가 되어야 하는데 실제로는 안 그럼.
+                if (val0 > val6)
+                {
+                    return 270;
+                }
+                else
+                {
+                    return 90;
+                }
             }
-            else if (rotate == 180 || rotate == -180)
+            else
             {
-                indexX1 = 6;
-                indexX2 = 0;
-                indexY1 = 7;
-                indexY2 = 1;
-            }
-            else if (rotate == 270 || rotate == -90)
-            {
-                indexX1 = 7;
-                indexX2 = 1;
-                indexY1 = 6;
-                indexY2 = 0;
-            }
-            else  // 0
-            {
-                indexX1 = 0;
-                indexX2 = 6;
-                indexY1 = 1;
-                indexY2 = 7;
+                if (val0 > val2)
+                {
+                    return 180;
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
 
