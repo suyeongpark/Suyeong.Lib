@@ -7,9 +7,9 @@ namespace Suyeong.Lib.DB.MsSql
 {
     public static class MsSqlDB
     {
-        public static string GetDbConStr(string id, string password, string serverName, string dbName)
+        public static string GetDbConStr(string id, string password, string serverIP, string databaseName)
         {
-            return $"Persist Security Info=False;User ID={id};Password={password};Server={serverName};Database={dbName};";
+            return $"Persist Security Info=False;User ID={id};Password={password};Server={serverIP};Database={databaseName};";
         }
 
         public static object GetDataSingle(string conStr, string query, SqlParameter[] parameters = null)

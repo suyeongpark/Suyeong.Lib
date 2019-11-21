@@ -12,9 +12,9 @@ namespace Suyeong.Lib.DB.MySql
         // Oracle이나 MsSql과 달리 별도의 파라미터가 있지는 않고 그냥 values를 여러 번 다넘긴.
         // INSERT INTO tbl_name (a,b,c) VALUES(1,2,3),(4,5,6),(7,8,9);
 
-        public static string GetDbConStr(string server, string database, string uid, string password)
+        public static string GetDbConStr(string serverIP, string databaseName, string uid, string password)
         {
-            return $"Server={server};Database={database};Uid={uid};Pwd={password};";
+            return $"Server={serverIP};Database={databaseName};Uid={uid};Pwd={password};";
         }
 
         public static object GetDataSingle(string conStr, string query, MySqlParameter[] parameters = null)
