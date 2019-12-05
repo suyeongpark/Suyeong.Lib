@@ -45,7 +45,7 @@ namespace Suyeong.Lib.GoogleVision.OCR
                     centerY = (int)((minY + maxY) * 0.5d);
                     rotate = GetRotate(centerX: centerX, centerY: centerY, firstVertex: annotation.BoundingPoly.Vertices[0]);
 
-                    textBlocks.Add(new OcrText(index: index, rotate: rotate, x: minX, y: minY, width: maxX - minX, height: maxY - minY, text: annotation.Description));
+                    textBlocks.Add(new OcrText(index: index, rotate: rotate, leftX: minX, rightX: maxX, topY: minY, bottomY: maxY, text: annotation.Description));
                 }
 
                 index++;

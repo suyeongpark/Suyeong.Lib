@@ -14,6 +14,8 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             this.BottomY = bottomY;
             this.Width = this.RightX - this.LeftX;
             this.Height = this.TopY - this.BottomY;
+            this.CenterX = (this.LeftX + this.RightX) * 0.5d;
+            this.CenterY = (this.TopY + this.BottomY) * 0.5d;
             this.Text = text;
         }
 
@@ -23,6 +25,8 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
         public double RightX { get; private set; }
         public double TopY { get; private set; }
         public double BottomY { get; private set; }
+        public double CenterX { get; private set; }
+        public double CenterY { get; private set; }
         public double Width { get; private set; }
         public double Height { get; private set; }
         public string Text { get; private set; }

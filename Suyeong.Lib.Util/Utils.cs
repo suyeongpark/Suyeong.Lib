@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -120,12 +121,41 @@ namespace Suyeong.Lib.Util
 
                 result = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
+                throw;
             }
 
             return result;
+        }
+
+        public static Process FindProcess(string processName, string title)
+        {
+            foreach (Process process in Process.GetProcessesByName(processName))
+            {
+                if (string.Equals(process.MainWindowTitle, title))
+                {
+                    return process;
+                }
+            }
+
+            return null;
+        }
+
+        public static Process StartProcess(string path)
+        {
+            try
+            {
+                ProcessStartInfo psi = new ProcessStartInfo(path);
+                psi.UseShellExecute = false;
+                psi.CreateNoWindow = false;
+
+                return Process.Start(psi);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

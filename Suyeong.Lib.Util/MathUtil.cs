@@ -61,5 +61,25 @@ namespace Suyeong.Lib.Util
 
             return true;
         }
+
+        public static double RadianToDegree(double radian)
+        {
+            return radian * 180d / Math.PI;
+        }
+
+        public static double DegreeToRadian(double angle)
+        {
+            return angle * Math.PI / 180d;
+        }
+
+        public static double PixelToPoint(double dpi, double pointPerInch, double value)
+        {
+            return value * pointPerInch / dpi;
+        }
+
+        public static double PointToPixel(double dpi, double pointPerInch, double value)
+        {
+            return value * dpi / pointPerInch;
+        }
     }
 }
