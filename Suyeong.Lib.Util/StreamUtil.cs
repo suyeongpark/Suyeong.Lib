@@ -84,6 +84,60 @@ namespace Suyeong.Lib.Util
             using (Aes algorithm = Aes.Create())
             using (ICryptoTransform encryptor = algorithm.CreateEncryptor(key, iv))
             using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+            {
+                cryptoStream.Write(data, 0, data.Length);
+            }
+
+            return memoryStream.ToArray();
+        }
+
+        public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
+        {
+            using (MemoryStream outputStream = new MemoryStream())
+            using (MemoryStream inputStream = new MemoryStream(data))
+            using (Aes algorithm = Aes.Create())
+            using (ICryptoTransform decryptor = algorithm.CreateDecryptor(key, iv))
+            using (CryptoStream cryptoStream = new CryptoStream(inputStream, decryptor, CryptoStreamMode.Read))
+            {
+                cryptoStream.CopyTo(outputStream);
+                return outputStream.ToArray();
+            }
+        }
+
+        async public static Task<byte[]> EncryptAsync(byte[] data, byte[] key, byte[] iv)
+        {
+            MemoryStream memoryStream = new MemoryStream();
+
+            using (Aes algorithm = Aes.Create())
+            using (ICryptoTransform encryptor = algorithm.CreateEncryptor(key, iv))
+            using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+            {
+                await cryptoStream.WriteAsync(data, 0, data.Length);
+            }
+
+            return memoryStream.ToArray();
+        }
+
+        async public static Task<byte[]> DecryptAsync(byte[] data, byte[] key, byte[] iv)
+        {
+            using (MemoryStream outputStream = new MemoryStream())
+            using (MemoryStream inputStream = new MemoryStream(data))
+            using (Aes algorithm = Aes.Create())
+            using (ICryptoTransform decryptor = algorithm.CreateDecryptor(key, iv))
+            using (CryptoStream cryptoStream = new CryptoStream(inputStream, decryptor, CryptoStreamMode.Read))
+            {
+                await cryptoStream.CopyToAsync(outputStream);
+                return outputStream.ToArray();
+            }
+        }
+
+        public static byte[] EncryptWithCompress(byte[] data, byte[] key, byte[] iv)
+        {
+            MemoryStream memoryStream = new MemoryStream();
+
+            using (Aes algorithm = Aes.Create())
+            using (ICryptoTransform encryptor = algorithm.CreateEncryptor(key, iv))
+            using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
             using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Compress))
             {
                 deflateStream.Write(data, 0, data.Length);
@@ -92,7 +146,7 @@ namespace Suyeong.Lib.Util
             return memoryStream.ToArray();
         }
 
-        public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
+        public static byte[] DecryptWithDecompress(byte[] data, byte[] key, byte[] iv)
         {
             using (MemoryStream outputStream = new MemoryStream())
             using (MemoryStream inputStream = new MemoryStream(data))
@@ -106,7 +160,7 @@ namespace Suyeong.Lib.Util
             }
         }
 
-        async public static Task<byte[]> EncryptAsync(byte[] data, byte[] key, byte[] iv)
+        async public static Task<byte[]> EncryptWithCompressAsync(byte[] data, byte[] key, byte[] iv)
         {
             MemoryStream memoryStream = new MemoryStream();
 
@@ -121,7 +175,7 @@ namespace Suyeong.Lib.Util
             return memoryStream.ToArray();
         }
 
-        async public static Task<byte[]> DecryptAsync(byte[] data, byte[] key, byte[] iv)
+        async public static Task<byte[]> DecryptWithDecompressAsync(byte[] data, byte[] key, byte[] iv)
         {
             using (MemoryStream outputStream = new MemoryStream())
             using (MemoryStream inputStream = new MemoryStream(data))
@@ -133,6 +187,23 @@ namespace Suyeong.Lib.Util
                 await deflateStream.CopyToAsync(outputStream);
                 return outputStream.ToArray();
             }
+        }
+
+        public static string GetChecksumByMD5(byte[] file)
+        {
+            MD5 md5 = MD5.Create();
+
+            byte[] hash = md5.ComputeHash(file);
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (byte b in hash)
+            {
+                // 16진수로 변환
+                sb.Append(b.ToString("X2"));
+            }
+
+            return sb.ToString();
         }
     }
 }

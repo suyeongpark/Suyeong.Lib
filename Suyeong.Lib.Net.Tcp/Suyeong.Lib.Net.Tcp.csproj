@@ -42,16 +42,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class\TcpClientHandler.cs" />
-    <Compile Include="Class\TcpClientHandlerCrypt.cs" />
-    <Compile Include="Class\TcpConnector.cs" />
-    <Compile Include="Class\TcpConnectorCrypt.cs" />
     <Compile Include="Class\TcpUtil.cs" />
-    <Compile Include="Class\TcpStream.cs" />
+    <Compile Include="Client\TcpClientSync.cs" />
+    <Compile Include="Client\TcpClientCryptSync.cs" />
+    <Compile Include="Client\TcpClientCryptCompressSync.cs" />
+    <Compile Include="Client\TcpClientCryptCompressAsync.cs" />
+    <Compile Include="Client\TcpClientCryptAsync.cs" />
+    <Compile Include="Client\TcpClientAsync.cs" />
+    <Compile Include="Data\Variables.cs" />
     <Compile Include="Enum\PacketType.cs" />
-    <Compile Include="Interface\ITcpClientHandler.cs" />
-    <Compile Include="Interface\ITcpConnector.cs" />
     <Compile Include="Interface\ITcpPacket.cs" />
+    <Compile Include="Listener\TcpListenerSync.cs" />
+    <Compile Include="Listener\TcpListenerCryptSync.cs" />
+    <Compile Include="Listener\TcpListenerCryptCompressSync.cs" />
+    <Compile Include="Listener\TcpListenerCryptCompressAsync.cs" />
+    <Compile Include="Listener\TcpListenerCryptAsync.cs" />
+    <Compile Include="Listener\TcpListenerAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Type\TcpPacket.cs" />
   </ItemGroup>
@@ -61,5 +67,6 @@
       <Name>Suyeong.Lib.Util</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

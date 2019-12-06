@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Suyeong.Lib.Net.Udp
 {
     [Serializable]

@@ -1,136 +1,107 @@
-﻿using System.IO;
-using System.IO.Compression;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Cryptography;
+﻿using System;
+using System.IO;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace Suyeong.Lib.Net.Tcp
 {
     public static class TcpUtil
     {
-        public static byte[] SerializeObject(object data)
+        public static bool SendData(NetworkStream networkStream, byte[] data, int dataLength)
+        {
+            bool result = false;
+
+            try
+            {
+                using (MemoryStream memoryStream = new MemoryStream(data))
+                {
+                    byte[] buffer;
+                    int nbytes = 0;
+
+                    while (dataLength > 0)
+                    {
+                        buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
+                        nbytes = memoryStream.Read(buffer, 0, buffer.Length);
+                        networkStream.Write(buffer, 0, buffer.Length);
+                        dataLength -= nbytes;
+                    }
+                }
+
+                result = true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+        async public static Task<bool> SendDataAsync(NetworkStream networkStream, byte[] data, int dataLength)
+        {
+            bool result = false;
+
+            try
+            {
+                using (MemoryStream memoryStream = new MemoryStream(data))
+                {
+                    byte[] buffer;
+                    int nbytes = 0;
+
+                    while (dataLength > 0)
+                    {
+                        buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
+                        nbytes = await memoryStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                        await networkStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                        dataLength -= nbytes;
+                    }
+                }
+
+                result = true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+        public static byte[] ReceiveData(NetworkStream networkStream, int dataLength)
         {
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                BinaryFormatter binaryFormatter = new BinaryFormatter();
-                binaryFormatter.Serialize(memoryStream, data);
+                byte[] buffer;
+                int nbytes = 0;
+
+                while (dataLength > 0)
+                {
+                    buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
+                    nbytes = networkStream.Read(buffer, 0, buffer.Length);
+                    memoryStream.Write(buffer, 0, buffer.Length);
+                    dataLength -= nbytes;
+                }
 
                 return memoryStream.ToArray();
             }
         }
 
-        public static object DeserializeObject(byte[] data)
+        async public static Task<byte[]> ReceiveDataAsync(NetworkStream networkStream, int dataLength)
         {
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                memoryStream.Write(data, 0, data.Length);
-                memoryStream.Position = 0;
+                byte[] buffer;
+                int nbytes = 0;
 
-                BinaryFormatter binaryFormatter = new BinaryFormatter();
-                return binaryFormatter.Deserialize(memoryStream);
-            }
-        }
-        public static byte[] Compress(byte[] data)
-        {
-            MemoryStream outputStream = new MemoryStream();
+                while (dataLength > 0)
+                {
+                    buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
+                    nbytes = await networkStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                    await memoryStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                    dataLength -= nbytes;
+                }
 
-            using (DeflateStream deflateStream = new DeflateStream(outputStream, CompressionMode.Compress))
-            {
-                deflateStream.Write(data, 0, data.Length);
-            }
-
-            return outputStream.ToArray();
-        }
-
-        public static byte[] Decompress(byte[] data)
-        {
-            using (MemoryStream outputStream = new MemoryStream())
-            using (MemoryStream inputStream = new MemoryStream(data))
-            using (DeflateStream deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress))
-            {
-                deflateStream.CopyTo(outputStream);
-                return outputStream.ToArray();
-            }
-        }
-
-        async public static Task<byte[]> CompressAsync(byte[] data)
-        {
-            MemoryStream outputStream = new MemoryStream();
-
-            using (DeflateStream deflateStream = new DeflateStream(outputStream, CompressionMode.Compress))
-            {
-                await deflateStream.WriteAsync(data, 0, data.Length);
-            }
-
-            return outputStream.ToArray();
-        }
-
-        async public static Task<byte[]> DecompressAsync(byte[] data)
-        {
-            using (MemoryStream outputStream = new MemoryStream())
-            using (MemoryStream inputStream = new MemoryStream(data))
-            using (DeflateStream deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress))
-            {
-                await deflateStream.CopyToAsync(outputStream);
-                return outputStream.ToArray();
-            }
-        }
-
-        public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
-        {
-            MemoryStream memoryStream = new MemoryStream();
-
-            using (Aes algorithm = Aes.Create())
-            using (ICryptoTransform encryptor = algorithm.CreateEncryptor(key, iv))
-            using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-            using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Compress))
-            {
-                deflateStream.Write(data, 0, data.Length);
-            }
-
-            return memoryStream.ToArray();
-        }
-
-        public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
-        {
-            using (MemoryStream outputStream = new MemoryStream())
-            using (MemoryStream inputStream = new MemoryStream(data))
-            using (Aes algorithm = Aes.Create())
-            using (ICryptoTransform decryptor = algorithm.CreateDecryptor(key, iv))
-            using (CryptoStream cryptoStream = new CryptoStream(inputStream, decryptor, CryptoStreamMode.Read))
-            using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Decompress))
-            {
-                deflateStream.CopyTo(outputStream);
-                return outputStream.ToArray();
-            }
-        }
-
-        async public static Task<byte[]> EncryptAsync(byte[] data, byte[] key, byte[] iv)
-        {
-            MemoryStream memoryStream = new MemoryStream();
-
-            using (Aes algorithm = Aes.Create())
-            using (ICryptoTransform encryptor = algorithm.CreateEncryptor(key, iv))
-            using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-            using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Compress))
-            {
-                await deflateStream.WriteAsync(data, 0, data.Length);
-            }
-
-            return memoryStream.ToArray();
-        }
-
-        async public static Task<byte[]> DecryptAsync(byte[] data, byte[] key, byte[] iv)
-        {
-            using (MemoryStream outputStream = new MemoryStream())
-            using (MemoryStream inputStream = new MemoryStream(data))
-            using (Aes algorithm = Aes.Create())
-            using (ICryptoTransform decryptor = algorithm.CreateDecryptor(key, iv))
-            using (CryptoStream cryptoStream = new CryptoStream(inputStream, decryptor, CryptoStreamMode.Read))
-            using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Decompress))
-            {
-                await deflateStream.CopyToAsync(outputStream);
-                return outputStream.ToArray();
+                return memoryStream.ToArray();
             }
         }
     }
