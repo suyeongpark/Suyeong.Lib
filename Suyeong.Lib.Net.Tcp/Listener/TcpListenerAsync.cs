@@ -15,7 +15,7 @@ namespace Suyeong.Lib.Net.Tcp
             this.listener = new TcpListener(new IPEndPoint(IPAddress.Any, portNum));
         }
 
-        async public Task ListenerStartAsync(Func<ITcpPacket, ITcpPacket> callback)
+        async public Task ListenerStartAsync(Func<ITcpPacket, Task<ITcpPacket>> callback)
         {
             this.listener.Start();
 
@@ -47,7 +47,7 @@ namespace Suyeong.Lib.Net.Tcp
                             recievePacket = StreamUtil.DeserializeObject(decompressData) as ITcpPacket;
 
                             // 4. 요청을 처리한다.
-                            sendPacket = callback(recievePacket);
+                            sendPacket = await callback(recievePacket);
 
                             // 5. 처리 결과를 압축한다.
                             sendData = StreamUtil.SerializeObject(sendPacket);
