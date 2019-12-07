@@ -7,18 +7,18 @@ namespace Suyeong.Lib.Net.Udp
 {
     public class UdpClientSync
     {
-        IPEndPoint serverEndPoint;
+        IPEndPoint serverEndPoint, clientEndPoint;
 
-        public UdpClientSync(string serverIP, int serverPort)
+        public UdpClientSync(string serverIP, int serverPort, int clientPort = 0)
         {
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
+            this.clientEndPoint = new IPEndPoint(address: IPAddress.Any, port: clientPort);
         }
 
         public void Send(IPacket sendPacket, Action<IPacket> callback)
         {
             IPacket receivePacket;
             byte[] sendData, receiveData, compressData, decompressData;
-            IPEndPoint endPoint = new IPEndPoint(address: IPAddress.Any, port: 0);
 
             try
             {
@@ -34,7 +34,7 @@ namespace Suyeong.Lib.Net.Udp
                     client.Send(dgram: compressData, bytes: compressData.Length, endPoint: this.serverEndPoint);
 
                     // 3. 결과의 데이터를 받는다.
-                    receiveData = client.Receive(remoteEP: ref endPoint);
+                    receiveData = client.Receive(remoteEP: ref this.clientEndPoint);
 
                     // 4. 결과는 압축되어 있으므로 푼다.
                     decompressData = NetUtil.Decompress(data: receiveData);

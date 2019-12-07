@@ -7,12 +7,13 @@ namespace Suyeong.Lib.Net.Udp
 {
     public class UdpClientCryptCompressSync
     {
-        IPEndPoint serverEndPoint;
+        IPEndPoint serverEndPoint, clientEndPoint;
         byte[] key, iv;
 
-        public UdpClientCryptCompressSync(string serverIP, int serverPort, byte[] key, byte[] iv)
+        public UdpClientCryptCompressSync(string serverIP, int serverPort, byte[] key, byte[] iv, int clientPort = 0)
         {
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
+            this.clientEndPoint = new IPEndPoint(address: IPAddress.Any, port: clientPort);
             this.key = key;
             this.iv = iv;
         }
@@ -21,7 +22,6 @@ namespace Suyeong.Lib.Net.Udp
         {
             IPacket receivePacket;
             byte[] sendData, receiveData, compressData, decompressData;
-            IPEndPoint endPoint = new IPEndPoint(address: IPAddress.Any, port: 0);
 
             try
             {
@@ -37,7 +37,7 @@ namespace Suyeong.Lib.Net.Udp
                     client.Send(dgram: compressData, bytes: compressData.Length, endPoint: this.serverEndPoint);
 
                     // 3. 결과의 데이터를 받는다.
-                    receiveData = client.Receive(remoteEP: ref endPoint);
+                    receiveData = client.Receive(remoteEP: ref this.clientEndPoint);
 
                     // 4. 결과는 암호화되어 있으므로 푼다.
                     decompressData = NetUtil.DecryptWithDecompress(data: receiveData, key: this.key, iv: this.iv);

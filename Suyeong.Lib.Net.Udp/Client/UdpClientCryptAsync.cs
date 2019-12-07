@@ -23,7 +23,6 @@ namespace Suyeong.Lib.Net.Udp
             IPacket receivePacket;
             UdpReceiveResult result;
             byte[] sendData, encryptData, decryptData;
-            IPEndPoint endPoint = new IPEndPoint(address: IPAddress.Any, port: 0);
 
             try
             {
