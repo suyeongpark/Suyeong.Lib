@@ -13,9 +13,9 @@ namespace Suyeong.Lib.Net.Ftp
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString: ftpPath);
                 request.Method = WebRequestMethods.Ftp.DownloadFile;
-                request.Credentials = new NetworkCredential(user, password);
+                request.Credentials = new NetworkCredential(userName: user, password: password);
 
                 using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
                 using (Stream stream = response.GetResponseStream())
@@ -39,9 +39,9 @@ namespace Suyeong.Lib.Net.Ftp
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString: ftpPath);
                 request.Method = WebRequestMethods.Ftp.DownloadFile;
-                request.Credentials = new NetworkCredential(user, password);
+                request.Credentials = new NetworkCredential(userName: user, password: password);
 
                 using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
                 using (Stream stream = response.GetResponseStream())
@@ -65,14 +65,14 @@ namespace Suyeong.Lib.Net.Ftp
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString: ftpPath);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
-                request.Credentials = new NetworkCredential(user, password);
+                request.Credentials = new NetworkCredential(userName: user, password: password);
                 request.ContentLength = data.Length;
 
                 using (Stream stream = request.GetRequestStream())
                 {
-                    stream.Write(data, 0, data.Length);
+                    stream.Write(buffer: data, offset: 0, count: data.Length);
 
                     using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
                     {
@@ -94,14 +94,14 @@ namespace Suyeong.Lib.Net.Ftp
 
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ftpPath);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString: ftpPath);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
-                request.Credentials = new NetworkCredential(user, password);
+                request.Credentials = new NetworkCredential(userName: user, password: password);
                 request.ContentLength = data.Length;
 
                 using (Stream stream = await request.GetRequestStreamAsync())
                 {
-                    await stream.WriteAsync(data, 0, data.Length);
+                    await stream.WriteAsync(buffer: data, offset: 0, count: data.Length);
 
                     using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
                     {
