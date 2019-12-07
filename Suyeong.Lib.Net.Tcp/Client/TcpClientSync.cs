@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using Suyeong.Lib.Net.Lib;
 
@@ -6,13 +7,11 @@ namespace Suyeong.Lib.Net.Tcp
 {
     public class TcpClientSync
     {
-        string serverIP;
-        int serverPort;
+        IPEndPoint serverEndPoint;
 
         public TcpClientSync(string serverIP, int serverPort)
         {
-            this.serverIP = serverIP;
-            this.serverPort = serverPort;
+            this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
         }
 
         public void Send(IPacket sendPacket, Action<IPacket> callback)
@@ -24,7 +23,7 @@ namespace Suyeong.Lib.Net.Tcp
 
             try
             {
-                using (TcpClient client = new TcpClient(hostname: this.serverIP, port: this.serverPort))
+                using (TcpClient client = new TcpClient(localEP: this.serverEndPoint))
                 using (NetworkStream stream = client.GetStream())
                 {
                     // 1. 보낼 데이터를 압축한다.

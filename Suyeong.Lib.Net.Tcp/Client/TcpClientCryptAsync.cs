@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Suyeong.Lib.Net.Lib;
@@ -7,14 +8,12 @@ namespace Suyeong.Lib.Net.Tcp
 {
     public class TcpClientCryptAsync
     {
-        string serverIP;
-        int serverPort;
+        IPEndPoint serverEndPoint;
         byte[] key, iv;
 
         public TcpClientCryptAsync(string serverIP, int serverPort, byte[] key, byte[] iv)
         {
-            this.serverIP = serverIP;
-            this.serverPort = serverPort;
+            this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
             this.key = key;
             this.iv = iv;
         }
@@ -28,7 +27,7 @@ namespace Suyeong.Lib.Net.Tcp
 
             try
             {
-                using (TcpClient client = new TcpClient(hostname: this.serverIP, port: this.serverPort))
+                using (TcpClient client = new TcpClient(localEP: this.serverEndPoint))
                 using (NetworkStream stream = client.GetStream())
                 {
                     // 1. 보낼 데이터를 압축한다.

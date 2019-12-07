@@ -8,25 +8,25 @@ namespace Suyeong.Lib.Net.Udp
 {
     public class UdpClientAsync
     {
-        IPEndPoint serverEndPoint, receiveEndPoint;
+        IPEndPoint serverEndPoint;
 
-        public UdpClientAsync(string serverIP, int serverPort, int receivePort)
+        public UdpClientAsync(string serverIP, int serverPort)
         {
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
-            this.receiveEndPoint = new IPEndPoint(address: IPAddress.Any, port: receivePort);
         }
 
         async public Task Send(IPacket sendPacket, Action<IPacket> callback)
         {
             IPacket receivePacket;
-            byte[] sendData, compressData, decompressData;
             UdpReceiveResult result;
+            byte[] sendData, compressData, decompressData;
+            IPEndPoint endPoint = new IPEndPoint(address: IPAddress.Any, port: 0);
 
             try
             {
                 // UDP는 65507를 넘는 데이터는 유실 될 수 있고 순서가 꼬일 수 있기 때문에 그보다 큰 데이터는 보내지 않는 것이 좋다.
                 // 그것을 보정하려면 그냥 tcp를 쓰는게 낫다.
-                using (UdpClient client = new UdpClient(receiveEndPoint))
+                using (UdpClient client = new UdpClient())
                 {
                     // 1. 보낼 데이터를 압축한다.
                     sendData = NetUtil.SerializeObject(data: sendPacket);
