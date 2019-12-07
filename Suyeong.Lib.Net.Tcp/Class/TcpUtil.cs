@@ -13,7 +13,7 @@ namespace Suyeong.Lib.Net.Tcp
 
             try
             {
-                using (MemoryStream memoryStream = new MemoryStream(data))
+                using (MemoryStream memoryStream = new MemoryStream(buffer: data))
                 {
                     byte[] buffer;
                     int nbytes = 0;
@@ -21,8 +21,8 @@ namespace Suyeong.Lib.Net.Tcp
                     while (dataLength > 0)
                     {
                         buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
-                        nbytes = memoryStream.Read(buffer, 0, buffer.Length);
-                        networkStream.Write(buffer, 0, buffer.Length);
+                        nbytes = memoryStream.Read(buffer: buffer, offset: 0, count: buffer.Length);
+                        networkStream.Write(buffer: buffer, offset: 0, size: buffer.Length);
                         dataLength -= nbytes;
                     }
                 }
@@ -43,7 +43,7 @@ namespace Suyeong.Lib.Net.Tcp
 
             try
             {
-                using (MemoryStream memoryStream = new MemoryStream(data))
+                using (MemoryStream memoryStream = new MemoryStream(buffer: data))
                 {
                     byte[] buffer;
                     int nbytes = 0;
@@ -51,8 +51,8 @@ namespace Suyeong.Lib.Net.Tcp
                     while (dataLength > 0)
                     {
                         buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
-                        nbytes = await memoryStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-                        await networkStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                        nbytes = await memoryStream.ReadAsync(buffer: buffer, offset: 0, count: buffer.Length).ConfigureAwait(false);
+                        await networkStream.WriteAsync(buffer: buffer, offset: 0, count: buffer.Length).ConfigureAwait(false);
                         dataLength -= nbytes;
                     }
                 }
@@ -77,8 +77,8 @@ namespace Suyeong.Lib.Net.Tcp
                 while (dataLength > 0)
                 {
                     buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
-                    nbytes = networkStream.Read(buffer, 0, buffer.Length);
-                    memoryStream.Write(buffer, 0, buffer.Length);
+                    nbytes = networkStream.Read(buffer: buffer, offset: 0, size: buffer.Length);
+                    memoryStream.Write(buffer: buffer, offset: 0, count: buffer.Length);
                     dataLength -= nbytes;
                 }
 
@@ -96,8 +96,8 @@ namespace Suyeong.Lib.Net.Tcp
                 while (dataLength > 0)
                 {
                     buffer = new byte[Consts.SIZE_MAX < dataLength ? Consts.SIZE_MAX : dataLength];
-                    nbytes = await networkStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-                    await memoryStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                    nbytes = await networkStream.ReadAsync(buffer: buffer, offset: 0, count: buffer.Length).ConfigureAwait(false);
+                    await memoryStream.WriteAsync(buffer: buffer, offset: 0, count: buffer.Length).ConfigureAwait(false);
                     dataLength -= nbytes;
                 }
 

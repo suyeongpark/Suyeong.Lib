@@ -1,4 +1,4 @@
-﻿namespace Suyeong.Lib.Net.Tcp
+﻿namespace Suyeong.Lib.Net.Lib
 {
     public enum PacketType
     {

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.DB.MsSql", "Suyeong.Lib.DB.MsSql\Suyeong.Lib.DB.MsSql.csproj", "{CFFAA8A2-0B60-4A9B-B79F-CBDC07EBBFB0}"
 EndProject
@@ -40,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.GoogleVision.OCR", "Suyeong.Lib.GoogleVision.OCR\Suyeong.Lib.GoogleVision.OCR.csproj", "{BD0809A4-D983-443B-87A1-3B5A095716C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Google.Translate", "Suyeong.Lib.Google.Translate\Suyeong.Lib.Google.Translate.csproj", "{165CF48A-F204-4DEC-B322-8A5E668660D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Net.Lib", "Suyeong.Lib.Net.Lib\Suyeong.Lib.Net.Lib.csproj", "{BE90FC4C-35D6-4F6E-AD92-5F2063B92EC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +125,10 @@ Global
 		{165CF48A-F204-4DEC-B322-8A5E668660D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{165CF48A-F204-4DEC-B322-8A5E668660D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{165CF48A-F204-4DEC-B322-8A5E668660D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE90FC4C-35D6-4F6E-AD92-5F2063B92EC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE90FC4C-35D6-4F6E-AD92-5F2063B92EC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE90FC4C-35D6-4F6E-AD92-5F2063B92EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE90FC4C-35D6-4F6E-AD92-5F2063B92EC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

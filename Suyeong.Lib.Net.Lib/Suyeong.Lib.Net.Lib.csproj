@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BF537ACB-616B-44DC-AA2E-0B506B627F9A}</ProjectGuid>
+    <ProjectGuid>{BE90FC4C-35D6-4F6E-AD92-5F2063B92EC3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Suyeong.Lib.Net.Tcp</RootNamespace>
-    <AssemblyName>Suyeong.Lib.Net.Tcp</AssemblyName>
+    <RootNamespace>Suyeong.Lib.Net.Lib</RootNamespace>
+    <AssemblyName>Suyeong.Lib.Net.Lib</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,27 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class\TcpUtil.cs" />
-    <Compile Include="Client\TcpClientSync.cs" />
-    <Compile Include="Client\TcpClientCryptSync.cs" />
-    <Compile Include="Client\TcpClientCryptCompressSync.cs" />
-    <Compile Include="Client\TcpClientCryptCompressAsync.cs" />
-    <Compile Include="Client\TcpClientCryptAsync.cs" />
-    <Compile Include="Client\TcpClientAsync.cs" />
-    <Compile Include="Data\Variables.cs" />
-    <Compile Include="Listener\TcpListenerSync.cs" />
-    <Compile Include="Listener\TcpListenerCryptSync.cs" />
-    <Compile Include="Listener\TcpListenerCryptCompressSync.cs" />
-    <Compile Include="Listener\TcpListenerCryptCompressAsync.cs" />
-    <Compile Include="Listener\TcpListenerCryptAsync.cs" />
-    <Compile Include="Listener\TcpListenerAsync.cs" />
+    <Compile Include="Interface\IPacket.cs" />
+    <Compile Include="Enum\PacketType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Suyeong.Lib.Net.Lib\Suyeong.Lib.Net.Lib.csproj">
-      <Project>{be90fc4c-35d6-4f6e-ad92-5f2063b92ec3}</Project>
-      <Name>Suyeong.Lib.Net.Lib</Name>
-    </ProjectReference>
+    <Compile Include="Class\NetUtil.cs" />
+    <Compile Include="Type\Packet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

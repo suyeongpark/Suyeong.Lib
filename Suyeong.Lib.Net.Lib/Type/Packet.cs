@@ -1,32 +1,29 @@
 ﻿using System;
 
-namespace Suyeong.Lib.Net.Tcp
+namespace Suyeong.Lib.Net.Lib
 {
     [Serializable]
-    public abstract class TcpPacket : ITcpPacket
+    public abstract class Packet : IPacket
     {
         PacketType type;
         string protocol;
-        DateTime createTime;
 
-        public TcpPacket(PacketType type, string protocol)
+        public Packet(PacketType type, string protocol)
         {
             this.type = type;
             this.protocol = protocol;
-            this.createTime = DateTime.Now;
         }
 
         public PacketType Type { get { return this.type; } }
         public string Protocol { get { return this.protocol; } }
-        public DateTime CreateTime { get { return this.createTime; } }
     }
 
     [Serializable]
-    public class TcpPacketMessage : TcpPacket
+    public class PacketMessage : Packet
     {
         object data;
 
-        public TcpPacketMessage(PacketType type, string protocol, object data) : base(type: type, protocol: protocol)
+        public PacketMessage(PacketType type, string protocol, object data) : base(type: type, protocol: protocol)
         {
             this.data = data;
         }
@@ -35,12 +32,12 @@ namespace Suyeong.Lib.Net.Tcp
     }
 
     [Serializable]
-    public class TcpPacketFile : TcpPacket
+    public class PacketFile : Packet
     {
         string fileName;
         byte[] fileData;
 
-        public TcpPacketFile(PacketType type, string protocol, string fileName, byte[] fileData) : base(type: type, protocol: protocol)
+        public PacketFile(PacketType type, string protocol, string fileName, byte[] fileData) : base(type: type, protocol: protocol)
         {
             this.fileName = fileName;
             this.fileData = fileData;

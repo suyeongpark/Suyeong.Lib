@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Suyeong.Lib.Net.Tcp
+namespace Suyeong.Lib.Net.Lib
 {
-    public interface ITcpPacket
+    public interface IPacket
     {
         PacketType Type { get; }
         string Protocol { get; }
-        DateTime CreateTime { get; }
     }
 }
