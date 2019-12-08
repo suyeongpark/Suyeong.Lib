@@ -1,22 +1,29 @@
 ﻿using System.Collections.Generic;
-using Google.Cloud.Translation.V2;
+using System.Linq;
+using Google.Api.Gax.ResourceNames;
+using Google.Cloud.Translate.V3;
 
 namespace Suyeong.Lib.GoogleVision.Translate
 {
-    public static class GoogleVisionTranslate
+    public static class GoogleVisionTranslateV3
     {
-        static TranslationClient _client;
-        static TranslationClient Client
+        public static IEnumerable<string> GetTranslate(string projectID, string locationID, Language sourceLanguage, Language targetLanguage, string text, string modelID = "general/nmt")
         {
-            get
-            {
-                if (_client == null)
-                {
-                    _client = TranslationClient.Create();
-                }
+            TranslationServiceClient client = TranslationServiceClient.Create();
 
-                return _client;
-            }
+            LocationName locationName = new LocationName(projectId: projectID, locationId: locationID);
+            TranslateTextRequest request = new TranslateTextRequest()
+            {
+                Parent = locationName.ToString(),
+                MimeType = "text/plain",
+                SourceLanguageCode = LanguageDic[sourceLanguage],
+                TargetLanguageCode = LanguageDic[targetLanguage],
+                Model = modelID,
+                Contents = { text },
+            };
+
+            TranslateTextResponse response = client.TranslateText(request);
+            return response.Translations.Select(result => result.TranslatedText);
         }
 
         static Dictionary<Language, string> _languageDic;
@@ -136,12 +143,6 @@ namespace Suyeong.Lib.GoogleVision.Translate
 
                 return _languageDic;
             }
-        }
-
-        public static string GetTranslate(string text, Language targetLanguage)
-        {
-            TranslationResult response = Client.TranslateText(text, LanguageDic[targetLanguage]);
-            return response.TranslatedText;
         }
     }
 }

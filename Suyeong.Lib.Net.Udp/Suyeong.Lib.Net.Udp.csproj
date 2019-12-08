@@ -48,7 +48,6 @@
     <Compile Include="Client\UdpClientCryptCompressSync.cs" />
     <Compile Include="Client\UdpClientCryptSync.cs" />
     <Compile Include="Client\UdpClientSync.cs" />
-    <Compile Include="Data\Variables.cs" />
     <Compile Include="Listener\UdpListenerCryptCompressAsync.cs" />
     <Compile Include="Listener\UdpListenerCryptAsync.cs" />
     <Compile Include="Listener\UdpListenerAsync.cs" />

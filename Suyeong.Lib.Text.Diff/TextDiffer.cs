@@ -5,9 +5,9 @@ namespace Suyeong.Lib.Text.Diff
 {
     public static class TextDiffer
     {
-        const double SIMILAR_LIMIT = 0.65d;
+        const double SIMILAR_THRESHOLD = 0.65d;
 
-        public static DiffResultViews DiffTexts(IEnumerable<string> mainTexts, IEnumerable<string> subTexts, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub, double similarLimit = SIMILAR_LIMIT)
+        public static DiffResultViews DiffTexts(IEnumerable<string> mainTexts, IEnumerable<string> subTexts, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub, double similarThreshold = SIMILAR_THRESHOLD)
         {
             resultDicMain = new DiffResultDic();
             resultDicSub = new DiffResultDic();
@@ -15,7 +15,7 @@ namespace Suyeong.Lib.Text.Diff
             Sentences mainSentences = ConvertSentences(mainTexts);
             Sentences subSentences = ConvertSentences(subTexts);
 
-            GetDiffResultDic(mainSentences: mainSentences, subSentences: subSentences, similarLimit: similarLimit, resultDicMain: out resultDicMain, resultDicSub: out resultDicSub);
+            GetDiffResultDic(mainSentences: mainSentences, subSentences: subSentences, similarLimit: similarThreshold, resultDicMain: out resultDicMain, resultDicSub: out resultDicSub);
 
             return ConvertResultToViews(mains: resultDicMain.GetValues(), subs: resultDicSub.GetValues());
         }
