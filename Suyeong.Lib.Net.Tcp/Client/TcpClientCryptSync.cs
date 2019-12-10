@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Suyeong.Lib.Net.Lib;
@@ -59,6 +60,14 @@ namespace Suyeong.Lib.Net.Tcp
             {
                 throw;
             }
+        }
+    }
+
+    public class TcpClientCryptSyncs : List<TcpClientCryptSync>
+    {
+        public TcpClientCryptSyncs()
+        {
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -56,6 +57,14 @@ namespace Suyeong.Lib.Net.Tcp
             {
                 throw;
             }
+        }
+    }
+
+    public class TcpClientAsyncs : List<TcpClientAsync>
+    {
+        public TcpClientAsyncs()
+        {
+
         }
     }
 }

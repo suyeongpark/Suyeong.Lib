@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -79,6 +80,14 @@ namespace Suyeong.Lib.Net.Tcp
         public void ListenerStop()
         {
             this.listener.Stop();
+        }
+    }
+
+    public class TcpListenerCryptAsyncs : List<TcpListenerCryptAsync>
+    {
+        public TcpListenerCryptAsyncs()
+        {
+
         }
     }
 }

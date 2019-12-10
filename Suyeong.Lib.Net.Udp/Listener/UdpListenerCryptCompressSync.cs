@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Suyeong.Lib.Net.Lib;
@@ -57,6 +58,14 @@ namespace Suyeong.Lib.Net.Udp
         public void ListenerStop()
         {
             listenOn = false;
+        }
+    }
+
+    public class UdpListenerCryptCompressSyncs : List<UdpListenerCryptCompressSync>
+    {
+        public UdpListenerCryptCompressSyncs()
+        {
+
         }
     }
 }
