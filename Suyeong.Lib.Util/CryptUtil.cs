@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using System.IO;
+using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Suyeong.Lib.Util
@@ -20,6 +22,22 @@ namespace Suyeong.Lib.Util
             }
 
             return sb.ToString();
+        }
+
+        public static string CryptText(string text, byte[] key, byte[] iv)
+        {
+            MemoryStream memoryStream = new MemoryStream();
+
+            using (Aes algorithm = Aes.Create())
+            using (ICryptoTransform encryptor = algorithm.CreateEncryptor(key, iv))
+            using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+            using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Compress))
+            {
+                byte[] data = StreamUtil.SerializeObject(text);
+                deflateStream.Write(data, 0, data.Length);
+            }
+
+            return string.Join("", memoryStream.ToArray());
         }
     }
 }
