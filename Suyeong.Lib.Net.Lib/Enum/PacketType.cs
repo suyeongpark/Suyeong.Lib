@@ -2,7 +2,8 @@
 {
     public enum PacketType
     {
-        Text,
+        Json,
+        Serialized,
         File,
     }
 }

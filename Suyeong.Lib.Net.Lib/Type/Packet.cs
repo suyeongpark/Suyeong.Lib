@@ -5,46 +5,48 @@ namespace Suyeong.Lib.Net.Lib
     [Serializable]
     public abstract class Packet : IPacket
     {
-        PacketType type;
-        string protocol;
-
         public Packet(PacketType type, string protocol)
         {
-            this.type = type;
-            this.protocol = protocol;
+            this.Type = type;
+            this.Protocol = protocol;
         }
 
-        public PacketType Type { get { return this.type; } }
-        public string Protocol { get { return this.protocol; } }
+        public PacketType Type { get; private set; }
+        public string Protocol { get; private set; }
     }
 
     [Serializable]
-    public class PacketText : Packet
+    public class PacketJson : Packet
     {
-        object textData;
-
-        public PacketText(PacketType type, string protocol, object textData) : base(type: type, protocol: protocol)
+        public PacketJson(PacketType type, string protocol, string json) : base(type: type, protocol: protocol)
         {
-            this.textData = textData;
+            this.Json = json;
         }
 
-        public object TextData { get { return this.textData; } }
+        public string Json { get; private set; }
+    }
+
+    [Serializable]
+    public class PacketSerialized : Packet
+    {
+        public PacketSerialized(PacketType type, string protocol, byte[] serializedData) : base(type: type, protocol: protocol)
+        {
+            this.SerializedData = serializedData;
+        }
+
+        public byte[] SerializedData { get; private set; }
     }
 
     [Serializable]
     public class PacketFile : Packet
     {
-        string fileName;
-        byte[] fileData;
-
         public PacketFile(PacketType type, string protocol, string fileName, byte[] fileData) : base(type: type, protocol: protocol)
         {
-            this.fileName = fileName;
-            this.fileData = fileData;
+            this.FileName = fileName;
+            this.FileData = fileData;
         }
 
-        public string FileName { get { return this.fileName; } }
-        public byte[] FileData { get { return this.fileData; } }
+        public string FileName { get; private set; }
+        public byte[] FileData { get; private set; }
     }
-
 }
