@@ -19,16 +19,16 @@ namespace Suyeong.Lib.Net.Lib
     }
 
     [Serializable]
-    public class PacketMessage : Packet
+    public class PacketText : Packet
     {
-        object data;
+        object textData;
 
-        public PacketMessage(PacketType type, string protocol, object data) : base(type: type, protocol: protocol)
+        public PacketText(PacketType type, string protocol, object textData) : base(type: type, protocol: protocol)
         {
-            this.data = data;
+            this.textData = textData;
         }
 
-        public object Data { get { return this.data; } }
+        public object TextData { get { return this.textData; } }
     }
 
     [Serializable]
