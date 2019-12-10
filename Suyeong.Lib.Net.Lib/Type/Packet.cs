@@ -16,6 +16,17 @@ namespace Suyeong.Lib.Net.Lib
     }
 
     [Serializable]
+    public class PacketValue : Packet
+    {
+        public PacketValue(PacketType type, string protocol, object value) : base(type: type, protocol: protocol)
+        {
+            this.Value = value;
+        }
+
+        public object Value { get; private set; }
+    }
+
+    [Serializable]
     public class PacketJson : Packet
     {
         public PacketJson(PacketType type, string protocol, string json) : base(type: type, protocol: protocol)
