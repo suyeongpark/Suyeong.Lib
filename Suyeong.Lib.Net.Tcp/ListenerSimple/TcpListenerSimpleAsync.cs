@@ -7,11 +7,11 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Tcp
 {
-    public class TcpListenerAsync
+    public class TcpListenerSimpleAsync
     {
         TcpListener listener;
 
-        public TcpListenerAsync(int portNum)
+        public TcpListenerSimpleAsync(int portNum)
         {
             this.listener = new TcpListener(new IPEndPoint(address: IPAddress.Any, port: portNum));
         }
@@ -80,7 +80,7 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpListenerAsyncs : List<TcpListenerAsync>
+    public class TcpListenerAsyncs : List<TcpListenerSimpleAsync>
     {
         public TcpListenerAsyncs()
         {

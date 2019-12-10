@@ -50,12 +50,12 @@
     <Compile Include="Client\TcpClientCryptAsync.cs" />
     <Compile Include="Client\TcpClientAsync.cs" />
     <Compile Include="Data\Variables.cs" />
-    <Compile Include="Listener\TcpListenerSync.cs" />
-    <Compile Include="Listener\TcpListenerCryptSync.cs" />
-    <Compile Include="Listener\TcpListenerCryptCompressSync.cs" />
-    <Compile Include="Listener\TcpListenerCryptCompressAsync.cs" />
-    <Compile Include="Listener\TcpListenerCryptAsync.cs" />
-    <Compile Include="Listener\TcpListenerAsync.cs" />
+    <Compile Include="ListenerSimple\TcpListenerSimpleSync.cs" />
+    <Compile Include="ListenerSimple\TcpListenerSimpleCryptSync.cs" />
+    <Compile Include="ListenerSimple\TcpListenerSimpleCryptCompressSync.cs" />
+    <Compile Include="ListenerSimple\TcpListenerSimpleCryptCompressAsync.cs" />
+    <Compile Include="ListenerSimple\TcpListenerSimpleCryptAsync.cs" />
+    <Compile Include="ListenerSimple\TcpListenerSimpleAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

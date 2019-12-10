@@ -6,12 +6,12 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Tcp
 {
-    public class TcpListenerCryptSync
+    public class TcpListenerSimpleCryptCompressSync
     {
         TcpListener listener;
         byte[] key, iv;
 
-        public TcpListenerCryptSync(int portNum, byte[] key, byte[] iv)
+        public TcpListenerSimpleCryptCompressSync(int portNum, byte[] key, byte[] iv)
         {
             this.key = key;
             this.iv = iv;
@@ -46,7 +46,7 @@ namespace Suyeong.Lib.Net.Tcp
                             receiveData = TcpUtil.ReceiveData(networkStream: stream, dataLength: receiveDataLength);
 
                             // 3. 받은 요청은 암호화되어 있으므로 푼다.
-                            decryptData = NetUtil.Decrypt(data: receiveData, key: this.key, iv: this.iv);
+                            decryptData = NetUtil.DecryptWithDecompress(data: receiveData, key: this.key, iv: this.iv);
                             receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
 
                             // 4. 요청을 처리한다.
@@ -54,7 +54,7 @@ namespace Suyeong.Lib.Net.Tcp
 
                             // 5. 처리 결과를 암호화한다.
                             sendData = NetUtil.SerializeObject(data: sendPacket);
-                            encryptData = NetUtil.Encrypt(data: sendData, key: this.key, iv: this.iv);
+                            encryptData = NetUtil.EncryptWithCompress(data: sendData, key: this.key, iv: this.iv);
 
                             // 6. 처리한 결과의 헤더를 보낸다.
                             sendDataLength = encryptData.Length;
@@ -82,9 +82,9 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpListenerCryptSyncs : List<TcpListenerCryptSync>
+    public class TcpListenerCryptCompressSyncs : List<TcpListenerSimpleCryptCompressSync>
     {
-        public TcpListenerCryptSyncs()
+        public TcpListenerCryptCompressSyncs()
         {
 
         }

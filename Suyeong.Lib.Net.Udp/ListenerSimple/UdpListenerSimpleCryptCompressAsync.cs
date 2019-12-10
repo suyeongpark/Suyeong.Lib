@@ -1,52 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Udp
 {
-    public class UdpListenerCryptSync
+    public class UdpListenerSimpleCryptCompressAsync
     {
         UdpClient listener;
         byte[] key, iv;
         bool listenOn;
 
-        public UdpListenerCryptSync(int portNum, byte[] key, byte[] iv)
+        public UdpListenerSimpleCryptCompressAsync(int portNum, byte[] key, byte[] iv)
         {
             this.listener = new UdpClient(portNum);
             this.key = key;
             this.iv = iv;
         }
 
-        public void ListenerStart(Func<IPacket, IPacket> callback)
+        async public Task ListenerStart(Func<IPacket, Task<IPacket>> callback)
         {
             listenOn = true;
 
             IPacket receivePacket, sendPacket;
-            byte[] receiveData, sendData, decryptData, encryptData;
-            IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            UdpReceiveResult result;
+            byte[] sendData, decryptData, encryptData;
 
             while (this.listenOn)
             {
                 try
                 {
                     // 1. 요청을 받는다.
-                    receiveData = listener.Receive(remoteEP: ref clientEndPoint);
+                    result = await listener.ReceiveAsync();
 
                     // 2. 요청은 압축되어 있으므로 푼다.
-                    decryptData = NetUtil.Decrypt(data: receiveData, key: this.key, iv: this.iv);
+                    decryptData = await NetUtil.DecryptWithDecompressAsync(data: result.Buffer, key: this.key, iv: this.iv);
                     receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
 
                     // 3. 요청을 처리한다.
-                    sendPacket = callback(receivePacket);
+                    sendPacket = await callback(receivePacket);
 
                     // 4. 처리 결과를 압축한다.
                     sendData = NetUtil.SerializeObject(data: sendPacket);
-                    encryptData = NetUtil.Encrypt(data: sendData, key: this.key, iv: this.iv);
+                    encryptData = await NetUtil.EncryptWithCompressAsync(data: sendData, key: this.key, iv: this.iv);
 
                     // 5. 요청을 보내온 곳으로 결과를 보낸다.
-                    listener.Send(dgram: encryptData, bytes: encryptData.Length, endPoint: clientEndPoint);
+                    await listener.SendAsync(datagram: encryptData, bytes: encryptData.Length, endPoint: result.RemoteEndPoint);
                 }
                 catch (Exception)
                 {
@@ -61,9 +61,9 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpListenerCryptSyncs : List<UdpListenerCryptSync>
+    public class UdpListenerCryptCompressAsyncs : List<UdpListenerSimpleCryptCompressAsync>
     {
-        public UdpListenerCryptSyncs()
+        public UdpListenerCryptCompressAsyncs()
         {
 
         }

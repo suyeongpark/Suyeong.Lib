@@ -48,12 +48,12 @@
     <Compile Include="Client\UdpClientCryptCompressSync.cs" />
     <Compile Include="Client\UdpClientCryptSync.cs" />
     <Compile Include="Client\UdpClientSync.cs" />
-    <Compile Include="Listener\UdpListenerCryptCompressAsync.cs" />
-    <Compile Include="Listener\UdpListenerCryptAsync.cs" />
-    <Compile Include="Listener\UdpListenerAsync.cs" />
-    <Compile Include="Listener\UdpListenerCryptCompressSync.cs" />
-    <Compile Include="Listener\UdpListenerCryptSync.cs" />
-    <Compile Include="Listener\UdpListenerSync.cs" />
+    <Compile Include="ListenerSimple\UdpListenerSimpleCryptCompressAsync.cs" />
+    <Compile Include="ListenerSimple\UdpListenerSimpleCryptAsync.cs" />
+    <Compile Include="ListenerSimple\UdpListenerSimpleAsync.cs" />
+    <Compile Include="ListenerSimple\UdpListenerSimpleCryptCompressSync.cs" />
+    <Compile Include="ListenerSimple\UdpListenerSimpleCryptSync.cs" />
+    <Compile Include="ListenerSimple\UdpListenerSimpleSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

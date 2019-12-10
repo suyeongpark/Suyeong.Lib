@@ -2,71 +2,67 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Tcp
 {
-    public class TcpListenerCryptAsync
+    public class TcpListenerSimpleSync
     {
         TcpListener listener;
-        byte[] key, iv;
 
-        public TcpListenerCryptAsync(int portNum, byte[] key, byte[] iv)
+        public TcpListenerSimpleSync(int portNum)
         {
-            this.key = key;
-            this.iv = iv;
             this.listener = new TcpListener(new IPEndPoint(address: IPAddress.Any, port: portNum));
         }
 
-        async public Task ListenerStartAsync(Func<IPacket, Task<IPacket>> callback)
+        public void ListenerStart(Func<IPacket, IPacket> callback)
         {
             this.listener.Start();
 
             IPacket receivePacket, sendPacket;
             PacketType type;
             int receiveDataLength, sendDataLength, nbytes;
-            byte[] receiveHeader, sendHeader, receiveData, sendData, decryptData, encryptData;
+            byte[] receiveHeader, sendHeader, receiveData, sendData, decompressData, compressData;
 
             while (true)
             {
                 try
                 {
-                    using (TcpClient client = await this.listener.AcceptTcpClientAsync().ConfigureAwait(false))
+                    using (TcpClient client = this.listener.AcceptTcpClient())
                     using (NetworkStream stream = client.GetStream())
                     {
                         // 1. 요청 헤더를 받는다.
                         receiveHeader = new byte[Consts.SIZE_HEADER];
-                        nbytes = await stream.ReadAsync(buffer: receiveHeader, offset: 0, count: receiveHeader.Length);
+                        nbytes = stream.Read(buffer: receiveHeader, offset: 0, size: receiveHeader.Length);
 
                         if (nbytes > 0)
                         {
                             // 2. 요청 데이터를 받는다.
                             type = (PacketType)BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
                             receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: Consts.SIZE_INDEX);  // BitConverter.ToInt32 자체가 4바이트를 읽겠다는 의미라서 Start Index만 있으면 된다.
-                            receiveData = await TcpUtil.ReceiveDataAsync(networkStream: stream, dataLength: receiveDataLength);
+                            receiveData = TcpUtil.ReceiveData(networkStream: stream, dataLength: receiveDataLength);
 
-                            // 3. 받은 요청은 암호화되어 있으므로 푼다.
-                            decryptData = await NetUtil.DecryptAsync(data: receiveData, key: this.key, iv: this.iv);
-                            receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
+                            // 3. 받은 요청은 압축되어 있으므로 푼다.
+                            decompressData = NetUtil.Decompress(data: receiveData);
+                            receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
 
                             // 4. 요청을 처리한다.
-                            sendPacket = await callback(receivePacket);
+                            sendPacket = callback(receivePacket);
 
-                            // 5. 처리 결과를 압호화한다.
+                            // 5. 처리 결과를 압축한다.
                             sendData = NetUtil.SerializeObject(data: sendPacket);
-                            encryptData = await NetUtil.EncryptAsync(data: sendData, key: this.key, iv: this.iv);
+                            compressData = NetUtil.Compress(data: sendData);
 
                             // 6. 처리한 결과의 헤더를 보낸다.
-                            sendDataLength = encryptData.Length;
+                            sendDataLength = compressData.Length;
                             sendHeader = BitConverter.GetBytes(value: sendDataLength);
-                            await stream.WriteAsync(buffer: sendHeader, offset: 0, count: sendHeader.Length);
+                            stream.Write(buffer: sendHeader, offset: 0, size: sendHeader.Length);
 
                             // 7. 처리한 결과의 데이터를 보낸다.
-                            await TcpUtil.SendDataAsync(networkStream: stream, data: encryptData, dataLength: sendDataLength);
+                            TcpUtil.SendData(networkStream: stream, data: compressData, dataLength: sendDataLength);
 
                             // 8. flush
-                            await stream.FlushAsync();
+                            stream.Flush();
                         }
                     }
                 }
@@ -83,9 +79,9 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpListenerCryptAsyncs : List<TcpListenerCryptAsync>
+    public class TcpListenerSyncs : List<TcpListenerSimpleSync>
     {
-        public TcpListenerCryptAsyncs()
+        public TcpListenerSyncs()
         {
 
         }

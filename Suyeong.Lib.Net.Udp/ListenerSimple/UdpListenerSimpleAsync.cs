@@ -1,49 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Udp
 {
-    public class UdpListenerSync
+    public class UdpListenerSimpleAsync
     {
         UdpClient listener;
         bool listenOn;
 
-        public UdpListenerSync(int portNum)
+        public UdpListenerSimpleAsync(int portNum)
         {
             this.listener = new UdpClient(portNum);
         }
 
-        public void ListenerStart(Func<IPacket, IPacket> callback)
+        async public Task ListenerStart(Func<IPacket, Task<IPacket>> callback)
         {
             listenOn = true;
 
             IPacket receivePacket, sendPacket;
-            byte[] sendData, receiveData, compressData, decompressData;
-            IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            UdpReceiveResult result;
+            byte[] sendData, compressData, decompressData;
 
             while (this.listenOn)
             {
                 try
                 {
                     // 1. 요청을 받는다.
-                    receiveData = listener.Receive(remoteEP: ref clientEndPoint);
+                    result = await listener.ReceiveAsync();
 
                     // 2. 요청은 압축되어 있으므로 푼다.
-                    decompressData = NetUtil.Decompress(data: receiveData);
+                    decompressData = await NetUtil.DecompressAsync(data: result.Buffer);
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
 
                     // 3. 요청을 처리한다.
-                    sendPacket = callback(receivePacket);
+                    sendPacket = await callback(receivePacket);
 
                     // 4. 처리 결과를 압축한다.
                     sendData = NetUtil.SerializeObject(data: sendPacket);
-                    compressData = NetUtil.Compress(data: sendData);
+                    compressData = await NetUtil.CompressAsync(data: sendData);
 
                     // 5. 요청을 보내온 곳으로 결과를 보낸다.
-                    listener.Send(dgram: compressData, bytes: compressData.Length, endPoint: clientEndPoint);
+                    await listener.SendAsync(datagram: compressData, bytes: compressData.Length, endPoint: result.RemoteEndPoint);
                 }
                 catch (Exception)
                 {
@@ -58,9 +58,9 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpListenerSyncs : List<UdpListenerSync>
+    public class UdpListenerAsyncs : List<UdpListenerSimpleAsync>
     {
-        public UdpListenerSyncs()
+        public UdpListenerAsyncs()
         {
 
         }
