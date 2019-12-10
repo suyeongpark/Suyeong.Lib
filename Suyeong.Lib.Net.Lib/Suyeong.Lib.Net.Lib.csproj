@@ -43,7 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interface\IPacket.cs" />
-    <Compile Include="Enum\PacketType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Class\NetUtil.cs" />
     <Compile Include="Type\Packet.cs" />

@@ -5,20 +5,18 @@ namespace Suyeong.Lib.Net.Lib
     [Serializable]
     public abstract class Packet : IPacket
     {
-        public Packet(PacketType type, string protocol)
+        public Packet(string protocol)
         {
-            this.Type = type;
             this.Protocol = protocol;
         }
 
-        public PacketType Type { get; private set; }
         public string Protocol { get; private set; }
     }
 
     [Serializable]
     public class PacketValue : Packet
     {
-        public PacketValue(PacketType type, string protocol, object value) : base(type: type, protocol: protocol)
+        public PacketValue(string protocol, object value) : base(protocol: protocol)
         {
             this.Value = value;
         }
@@ -29,7 +27,7 @@ namespace Suyeong.Lib.Net.Lib
     [Serializable]
     public class PacketJson : Packet
     {
-        public PacketJson(PacketType type, string protocol, string json) : base(type: type, protocol: protocol)
+        public PacketJson(string protocol, string json) : base(protocol: protocol)
         {
             this.Json = json;
         }
@@ -40,7 +38,7 @@ namespace Suyeong.Lib.Net.Lib
     [Serializable]
     public class PacketSerialized : Packet
     {
-        public PacketSerialized(PacketType type, string protocol, byte[] serializedData) : base(type: type, protocol: protocol)
+        public PacketSerialized(string protocol, byte[] serializedData) : base(protocol: protocol)
         {
             this.SerializedData = serializedData;
         }
@@ -51,7 +49,7 @@ namespace Suyeong.Lib.Net.Lib
     [Serializable]
     public class PacketFile : Packet
     {
-        public PacketFile(PacketType type, string protocol, string fileName, byte[] fileData) : base(type: type, protocol: protocol)
+        public PacketFile(string protocol, string fileName, byte[] fileData) : base(protocol: protocol)
         {
             this.FileName = fileName;
             this.FileData = fileData;

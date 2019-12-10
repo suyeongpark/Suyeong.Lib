@@ -20,7 +20,6 @@ namespace Suyeong.Lib.Net.Tcp
             this.listener.Start();
 
             IPacket receivePacket, sendPacket;
-            PacketType type;
             int receiveDataLength, sendDataLength, nbytes;
             byte[] receiveHeader, sendHeader, receiveData, sendData, decompressData, compressData;
 
@@ -38,8 +37,7 @@ namespace Suyeong.Lib.Net.Tcp
                         if (nbytes > 0)
                         {
                             // 2. 요청 데이터를 받는다.
-                            type = (PacketType)BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
-                            receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: Consts.SIZE_INDEX);  // BitConverter.ToInt32 자체가 4바이트를 읽겠다는 의미라서 Start Index만 있으면 된다.
+                            receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
                             receiveData = TcpUtil.ReceiveData(networkStream: stream, dataLength: receiveDataLength);
 
                             // 3. 받은 요청은 압축되어 있으므로 푼다.

@@ -39,8 +39,7 @@ namespace Suyeong.Lib.Net.Tcp
                     int nbytes = stream.Read(buffer: receiveHeader, offset: 0, size: receiveHeader.Length);
 
                     // 5. 결과의 데이터를 받는다.
-                    PacketType type = (PacketType)BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
-                    int receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: Consts.SIZE_INDEX);  // BitConverter.ToInt32 자체가 4바이트를 읽겠다는 의미라서 Start Index만 있으면 된다.
+                    int receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
                     byte[] receiveData = TcpUtil.ReceiveData(networkStream: stream, dataLength: receiveDataLength);
 
                     // 6. 결과는 압축되어 있으므로 푼다.
