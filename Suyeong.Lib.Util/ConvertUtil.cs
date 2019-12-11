@@ -47,11 +47,35 @@ namespace Suyeong.Lib.Util
             return num;
         }
 
+        public static uint StringToUint(string str)
+        {
+            uint num = 0;
+
+            if (!uint.TryParse(str, out num))
+            {
+                // error!
+            }
+
+            return num;
+        }
+
         public static long StringToLong(string str)
         {
             long num = -1;
 
             if (!long.TryParse(str, out num))
+            {
+                // error!
+            }
+
+            return num;
+        }
+
+        public static ulong StringToUlong(string str)
+        {
+            ulong num = 0;
+
+            if (!ulong.TryParse(str, out num))
             {
                 // error!
             }
