@@ -65,9 +65,9 @@ namespace Suyeong.Lib.Net.Tcp
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    Console.WriteLine(ex);
                 }
             }
         }

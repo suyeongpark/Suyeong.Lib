@@ -48,9 +48,9 @@ namespace Suyeong.Lib.Net.Udp
                     // 5. 요청을 보내온 곳으로 결과를 보낸다.
                     listener.Send(dgram: encryptData, bytes: encryptData.Length, endPoint: clientEndPoint);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    Console.WriteLine(ex);
                 }
             }
         }

@@ -45,9 +45,9 @@ namespace Suyeong.Lib.Net.Udp
                     // 5. 요청을 보내온 곳으로 결과를 보낸다.
                     await listener.SendAsync(datagram: compressData, bytes: compressData.Length, endPoint: result.RemoteEndPoint);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    Console.WriteLine(ex);
                 }
             }
         }

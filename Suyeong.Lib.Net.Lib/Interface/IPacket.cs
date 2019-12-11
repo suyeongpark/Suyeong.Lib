@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Suyeong.Lib.Net.Lib
+﻿namespace Suyeong.Lib.Net.Lib
 {
     public interface IPacket
     {

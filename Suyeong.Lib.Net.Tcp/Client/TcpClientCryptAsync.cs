@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Suyeong.Lib.Net.Lib;
@@ -9,21 +8,25 @@ namespace Suyeong.Lib.Net.Tcp
 {
     public class TcpClientCryptAsync
     {
-        IPEndPoint serverEndPoint;
+        string serverIP;
+        int serverPort;
         byte[] key, iv;
 
         public TcpClientCryptAsync(string serverIP, int serverPort, byte[] key, byte[] iv)
         {
-            this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
+            this.serverIP = serverIP;
+            this.serverPort = serverPort;
             this.key = key;
             this.iv = iv;
         }
 
         async public Task<IPacket> Send(IPacket sendPacket)
         {
+            IPacket receivePacket = default;
+
             try
             {
-                using (TcpClient client = new TcpClient(localEP: this.serverEndPoint))
+                using (TcpClient client = new TcpClient(hostname: this.serverIP, port: this.serverPort))
                 using (NetworkStream stream = client.GetStream())
                 {
                     // 1. 보낼 데이터를 압축한다.
@@ -48,7 +51,7 @@ namespace Suyeong.Lib.Net.Tcp
 
                     // 6. 결과는 압축되어 있으므로 푼다.
                     byte[] decryptData = await NetUtil.DecryptAsync(data: receiveData, key: this.key, iv: this.iv);
-                    IPacket receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
+                    receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
 
                     await stream.FlushAsync();
 
@@ -56,10 +59,12 @@ namespace Suyeong.Lib.Net.Tcp
                     return receivePacket;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex);
             }
+
+            return receivePacket;
         }
     }
 

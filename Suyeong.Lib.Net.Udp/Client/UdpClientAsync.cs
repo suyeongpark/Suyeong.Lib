@@ -18,6 +18,8 @@ namespace Suyeong.Lib.Net.Udp
 
         async public Task<IPacket> Send(IPacket sendPacket)
         {
+            IPacket receivePacket = default;
+
             try
             {
                 // UDP는 65507를 넘는 데이터는 유실 될 수 있고 순서가 꼬일 수 있기 때문에 그보다 큰 데이터는 보내지 않는 것이 좋다.
@@ -36,16 +38,15 @@ namespace Suyeong.Lib.Net.Udp
 
                     // 4. 결과는 압축되어 있으므로 푼다.
                     byte[] decompressData = await NetUtil.DecompressAsync(data: result.Buffer);
-                    IPacket receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
-
-                    // 5. 결과를 처리한다.
-                    return receivePacket;
+                    receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex);
             }
+
+            return receivePacket;
         }
     }
 
