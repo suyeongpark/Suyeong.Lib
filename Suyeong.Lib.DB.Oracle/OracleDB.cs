@@ -183,11 +183,9 @@ namespace Suyeong.Lib.DB.Oracle
                             command.ArrayBindCount = bindCount;
                         }
 
-                        command.ExecuteNonQuery();
+                        result = command.ExecuteNonQuery() > 0;
                     }
                 }
-
-                result = true;
             }
             catch (Exception)
             {
@@ -223,11 +221,9 @@ namespace Suyeong.Lib.DB.Oracle
                             command.ArrayBindCount = bindCount;
                         }
 
-                        await command.ExecuteNonQueryAsync();
+                        result = await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
-
-                result = true;
             }
             catch (Exception)
             {

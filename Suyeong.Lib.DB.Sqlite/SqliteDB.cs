@@ -180,11 +180,9 @@ namespace Suyeong.Lib.DB.Sqlite
                             }
                         }
 
-                        command.ExecuteNonQuery();
+                        result = command.ExecuteNonQuery() > 0;
                     }
                 }
-
-                result = true;
             }
             catch (Exception)
             {
@@ -214,11 +212,9 @@ namespace Suyeong.Lib.DB.Sqlite
                             }
                         }
 
-                        await command.ExecuteNonQueryAsync();
+                        result = await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
-
-                result = true;
             }
             catch (Exception)
             {

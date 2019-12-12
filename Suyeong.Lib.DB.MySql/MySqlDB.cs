@@ -185,11 +185,9 @@ namespace Suyeong.Lib.DB.MySql
                             }
                         }
 
-                        command.ExecuteNonQuery();
+                        result = command.ExecuteNonQuery() > 0;
                     }
                 }
-
-                result = true;
             }
             catch (Exception)
             {
@@ -219,11 +217,9 @@ namespace Suyeong.Lib.DB.MySql
                             }
                         }
 
-                        await command.ExecuteNonQueryAsync();
+                        result = await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
-
-                result = true;
             }
             catch (Exception)
             {

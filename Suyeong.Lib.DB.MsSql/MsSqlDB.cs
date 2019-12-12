@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -7,9 +8,9 @@ namespace Suyeong.Lib.DB.MsSql
 {
     public static class MsSqlDB
     {
-        public static string GetDbConStr(string id, string password, string serverIP, string databaseName)
+        public static string GetDbConStr(string id, string password, string serverName, string databaseName)
         {
-            return $"Persist Security Info=False;User ID={id};Password={password};Server={serverIP};Database={databaseName};";
+            return $"Persist Security Info=False;User ID={id};Password={password};Server={serverName};Database={databaseName};";
         }
 
         public static object GetDataSingle(string conStr, string query, SqlParameter[] parameters = null)
@@ -246,11 +247,41 @@ namespace Suyeong.Lib.DB.MsSql
                             }
                         }
 
-                        await command.ExecuteNonQueryAsync();
+                        result = await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
-                result = true;
+            return result;
+        }
+
+        async public static Task<bool> SetQueryAsync(string conStr, string query, List<SqlParameter[]> parametersList)
+        {
+            bool result = false;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(conStr))
+                {
+                    connection.Open();
+
+                    foreach (SqlParameter[] parameters in parametersList)
+                    {
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            foreach (SqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
+                            }
+
+                            result = await command.ExecuteNonQueryAsync() > 0;
+                        }
+                    }
+                }
             }
             catch (Exception)
             {
