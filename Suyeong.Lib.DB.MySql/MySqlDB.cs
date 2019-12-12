@@ -9,8 +9,8 @@ namespace Suyeong.Lib.DB.MySql
     {
         // mysql bulk insert는 아래 링크 참조.
         // https://dev.mysql.com/doc/refman/5.7/en/insert.html
-        // Oracle이나 MsSql과 달리 별도의 파라미터가 있지는 않고 그냥 values를 여러 번 다넘긴.
-        // INSERT INTO tbl_name (a,b,c) VALUES(1,2,3),(4,5,6),(7,8,9);
+        // Oracle이나 MsSql과 달리 별도의 파라미터가 있지는 않고 그냥 values를 여러 번 넘긴다.
+        // insert into TABLE_NAME (a,b,c) values (1,2,3),(4,5,6),(7,8,9);
 
         public static string GetDbConStr(string serverIP, string databaseName, string uid, string password)
         {
@@ -23,11 +23,11 @@ namespace Suyeong.Lib.DB.MySql
 
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(conStr))
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
                     {
                         if (parameters != null)
                         {
@@ -55,11 +55,11 @@ namespace Suyeong.Lib.DB.MySql
 
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(conStr))
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
                     {
 
                         if (parameters != null)
@@ -88,13 +88,12 @@ namespace Suyeong.Lib.DB.MySql
 
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(conStr))
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
                     {
-
                         if (parameters != null)
                         {
                             foreach (MySqlParameter parameter in parameters)
@@ -130,11 +129,11 @@ namespace Suyeong.Lib.DB.MySql
 
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(conStr))
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
                     {
                         if (parameters != null)
                         {
@@ -167,25 +166,45 @@ namespace Suyeong.Lib.DB.MySql
 
         public static bool SetQuery(string conStr, string query, MySqlParameter[] parameters = null)
         {
-            bool result = false;
+            int result = 0;
 
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(conStr))
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlTransaction transaction = connection.BeginTransaction())
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
                     {
-                        if (parameters != null)
+                        try
                         {
-                            foreach (MySqlParameter parameter in parameters)
+                            if (parameters != null)
                             {
-                                command.Parameters.Add(parameter);
+                                foreach (MySqlParameter parameter in parameters)
+                                {
+                                    command.Parameters.Add(parameter);
+                                }
+                            }
+
+                            result = command.ExecuteNonQuery();
+
+                            if (result > 0)
+                            {
+                                command.Transaction.Commit();
                             }
                         }
-
-                        result = command.ExecuteNonQuery() > 0;
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                command.Transaction.Rollback();
+                            }
+                            catch (MySqlException)
+                            {
+                                throw;
+                            }
+                        }
                     }
                 }
             }
@@ -194,30 +213,50 @@ namespace Suyeong.Lib.DB.MySql
                 throw;
             }
 
-            return result;
+            return result > 0;
         }
 
         async public static Task<bool> SetQueryAsync(string conStr, string query, MySqlParameter[] parameters = null)
         {
-            bool result = false;
+            int result = 0;
 
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(conStr))
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    using (MySqlTransaction transaction = connection.BeginTransaction())
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
                     {
-                        if (parameters != null)
+                        try
                         {
-                            foreach (MySqlParameter parameter in parameters)
+                            if (parameters != null)
                             {
-                                command.Parameters.Add(parameter);
+                                foreach (MySqlParameter parameter in parameters)
+                                {
+                                    command.Parameters.Add(parameter);
+                                }
+                            }
+
+                            result = await command.ExecuteNonQueryAsync();
+
+                            if (result > 0)
+                            {
+                                command.Transaction.Commit();
                             }
                         }
-
-                        result = await command.ExecuteNonQueryAsync() > 0;
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                command.Transaction.Rollback();
+                            }
+                            catch (MySqlException)
+                            {
+                                throw;
+                            }
+                        }
                     }
                 }
             }
@@ -226,7 +265,7 @@ namespace Suyeong.Lib.DB.MySql
                 throw;
             }
 
-            return result;
+            return result > 0;
         }
     }
 }

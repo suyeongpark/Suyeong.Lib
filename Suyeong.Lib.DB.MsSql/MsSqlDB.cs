@@ -19,11 +19,11 @@ namespace Suyeong.Lib.DB.MsSql
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(conStr))
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
                     {
                         if (parameters != null)
                         {
@@ -51,11 +51,11 @@ namespace Suyeong.Lib.DB.MsSql
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(conStr))
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
                     {
 
                         if (parameters != null)
@@ -84,11 +84,11 @@ namespace Suyeong.Lib.DB.MsSql
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(conStr))
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
                     {
                         if (parameters != null)
                         {
@@ -125,11 +125,11 @@ namespace Suyeong.Lib.DB.MsSql
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(conStr))
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
                     {
                         if (parameters != null)
                         {
@@ -162,36 +162,54 @@ namespace Suyeong.Lib.DB.MsSql
 
         public static bool SetQuery(string conStr, string query, SqlParameter[] parameters = null)
         {
-            bool result = false;
+            int result = 0;
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(conStr))
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
                     {
-                        if (parameters != null)
+                        try
                         {
-                            foreach (SqlParameter parameter in parameters)
+                            if (parameters != null)
                             {
-                                command.Parameters.Add(parameter);
+                                foreach (SqlParameter parameter in parameters)
+                                {
+                                    command.Parameters.Add(parameter);
+                                }
+                            }
+
+                            result = command.ExecuteNonQuery();
+
+                            if (result > 0)
+                            {
+                                command.Transaction.Commit();
                             }
                         }
-
-                        command.ExecuteNonQuery();
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                command.Transaction.Rollback();
+                            }
+                            catch (SqlException)
+                            {
+                                throw;
+                            }
+                        }
                     }
                 }
-
-                result = true;
             }
             catch (Exception)
             {
                 throw;
             }
 
-            return result;
+            return result > 0;
         }
 
         public static bool SetQuery(string conStr, DataTable table)
@@ -200,24 +218,39 @@ namespace Suyeong.Lib.DB.MsSql
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(conStr))
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection: connection, copyOptions: SqlBulkCopyOptions.Default, externalTransaction: transaction))
                     {
-                        bulkCopy.DestinationTableName = table.TableName;
-
-                        foreach (DataColumn column in table.Columns)
+                        try
                         {
-                            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
-                        }
+                            bulkCopy.DestinationTableName = table.TableName;
 
-                        bulkCopy.WriteToServer(table);
+                            foreach (DataColumn column in table.Columns)
+                            {
+                                bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                            }
+
+                            bulkCopy.WriteToServer(table);
+                            transaction.Commit();
+                            result = true;
+                        }
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                transaction.Rollback();
+                            }
+                            catch (SqlException)
+                            {
+                                throw;
+                            }
+                        }
                     }
                 }
-
-                result = true;
             }
             catch (Exception)
             {
@@ -229,56 +262,44 @@ namespace Suyeong.Lib.DB.MsSql
 
         async public static Task<bool> SetQueryAsync(string conStr, string query, SqlParameter[] parameters = null)
         {
-            bool result = false;
+            int result = 0;
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(conStr))
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
                     {
-                        if (parameters != null)
+                        try
                         {
-                            foreach (SqlParameter parameter in parameters)
+                            if (parameters != null)
                             {
-                                command.Parameters.Add(parameter);
+                                foreach (SqlParameter parameter in parameters)
+                                {
+                                    command.Parameters.Add(parameter);
+                                }
+                            }
+
+                            result = await command.ExecuteNonQueryAsync();
+
+                            if (result > 0)
+                            {
+                                command.Transaction.Commit();
                             }
                         }
-
-                        result = await command.ExecuteNonQueryAsync() > 0;
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return result;
-        }
-
-        async public static Task<bool> SetQueryAsync(string conStr, string query, List<SqlParameter[]> parametersList)
-        {
-            bool result = false;
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(conStr))
-                {
-                    connection.Open();
-
-                    foreach (SqlParameter[] parameters in parametersList)
-                    {
-                        using (SqlCommand command = new SqlCommand(query, connection))
+                        catch (Exception)
                         {
-                            foreach (SqlParameter parameter in parameters)
+                            try
                             {
-                                command.Parameters.Add(parameter);
+                                command.Transaction.Rollback();
                             }
-
-                            result = await command.ExecuteNonQueryAsync() > 0;
+                            catch (SqlException)
+                            {
+                                throw;
+                            }
                         }
                     }
                 }
@@ -288,7 +309,7 @@ namespace Suyeong.Lib.DB.MsSql
                 throw;
             }
 
-            return result;
+            return result > 0;
         }
 
         async public static Task<bool> SetQueryAsync(string conStr, DataTable table)
@@ -297,24 +318,39 @@ namespace Suyeong.Lib.DB.MsSql
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(conStr))
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection: connection, copyOptions: SqlBulkCopyOptions.Default, externalTransaction: transaction))
                     {
-                        bulkCopy.DestinationTableName = table.TableName;
-
-                        foreach (DataColumn column in table.Columns)
+                        try
                         {
-                            bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
-                        }
+                            bulkCopy.DestinationTableName = table.TableName;
 
-                        await bulkCopy.WriteToServerAsync(table);
+                            foreach (DataColumn column in table.Columns)
+                            {
+                                bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                            }
+
+                            await bulkCopy.WriteToServerAsync(table);
+                            transaction.Commit();
+                            result = true;
+                        }
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                transaction.Rollback();
+                            }
+                            catch (SqlException)
+                            {
+                                throw;
+                            }
+                        }
                     }
                 }
-
-                result = true;
             }
             catch (Exception)
             {

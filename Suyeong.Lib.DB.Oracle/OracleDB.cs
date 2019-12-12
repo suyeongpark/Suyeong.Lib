@@ -18,11 +18,11 @@ namespace Suyeong.Lib.DB.Oracle
 
             try
             {
-                using (OracleConnection connection = new OracleConnection(conStr))
+                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(query, connection))
+                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
                     {
                         if (parameters != null)
                         {
@@ -50,11 +50,11 @@ namespace Suyeong.Lib.DB.Oracle
 
             try
             {
-                using (OracleConnection connection = new OracleConnection(conStr))
+                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(query, connection))
+                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
                     {
                         if (parameters != null)
                         {
@@ -82,11 +82,11 @@ namespace Suyeong.Lib.DB.Oracle
 
             try
             {
-                using (OracleConnection connection = new OracleConnection(conStr))
+                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(query, connection))
+                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
                     {
                         if (parameters != null)
                         {
@@ -123,11 +123,11 @@ namespace Suyeong.Lib.DB.Oracle
 
             try
             {
-                using (OracleConnection connection = new OracleConnection(conStr))
+                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(query, connection))
+                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
                     {
                         if (parameters != null)
                         {
@@ -160,30 +160,53 @@ namespace Suyeong.Lib.DB.Oracle
 
         public static bool SetQuery(string conStr, string query, OracleParameter[] parameters = null, int bindCount = 0)
         {
-            bool result = false;
+            int result = 0;
 
             try
             {
-                using (OracleConnection connection = new OracleConnection(conStr))
+                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(query, connection))
+                    using (OracleTransaction transaction = connection.BeginTransaction())
+                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
                     {
-                        if (parameters != null)
+                        command.Transaction = transaction;
+
+                        try
                         {
-                            foreach (OracleParameter parameter in parameters)
+
+                            if (parameters != null)
                             {
-                                command.Parameters.Add(parameter);
+                                foreach (OracleParameter parameter in parameters)
+                                {
+                                    command.Parameters.Add(parameter);
+                                }
+                            }
+
+                            if (bindCount > 0)
+                            {
+                                command.ArrayBindCount = bindCount;
+                            }
+
+                            result = command.ExecuteNonQuery();
+
+                            if (result > 0)
+                            {
+                                command.Transaction.Commit();
                             }
                         }
-
-                        if (bindCount > 0)
+                        catch (Exception)
                         {
-                            command.ArrayBindCount = bindCount;
+                            try
+                            {
+                                command.Transaction.Rollback();
+                            }
+                            catch (OracleException)
+                            {
+                                throw;
+                            }
                         }
-
-                        result = command.ExecuteNonQuery() > 0;
                     }
                 }
             }
@@ -192,36 +215,58 @@ namespace Suyeong.Lib.DB.Oracle
                 throw;
             }
 
-            return result;
+            return result > 0;
         }
 
         async public static Task<bool> SetQueryAsync(string conStr, string query, OracleParameter[] parameters = null, int bindCount = 0)
         {
-            bool result = false;
+            int result = 0;
 
             try
             {
-                using (OracleConnection connection = new OracleConnection(conStr))
+                using (OracleConnection connection = new OracleConnection(connectionString: conStr))
                 {
                     connection.Open();
 
-                    using (OracleCommand command = new OracleCommand(query, connection))
+                    using (OracleTransaction transaction = connection.BeginTransaction())
+                    using (OracleCommand command = new OracleCommand(cmdText: query, conn: connection))
                     {
+                        command.Transaction = transaction;
 
-                        if (parameters != null)
+                        try
                         {
-                            foreach (OracleParameter parameter in parameters)
+
+                            if (parameters != null)
                             {
-                                command.Parameters.Add(parameter);
+                                foreach (OracleParameter parameter in parameters)
+                                {
+                                    command.Parameters.Add(parameter);
+                                }
+                            }
+
+                            if (bindCount > 0)
+                            {
+                                command.ArrayBindCount = bindCount;
+                            }
+
+                            result = await command.ExecuteNonQueryAsync();
+
+                            if (result > 0)
+                            {
+                                command.Transaction.Commit();
                             }
                         }
-
-                        if (bindCount > 0)
+                        catch (Exception)
                         {
-                            command.ArrayBindCount = bindCount;
+                            try
+                            {
+                                command.Transaction.Rollback();
+                            }
+                            catch (OracleException)
+                            {
+                                throw;
+                            }
                         }
-
-                        result = await command.ExecuteNonQueryAsync() > 0;
                     }
                 }
             }
@@ -230,7 +275,7 @@ namespace Suyeong.Lib.DB.Oracle
                 throw;
             }
 
-            return result;
+            return result > 0;
         }
     }
 }
