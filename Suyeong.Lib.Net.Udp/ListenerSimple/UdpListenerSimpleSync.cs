@@ -16,6 +16,16 @@ namespace Suyeong.Lib.Net.Udp
             this.listener = new UdpClient(portNum);
         }
 
+        ~UdpListenerSimpleSync()
+        {
+            this.listener.Close();
+        }
+
+        public EndPoint LocalEndPoint
+        {
+            get { return this.listener.Client.LocalEndPoint; }
+        }
+
         public void ListenerStart(Func<IPacket, IPacket> callback)
         {
             listenOn = true;

@@ -19,6 +19,16 @@ namespace Suyeong.Lib.Net.Udp
             this.iv = iv;
         }
 
+        ~UdpListenerSimpleCryptSync()
+        {
+            this.listener.Close();
+        }
+
+        public EndPoint LocalEndPoint
+        {
+            get { return this.listener.Client.LocalEndPoint; }
+        }
+
         public void ListenerStart(Func<IPacket, IPacket> callback)
         {
             listenOn = true;

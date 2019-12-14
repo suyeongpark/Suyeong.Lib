@@ -19,6 +19,16 @@ namespace Suyeong.Lib.Net.Tcp
             this.listener = new TcpListener(new IPEndPoint(address: IPAddress.Any, port: portNum));
         }
 
+        ~TcpListenerSimpleCryptAsync()
+        {
+            this.listener.Stop();
+        }
+
+        public EndPoint LocalEndPoint
+        {
+            get { return this.listener.LocalEndpoint; }
+        }
+
         async public Task ListenerStartAsync(Func<IPacket, Task<IPacket>> callback)
         {
             this.listener.Start();
@@ -73,11 +83,6 @@ namespace Suyeong.Lib.Net.Tcp
                     Console.WriteLine(ex);
                 }
             }
-        }
-
-        public void ListenerStop()
-        {
-            this.listener.Stop();
         }
     }
 

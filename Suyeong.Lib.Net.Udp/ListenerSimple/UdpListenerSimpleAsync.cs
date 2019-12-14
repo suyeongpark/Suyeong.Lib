@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Suyeong.Lib.Net.Lib;
@@ -14,6 +15,16 @@ namespace Suyeong.Lib.Net.Udp
         public UdpListenerSimpleAsync(int portNum)
         {
             this.listener = new UdpClient(portNum);
+        }
+
+        ~UdpListenerSimpleAsync()
+        {
+            this.listener.Close();
+        }
+
+        public EndPoint LocalEndPoint
+        {
+            get { return this.listener.Client.LocalEndPoint; }
         }
 
         async public Task ListenerStart(Func<IPacket, Task<IPacket>> callback)
