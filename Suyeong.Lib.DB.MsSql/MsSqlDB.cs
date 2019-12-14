@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -13,7 +12,7 @@ namespace Suyeong.Lib.DB.MsSql
             return $"Persist Security Info=False;User ID={id};Password={password};Server={serverName};Database={databaseName};";
         }
 
-        public static object GetDataSingle(string conStr, string query, SqlParameter[] parameters = null)
+        public static object GetDataSingle(string conStr, string query)
         {
             object scalar = null;
 
@@ -25,12 +24,33 @@ namespace Suyeong.Lib.DB.MsSql
 
                     using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
                     {
-                        if (parameters != null)
+                        scalar = command.ExecuteScalar();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return scalar;
+        }
+
+        public static object GetDataSingle(string conStr, string query, SqlParameter[] parameters)
+        {
+            object scalar = null;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                    {
+                        foreach (SqlParameter parameter in parameters)
                         {
-                            foreach (SqlParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
+                            command.Parameters.Add(parameter);
                         }
 
                         scalar = command.ExecuteScalar();
@@ -45,7 +65,7 @@ namespace Suyeong.Lib.DB.MsSql
             return scalar;
         }
 
-        async public static Task<object> GetDataSingleAsync(string conStr, string query, SqlParameter[] parameters = null)
+        async public static Task<object> GetDataSingleAsync(string conStr, string query)
         {
             object scalar = null;
 
@@ -57,13 +77,33 @@ namespace Suyeong.Lib.DB.MsSql
 
                     using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
                     {
+                        scalar = await command.ExecuteScalarAsync();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
-                        if (parameters != null)
+            return scalar;
+        }
+
+        async public static Task<object> GetDataSingleAsync(string conStr, string query, SqlParameter[] parameters)
+        {
+            object scalar = null;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                    {
+                        foreach (SqlParameter parameter in parameters)
                         {
-                            foreach (SqlParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
+                            command.Parameters.Add(parameter);
                         }
 
                         scalar = await command.ExecuteScalarAsync();
@@ -78,7 +118,7 @@ namespace Suyeong.Lib.DB.MsSql
             return scalar;
         }
 
-        public static DataTable GetDataTable(string conStr, string query, SqlParameter[] parameters = null)
+        public static DataTable GetDataTable(string conStr, string query)
         {
             DataTable table = new DataTable();
 
@@ -89,20 +129,41 @@ namespace Suyeong.Lib.DB.MsSql
                     connection.Open();
 
                     using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                    using (SqlDataAdapter adapter = new SqlDataAdapter())
                     {
-                        if (parameters != null)
+                        adapter.SelectCommand = command;
+                        adapter.Fill(table);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return table;
+        }
+
+        public static DataTable GetDataTable(string conStr, string query, SqlParameter[] parameters)
+        {
+            DataTable table = new DataTable();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                    using (SqlDataAdapter adapter = new SqlDataAdapter())
+                    {
+                        foreach (SqlParameter parameter in parameters)
                         {
-                            foreach (SqlParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
+                            command.Parameters.Add(parameter);
                         }
 
-                        using (SqlDataAdapter adapter = new SqlDataAdapter())
-                        {
-                            adapter.SelectCommand = command;
-                            adapter.Fill(table);
-                        }
+                        adapter.SelectCommand = command;
+                        adapter.Fill(table);
                     }
                 }
             }
@@ -119,7 +180,7 @@ namespace Suyeong.Lib.DB.MsSql
             return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters));
         }
 
-        public static DataSet GetDataSet(string conStr, string query, SqlParameter[] parameters = null)
+        public static DataSet GetDataSet(string conStr, string query)
         {
             DataSet dataSet = new DataSet();
 
@@ -130,20 +191,41 @@ namespace Suyeong.Lib.DB.MsSql
                     connection.Open();
 
                     using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                    using (SqlDataAdapter adapter = new SqlDataAdapter())
                     {
-                        if (parameters != null)
+                        adapter.SelectCommand = command;
+                        adapter.Fill(dataSet);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return dataSet;
+        }
+
+        public static DataSet GetDataSet(string conStr, string query, SqlParameter[] parameters)
+        {
+            DataSet dataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection))
+                    using (SqlDataAdapter adapter = new SqlDataAdapter())
+                    {
+                        foreach (SqlParameter parameter in parameters)
                         {
-                            foreach (SqlParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
+                            command.Parameters.Add(parameter);
                         }
 
-                        using (SqlDataAdapter adapter = new SqlDataAdapter())
-                        {
-                            adapter.SelectCommand = command;
-                            adapter.Fill(dataSet);
-                        }
+                        adapter.SelectCommand = command;
+                        adapter.Fill(dataSet);
                     }
                 }
             }
@@ -160,7 +242,7 @@ namespace Suyeong.Lib.DB.MsSql
             return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters));
         }
 
-        public static bool SetQuery(string conStr, string query, SqlParameter[] parameters = null)
+        public static bool SetQuery(string conStr, string query)
         {
             int result = 0;
 
@@ -175,12 +257,53 @@ namespace Suyeong.Lib.DB.MsSql
                     {
                         try
                         {
-                            if (parameters != null)
+                            result = command.ExecuteNonQuery();
+
+                            if (result > 0)
                             {
-                                foreach (SqlParameter parameter in parameters)
-                                {
-                                    command.Parameters.Add(parameter);
-                                }
+                                command.Transaction.Commit();
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                command.Transaction.Rollback();
+                            }
+                            catch (SqlException)
+                            {
+                                throw;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result > 0;
+        }
+
+        public static bool SetQuery(string conStr, string query, SqlParameter[] parameters)
+        {
+            int result = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    {
+                        try
+                        {
+                            foreach (SqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
                             }
 
                             result = command.ExecuteNonQuery();
@@ -260,7 +383,7 @@ namespace Suyeong.Lib.DB.MsSql
             return result;
         }
 
-        async public static Task<bool> SetQueryAsync(string conStr, string query, SqlParameter[] parameters = null)
+        async public static Task<bool> SetQueryAsync(string conStr, string query)
         {
             int result = 0;
 
@@ -275,12 +398,53 @@ namespace Suyeong.Lib.DB.MsSql
                     {
                         try
                         {
-                            if (parameters != null)
+                            result = await command.ExecuteNonQueryAsync();
+
+                            if (result > 0)
                             {
-                                foreach (SqlParameter parameter in parameters)
-                                {
-                                    command.Parameters.Add(parameter);
-                                }
+                                command.Transaction.Commit();
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            try
+                            {
+                                command.Transaction.Rollback();
+                            }
+                            catch (SqlException)
+                            {
+                                throw;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result > 0;
+        }
+
+        async public static Task<bool> SetQueryAsync(string conStr, string query, SqlParameter[] parameters)
+        {
+            int result = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    using (SqlCommand command = new SqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    {
+                        try
+                        {
+                            foreach (SqlParameter parameter in parameters)
+                            {
+                                command.Parameters.Add(parameter);
                             }
 
                             result = await command.ExecuteNonQueryAsync();
