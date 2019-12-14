@@ -5,12 +5,12 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Tcp
 {
-    public class TcpClientSync
+    public class TcpClientSimpleSync
     {
         string serverIP;
         int serverPort;
 
-        public TcpClientSync(string serverIP, int serverPort)
+        public TcpClientSimpleSync(string serverIP, int serverPort)
         {
             this.serverIP = serverIP;
             this.serverPort = serverPort;
@@ -37,6 +37,8 @@ namespace Suyeong.Lib.Net.Tcp
                     // 3. 요청을 보낸다.
                     TcpUtil.SendData(networkStream: stream, data: compressData, dataLength: sendDataLength);
 
+                    stream.Flush();
+
                     // 4. 결과의 헤더를 받는다.
                     byte[] receiveHeader = new byte[Consts.SIZE_HEADER];
                     int nbytes = stream.Read(buffer: receiveHeader, offset: 0, size: receiveHeader.Length);
@@ -45,11 +47,11 @@ namespace Suyeong.Lib.Net.Tcp
                     int receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
                     byte[] receiveData = TcpUtil.ReceiveData(networkStream: stream, dataLength: receiveDataLength);
 
+                    stream.Flush();
+
                     // 6. 결과는 압축되어 있으므로 푼다.
                     byte[] decompressData = NetUtil.Decompress(data: receiveData);
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
-
-                    stream.Flush();
                 }
             }
             catch (Exception ex)
@@ -61,7 +63,7 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpClientSyncs : List<TcpClientSync>
+    public class TcpClientSyncs : List<TcpClientSimpleSync>
     {
         public TcpClientSyncs()
         {

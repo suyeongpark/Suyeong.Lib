@@ -6,13 +6,13 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Tcp
 {
-    public class TcpClientCryptAsync
+    public class TcpClientSimpleCryptAsync
     {
         string serverIP;
         int serverPort;
         byte[] key, iv;
 
-        public TcpClientCryptAsync(string serverIP, int serverPort, byte[] key, byte[] iv)
+        public TcpClientSimpleCryptAsync(string serverIP, int serverPort, byte[] key, byte[] iv)
         {
             this.serverIP = serverIP;
             this.serverPort = serverPort;
@@ -41,6 +41,8 @@ namespace Suyeong.Lib.Net.Tcp
                     // 3. 요청을 보낸다.
                     await TcpUtil.SendDataAsync(networkStream: stream, data: encryptData, dataLength: sendDataLength);
 
+                    await stream.FlushAsync();
+
                     // 4. 결과의 헤더를 받는다.
                     byte[] receiveHeader = new byte[Consts.SIZE_HEADER];
                     int nbytes = await stream.ReadAsync(buffer: receiveHeader, offset: 0, count: receiveHeader.Length);
@@ -49,11 +51,11 @@ namespace Suyeong.Lib.Net.Tcp
                     int receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
                     byte[] receiveData = await TcpUtil.ReceiveDataAsync(networkStream: stream, dataLength: receiveDataLength);
 
+                    await stream.FlushAsync();
+
                     // 6. 결과는 압축되어 있으므로 푼다.
                     byte[] decryptData = await NetUtil.DecryptAsync(data: receiveData, key: this.key, iv: this.iv);
                     receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
-
-                    await stream.FlushAsync();
 
                     // 7. 결과를 처리한다.
                     return receivePacket;
@@ -68,7 +70,7 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpClientCryptAsyncs : List<TcpClientCryptAsync>
+    public class TcpClientCryptAsyncs : List<TcpClientSimpleCryptAsync>
     {
         public TcpClientCryptAsyncs()
         {

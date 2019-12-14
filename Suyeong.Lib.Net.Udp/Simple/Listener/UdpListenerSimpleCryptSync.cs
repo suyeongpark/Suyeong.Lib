@@ -6,30 +6,25 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Udp
 {
-    public class UdpListenerSimpleCryptCompressSync
+    public class UdpListenerSimpleCryptSync : IDisposable
     {
         UdpClient listener;
         byte[] key, iv;
         bool listenOn;
 
-        public UdpListenerSimpleCryptCompressSync(int portNum, byte[] key, byte[] iv)
+        public UdpListenerSimpleCryptSync(int portNum, byte[] key, byte[] iv)
         {
             this.listener = new UdpClient(portNum);
             this.key = key;
             this.iv = iv;
         }
 
-        ~UdpListenerSimpleCryptCompressSync()
+        public void Dispose()
         {
             this.listener.Close();
         }
 
-        public EndPoint LocalEndPoint
-        {
-            get { return this.listener.Client.LocalEndPoint; }
-        }
-
-        public void ListenerStart(Func<IPacket, IPacket> callback)
+        public void Start(Func<IPacket, IPacket> callback)
         {
             listenOn = true;
 
@@ -45,7 +40,7 @@ namespace Suyeong.Lib.Net.Udp
                     receiveData = listener.Receive(remoteEP: ref clientEndPoint);
 
                     // 2. 요청은 압축되어 있으므로 푼다.
-                    decryptData = NetUtil.DecryptWithDecompress(data: receiveData, key: this.key, iv: this.iv);
+                    decryptData = NetUtil.Decrypt(data: receiveData, key: this.key, iv: this.iv);
                     receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
 
                     // 3. 요청을 처리한다.
@@ -53,7 +48,7 @@ namespace Suyeong.Lib.Net.Udp
 
                     // 4. 처리 결과를 압축한다.
                     sendData = NetUtil.SerializeObject(data: sendPacket);
-                    encryptData = NetUtil.EncryptWithCompress(data: sendData, key: this.key, iv: this.iv);
+                    encryptData = NetUtil.Encrypt(data: sendData, key: this.key, iv: this.iv);
 
                     // 5. 요청을 보내온 곳으로 결과를 보낸다.
                     listener.Send(dgram: encryptData, bytes: encryptData.Length, endPoint: clientEndPoint);
@@ -64,16 +59,11 @@ namespace Suyeong.Lib.Net.Udp
                 }
             }
         }
-
-        public void ListenerStop()
-        {
-            listenOn = false;
-        }
     }
 
-    public class UdpListenerCryptCompressSyncs : List<UdpListenerSimpleCryptCompressSync>
+    public class UdpListenerCryptSyncs : List<UdpListenerSimpleCryptSync>
     {
-        public UdpListenerCryptCompressSyncs()
+        public UdpListenerCryptSyncs()
         {
 
         }

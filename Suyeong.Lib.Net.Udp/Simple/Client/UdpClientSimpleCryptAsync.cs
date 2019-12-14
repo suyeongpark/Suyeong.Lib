@@ -7,12 +7,12 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Udp
 {
-    public class UdpClientCryptAsync
+    public class UdpClientSimpleCryptAsync
     {
         IPEndPoint serverEndPoint;
         byte[] key, iv;
 
-        public UdpClientCryptAsync(string serverIP, int serverPort, byte[] key, byte[] iv)
+        public UdpClientSimpleCryptAsync(string serverIP, int serverPort, byte[] key, byte[] iv)
         {
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
             this.key = key;
@@ -53,7 +53,7 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpClientCryptAsyncs : List<UdpClientAsync>
+    public class UdpClientCryptAsyncs : List<UdpClientSimpleAsync>
     {
         public UdpClientCryptAsyncs()
         {

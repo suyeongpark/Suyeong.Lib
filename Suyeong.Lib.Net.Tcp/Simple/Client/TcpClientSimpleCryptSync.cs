@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Tcp
 {
-    public class TcpClientCryptCompressAsync
+    public class TcpClientSimpleCryptSync
     {
         string serverIP;
         int serverPort;
         byte[] key, iv;
 
-        public TcpClientCryptCompressAsync(string serverIP, int serverPort, byte[] key, byte[] iv)
+        public TcpClientSimpleCryptSync(string serverIP, int serverPort, byte[] key, byte[] iv)
         {
             this.serverIP = serverIP;
             this.serverPort = serverPort;
@@ -20,7 +19,7 @@ namespace Suyeong.Lib.Net.Tcp
             this.iv = iv;
         }
 
-        async public Task<IPacket> Send(IPacket sendPacket)
+        public IPacket Send(IPacket sendPacket)
         {
             IPacket receivePacket = default;
 
@@ -29,34 +28,33 @@ namespace Suyeong.Lib.Net.Tcp
                 using (TcpClient client = new TcpClient(hostname: this.serverIP, port: this.serverPort))
                 using (NetworkStream stream = client.GetStream())
                 {
-                    // 1. 보낼 데이터를 압축한다.
+                    // 1. 보낼 데이터를 암호화한다.
                     byte[] sendData = NetUtil.SerializeObject(data: sendPacket);
-                    byte[] encryptData = await NetUtil.EncryptWithCompressAsync(data: sendData, key: this.key, iv: this.iv);
+                    byte[] encryptData = NetUtil.Encrypt(data: sendData, key: this.key, iv: this.iv);
 
                     // 2. 요청의 헤더를 보낸다.
                     int sendDataLength = encryptData.Length;
                     byte[] sendHeader = BitConverter.GetBytes(value: sendDataLength);
-                    await stream.WriteAsync(buffer: sendHeader, offset: 0, count: sendHeader.Length);
+                    stream.Write(buffer: sendHeader, offset: 0, size: sendHeader.Length);
 
                     // 3. 요청을 보낸다.
-                    await TcpUtil.SendDataAsync(networkStream: stream, data: encryptData, dataLength: sendDataLength);
+                    TcpUtil.SendData(networkStream: stream, data: encryptData, dataLength: sendDataLength);
+
+                    stream.Flush();
 
                     // 4. 결과의 헤더를 받는다.
                     byte[] receiveHeader = new byte[Consts.SIZE_HEADER];
-                    int nbytes = await stream.ReadAsync(buffer: receiveHeader, offset: 0, count: receiveHeader.Length);
+                    int nbytes = stream.Read(buffer: receiveHeader, offset: 0, size: receiveHeader.Length);
 
                     // 5. 결과의 데이터를 받는다.
                     int receiveDataLength = BitConverter.ToInt32(value: receiveHeader, startIndex: 0);
-                    byte[] receiveData = await TcpUtil.ReceiveDataAsync(networkStream: stream, dataLength: receiveDataLength);
+                    byte[] receiveData = TcpUtil.ReceiveData(networkStream: stream, dataLength: receiveDataLength);
+
+                    stream.Flush();
 
                     // 6. 결과는 압축되어 있으므로 푼다.
-                    byte[] decryptData = await NetUtil.DecryptWithDecompressAsync(data: receiveData, key: this.key, iv: this.iv);
-                    receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
-
-                    await stream.FlushAsync();
-
-                    // 7. 결과를 처리한다.
-                    return receivePacket;
+                    byte[] decryptData = NetUtil.Decrypt(data: receiveData, key: this.key, iv: this.iv);
+                    receivePacket = NetUtil.DeserializeObject(decryptData) as IPacket;
                 }
             }
             catch (Exception ex)
@@ -68,9 +66,9 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpClientCryptCompressAsyncs : List<TcpClientCryptCompressAsync>
+    public class TcpClientCryptSyncs : List<TcpClientSimpleCryptSync>
     {
-        public TcpClientCryptCompressAsyncs()
+        public TcpClientCryptSyncs()
         {
 
         }

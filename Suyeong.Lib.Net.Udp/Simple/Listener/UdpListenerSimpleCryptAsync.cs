@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Udp
 {
-    public class UdpListenerSimpleCryptAsync
+    public class UdpListenerSimpleCryptAsync : IDisposable
     {
         UdpClient listener;
         byte[] key, iv;
@@ -20,17 +19,12 @@ namespace Suyeong.Lib.Net.Udp
             this.iv = iv;
         }
 
-        ~UdpListenerSimpleCryptAsync()
+        public void Dispose()
         {
             this.listener.Close();
         }
 
-        public EndPoint LocalEndPoint
-        {
-            get { return this.listener.Client.LocalEndPoint; }
-        }
-
-        async public Task ListenerStart(Func<IPacket, Task<IPacket>> callback)
+        async public Task Start(Func<IPacket, Task<IPacket>> callback)
         {
             listenOn = true;
 
@@ -64,11 +58,6 @@ namespace Suyeong.Lib.Net.Udp
                     Console.WriteLine(ex);
                 }
             }
-        }
-
-        public void ListenerStop()
-        {
-            listenOn = false;
         }
     }
 

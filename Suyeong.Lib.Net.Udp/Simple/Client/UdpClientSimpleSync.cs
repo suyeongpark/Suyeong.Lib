@@ -6,17 +6,13 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Udp
 {
-    public class UdpClientCryptCompressSync
+    public class UdpClientSimpleSync
     {
-        IPEndPoint serverEndPoint, clientEndPoint;
-        byte[] key, iv;
+        IPEndPoint serverEndPoint;
 
-        public UdpClientCryptCompressSync(string serverIP, int serverPort, byte[] key, byte[] iv, int clientPort = 0)
+        public UdpClientSimpleSync(string serverIP, int serverPort)
         {
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
-            this.clientEndPoint = new IPEndPoint(address: IPAddress.Any, port: clientPort);
-            this.key = key;
-            this.iv = iv;
         }
 
         public IPacket Send(IPacket sendPacket)
@@ -29,18 +25,19 @@ namespace Suyeong.Lib.Net.Udp
                 // 그것을 보정하려면 그냥 tcp를 쓰는게 낫다.
                 using (UdpClient client = new UdpClient())
                 {
-                    // 1. 보낼 데이터를 암호화한다.
+                    // 1. 보낼 데이터를 압축한다.
                     byte[] sendData = NetUtil.SerializeObject(data: sendPacket);
-                    byte[] compressData = NetUtil.EncryptWithCompress(data: sendData, key: this.key, iv: this.iv);
+                    byte[] compressData = NetUtil.Compress(data: sendData);
 
                     // 2. 보낸다.
                     client.Send(dgram: compressData, bytes: compressData.Length, endPoint: this.serverEndPoint);
 
                     // 3. 결과의 데이터를 받는다.
-                    byte[] receiveData = client.Receive(remoteEP: ref this.clientEndPoint);
+                    IPEndPoint remoteEndPoint = null;
+                    byte[] receiveData = client.Receive(remoteEP: ref remoteEndPoint);
 
-                    // 4. 결과는 암호화되어 있으므로 푼다.
-                    byte[] decompressData = NetUtil.DecryptWithDecompress(data: receiveData, key: this.key, iv: this.iv);
+                    // 4. 결과는 압축되어 있으므로 푼다.
+                    byte[] decompressData = NetUtil.Decompress(data: receiveData);
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
                 }
             }
@@ -53,9 +50,9 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpClientCryptCompressSyncs : List<UdpClientCryptCompressSync>
+    public class UdpClientSyncs : List<UdpClientSimpleSync>
     {
-        public UdpClientCryptCompressSyncs()
+        public UdpClientSyncs()
         {
 
         }

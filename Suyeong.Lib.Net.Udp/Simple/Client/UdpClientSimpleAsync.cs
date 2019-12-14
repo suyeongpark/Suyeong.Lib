@@ -7,11 +7,11 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Udp
 {
-    public class UdpClientAsync
+    public class UdpClientSimpleAsync
     {
         IPEndPoint serverEndPoint;
 
-        public UdpClientAsync(string serverIP, int serverPort)
+        public UdpClientSimpleAsync(string serverIP, int serverPort)
         {
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
         }
@@ -50,7 +50,7 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpClientAsyncs : List<UdpClientAsync>
+    public class UdpClientAsyncs : List<UdpClientSimpleAsync>
     {
         public UdpClientAsyncs()
         {

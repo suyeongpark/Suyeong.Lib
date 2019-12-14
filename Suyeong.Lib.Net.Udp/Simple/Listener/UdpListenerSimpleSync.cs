@@ -6,7 +6,7 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Udp
 {
-    public class UdpListenerSimpleSync
+    public class UdpListenerSimpleSync : IDisposable
     {
         UdpClient listener;
         bool listenOn;
@@ -16,17 +16,12 @@ namespace Suyeong.Lib.Net.Udp
             this.listener = new UdpClient(portNum);
         }
 
-        ~UdpListenerSimpleSync()
+        public void Dispose()
         {
             this.listener.Close();
         }
 
-        public EndPoint LocalEndPoint
-        {
-            get { return this.listener.Client.LocalEndPoint; }
-        }
-
-        public void ListenerStart(Func<IPacket, IPacket> callback)
+        public void Start(Func<IPacket, IPacket> callback)
         {
             listenOn = true;
 
@@ -60,11 +55,6 @@ namespace Suyeong.Lib.Net.Udp
                     Console.WriteLine(ex);
                 }
             }
-        }
-
-        public void ListenerStop()
-        {
-            listenOn = false;
         }
     }
 

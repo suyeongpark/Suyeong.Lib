@@ -43,19 +43,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\TcpUtil.cs" />
-    <Compile Include="Client\TcpClientSync.cs" />
-    <Compile Include="Client\TcpClientCryptSync.cs" />
-    <Compile Include="Client\TcpClientCryptCompressSync.cs" />
-    <Compile Include="Client\TcpClientCryptCompressAsync.cs" />
-    <Compile Include="Client\TcpClientCryptAsync.cs" />
-    <Compile Include="Client\TcpClientAsync.cs" />
+    <Compile Include="Concurrency\Client\TcpClientConcurrencySync.cs" />
+    <Compile Include="Simple\Client\TcpClientSimpleSync.cs" />
+    <Compile Include="Simple\Client\TcpClientSimpleCryptSync.cs" />
+    <Compile Include="Simple\Client\TcpClientSimpleCryptAsync.cs" />
+    <Compile Include="Simple\Client\TcpClientSimpleAsync.cs" />
     <Compile Include="Data\Variables.cs" />
-    <Compile Include="ListenerSimple\TcpListenerSimpleSync.cs" />
-    <Compile Include="ListenerSimple\TcpListenerSimpleCryptSync.cs" />
-    <Compile Include="ListenerSimple\TcpListenerSimpleCryptCompressSync.cs" />
-    <Compile Include="ListenerSimple\TcpListenerSimpleCryptCompressAsync.cs" />
-    <Compile Include="ListenerSimple\TcpListenerSimpleCryptAsync.cs" />
-    <Compile Include="ListenerSimple\TcpListenerSimpleAsync.cs" />
+    <Compile Include="Concurrency\ClientHandler\TcpClientHandlerConcurrencySync.cs" />
+    <Compile Include="Concurrency\Listener\TcpListenerConcurrencySync.cs" />
+    <Compile Include="Simple\Listener\TcpListenerSimpleSync.cs" />
+    <Compile Include="Simple\Listener\TcpListenerSimpleCryptSync.cs" />
+    <Compile Include="Simple\Listener\TcpListenerSimpleCryptAsync.cs" />
+    <Compile Include="Simple\Listener\TcpListenerSimpleAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +62,9 @@
       <Project>{be90fc4c-35d6-4f6e-ad92-5f2063b92ec3}</Project>
       <Name>Suyeong.Lib.Net.Lib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PushAlarm\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
