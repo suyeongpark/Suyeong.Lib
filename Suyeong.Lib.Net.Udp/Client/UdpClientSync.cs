@@ -16,7 +16,7 @@ namespace Suyeong.Lib.Net.Udp
             this.clientEndPoint = new IPEndPoint(address: IPAddress.Any, port: clientPort);
         }
 
-        public IPacket Send(IPacket sendPacket, Action<IPacket> callback)
+        public IPacket Send(IPacket sendPacket)
         {
             IPacket receivePacket = default;
 
