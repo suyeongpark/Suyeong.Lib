@@ -39,14 +39,14 @@ namespace Suyeong.Lib.Net.Udp
                     // 1. 요청을 받는다.
                     result = await listener.ReceiveAsync();
 
-                    // 2. 요청은 압축되어 있으므로 푼다.
+                    // 2. 요청은 암호화되어 있으므로 푼다.
                     decryptData = await NetUtil.DecryptAsync(data: result.Buffer, key: this.key, iv: this.iv);
                     receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
 
                     // 3. 요청을 처리한다.
                     sendPacket = await callback(receivePacket);
 
-                    // 4. 처리 결과를 압축한다.
+                    // 4. 처리 결과를 암호화한다.
                     sendData = NetUtil.SerializeObject(data: sendPacket);
                     encryptData = await NetUtil.EncryptAsync(data: sendData, key: this.key, iv: this.iv);
 

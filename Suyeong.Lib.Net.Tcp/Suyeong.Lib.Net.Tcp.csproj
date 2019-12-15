@@ -43,7 +43,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\TcpUtil.cs" />
+    <Compile Include="Concurrency\ClientHandler\TcpClientHandlerConcurrencyCryptAsync.cs" />
+    <Compile Include="Concurrency\ClientHandler\TcpClientHandlerConcurrencyCryptSync.cs" />
+    <Compile Include="Concurrency\ClientHandler\TcpClientHandlerConcurrencyAsync.cs" />
+    <Compile Include="Concurrency\Client\TcpClientConcurrencyCryptAsync.cs" />
+    <Compile Include="Concurrency\Client\TcpClientConcurrencyCryptSync.cs" />
+    <Compile Include="Concurrency\Client\TcpClientConcurrencyAsync.cs" />
     <Compile Include="Concurrency\Client\TcpClientConcurrencySync.cs" />
+    <Compile Include="Concurrency\Listener\TcpListenerConcurrencyCryptAsync.cs" />
+    <Compile Include="Concurrency\Listener\TcpListenerConcurrencyCryptSync.cs" />
+    <Compile Include="Concurrency\Listener\TcpListenerConcurrencyAsync.cs" />
     <Compile Include="Simple\Client\TcpClientSimpleSync.cs" />
     <Compile Include="Simple\Client\TcpClientSimpleCryptSync.cs" />
     <Compile Include="Simple\Client\TcpClientSimpleCryptAsync.cs" />

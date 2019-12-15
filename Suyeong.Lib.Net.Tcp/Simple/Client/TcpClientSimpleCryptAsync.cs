@@ -29,7 +29,7 @@ namespace Suyeong.Lib.Net.Tcp
                 using (TcpClient client = new TcpClient(hostname: this.serverIP, port: this.serverPort))
                 using (NetworkStream stream = client.GetStream())
                 {
-                    // 1. 보낼 데이터를 압축한다.
+                    // 1. 보낼 데이터를 암호화한다.
                     byte[] sendData = NetUtil.SerializeObject(data: sendPacket);
                     byte[] encryptData = await NetUtil.EncryptAsync(data: sendData, key: this.key, iv: this.iv);
 
@@ -53,7 +53,7 @@ namespace Suyeong.Lib.Net.Tcp
 
                     await stream.FlushAsync();
 
-                    // 6. 결과는 압축되어 있으므로 푼다.
+                    // 6. 결과는 암호화되어 있으므로 푼다.
                     byte[] decryptData = await NetUtil.DecryptAsync(data: receiveData, key: this.key, iv: this.iv);
                     receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
 

@@ -6,19 +6,22 @@ using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Tcp
 {
-    public class TcpClientHandlerConcurrencySync : IDisposable
+    public class TcpClientHandlerConcurrencyCryptSync : IDisposable
     {
         public event Action<string, IPacket> Receive;
         public event Action<string, string> Disconnect;
 
         TcpClient client;
         string stageID, userID;
+        byte[] key, iv;
 
-        public TcpClientHandlerConcurrencySync(TcpClient client, string stageID, string userID)
+        public TcpClientHandlerConcurrencyCryptSync(TcpClient client, string stageID, string userID, byte[] key, byte[] iv)
         {
-            this.userID = userID;
             this.client = client;
             this.stageID = stageID;
+            this.userID = userID;
+            this.key = key;
+            this.iv = iv;
         }
 
         public bool Connected { get { return this.client.Connected; } }
@@ -40,7 +43,7 @@ namespace Suyeong.Lib.Net.Tcp
         {
             NetworkStream stream;
             IPacket received;
-            byte[] receiveHeader, receiveData, decompressData;
+            byte[] receiveHeader, receiveData, decryptData;
             int nbytes, receiveDataLength;
 
             // 클라이언트에서 오는 메세지를 듣기 위해 별도의 쓰레드를 돌린다.
@@ -62,9 +65,9 @@ namespace Suyeong.Lib.Net.Tcp
 
                         stream.Flush();
 
-                        // 3. 결과는 압축되어 있으므로 푼다.
-                        decompressData = NetUtil.Decompress(data: receiveData);
-                        received = NetUtil.DeserializeObject(data: decompressData) as IPacket;
+                        // 3. 결과는 암호화어 있으므로 푼다.
+                        decryptData = NetUtil.Decrypt(data: receiveData, key: this.key, iv: this.iv);
+                        received = NetUtil.DeserializeObject(data: decryptData) as IPacket;
 
                         Receive(this.stageID, received);
                     }
@@ -90,17 +93,17 @@ namespace Suyeong.Lib.Net.Tcp
             {
                 NetworkStream stream = this.client.GetStream();
 
-                // 1. 보낼 데이터를 압축한다.
+                // 1. 보낼 데이터를 암호화한다.
                 byte[] sendData = NetUtil.SerializeObject(data: packet);
-                byte[] compressData = NetUtil.Compress(data: sendData);
+                byte[] encryptData = NetUtil.Encrypt(data: sendData, key: this.key, iv: this.iv);
 
                 // 2. 요청의 헤더를 보낸다.
-                int sendDataLength = compressData.Length;
+                int sendDataLength = encryptData.Length;
                 byte[] sendHeader = BitConverter.GetBytes(value: sendDataLength);
                 stream.Write(buffer: sendHeader, offset: 0, size: sendHeader.Length);
 
                 // 3. 요청을 보낸다.
-                TcpUtil.SendData(networkStream: stream, data: compressData, dataLength: sendDataLength);
+                TcpUtil.SendData(networkStream: stream, data: encryptData, dataLength: sendDataLength);
 
                 stream.Flush();
             }
@@ -111,17 +114,17 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpClientHandlerConcurrencySyncDic : Dictionary<string, TcpClientHandlerConcurrencySync>
+    public class TcpClientHandlerConcurrencyCryptSyncDic : Dictionary<string, TcpClientHandlerConcurrencyCryptSync>
     {
-        public TcpClientHandlerConcurrencySyncDic()
+        public TcpClientHandlerConcurrencyCryptSyncDic()
         {
 
         }
     }
 
-    public class TcpClientHandlerConcurrencySyncDicGroup : Dictionary<string, TcpClientHandlerConcurrencySyncDic>
+    public class TcpClientHandlerConcurrencyCryptSyncDicGroup : Dictionary<string, TcpClientHandlerConcurrencyCryptSyncDic>
     {
-        public TcpClientHandlerConcurrencySyncDicGroup()
+        public TcpClientHandlerConcurrencyCryptSyncDicGroup()
         {
 
         }

@@ -56,7 +56,7 @@ namespace Suyeong.Lib.Net.Tcp
                         // 4. 요청을 처리한다.
                         sendPacket = await callback(receivePacket);
 
-                        // 5. 처리 결과를 압호화한다.
+                        // 5. 처리 결과를 암호화한다.
                         sendData = NetUtil.SerializeObject(data: sendPacket);
                         encryptData = await NetUtil.EncryptAsync(data: sendData, key: this.key, iv: this.iv);
 

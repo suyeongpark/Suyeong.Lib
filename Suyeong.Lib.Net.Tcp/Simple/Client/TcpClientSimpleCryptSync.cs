@@ -52,7 +52,7 @@ namespace Suyeong.Lib.Net.Tcp
 
                     stream.Flush();
 
-                    // 6. 결과는 압축되어 있으므로 푼다.
+                    // 6. 결과는 암호화되어 있으므로 푼다.
                     byte[] decryptData = NetUtil.Decrypt(data: receiveData, key: this.key, iv: this.iv);
                     receivePacket = NetUtil.DeserializeObject(decryptData) as IPacket;
                 }

@@ -39,7 +39,7 @@ namespace Suyeong.Lib.Net.Udp
                     // 3. 결과의 데이터를 받는다.
                     UdpReceiveResult result = await client.ReceiveAsync();
 
-                    // 4. 결과는 압축되어 있으므로 푼다.
+                    // 4. 결과는 암호화되어 있으므로 푼다.
                     byte[] decryptData = await NetUtil.DecryptAsync(data: result.Buffer, key: this.key, iv: this.iv);
                     receivePacket = NetUtil.DeserializeObject(data: decryptData) as IPacket;
                 }
