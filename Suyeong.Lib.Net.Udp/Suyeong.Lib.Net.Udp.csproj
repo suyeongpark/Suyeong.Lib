@@ -42,14 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Simple\Client\UdpClientSimpleCryptAsync.cs" />
-    <Compile Include="Simple\Client\UdpClientSimpleAsync.cs" />
-    <Compile Include="Simple\Client\UdpClientSimpleCryptSync.cs" />
-    <Compile Include="Simple\Client\UdpClientSimpleSync.cs" />
-    <Compile Include="Simple\Listener\UdpListenerSimpleCryptAsync.cs" />
-    <Compile Include="Simple\Listener\UdpListenerSimpleAsync.cs" />
-    <Compile Include="Simple\Listener\UdpListenerSimpleCryptSync.cs" />
-    <Compile Include="Simple\Listener\UdpListenerSimpleSync.cs" />
+    <Compile Include="Client\UdpClientSimpleCryptAsync.cs" />
+    <Compile Include="Client\UdpClientSimpleAsync.cs" />
+    <Compile Include="Client\UdpClientSimpleCryptSync.cs" />
+    <Compile Include="Client\UdpClientSimpleSync.cs" />
+    <Compile Include="Listener\UdpListenerSimpleCryptAsync.cs" />
+    <Compile Include="Listener\UdpListenerSimpleAsync.cs" />
+    <Compile Include="Listener\UdpListenerSimpleCryptSync.cs" />
+    <Compile Include="Listener\UdpListenerSimpleSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,9 +58,6 @@
       <Name>Suyeong.Lib.Net.Lib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Concurrency\" />
-    <Folder Include="PushAlarm\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

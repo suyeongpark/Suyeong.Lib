@@ -12,19 +12,21 @@ namespace Suyeong.Lib.Net.Tcp
         public event Action<string, string> Disconnect;
 
         TcpClient client;
-        string channelID, clientID;
+        string stageID, userID;
 
-        public TcpClientHandlerConcurrencySync(string channelID, string clientID, TcpClient client)
+        public TcpClientHandlerConcurrencySync(string stageID, string userID, TcpClient client)
         {
-            this.channelID = channelID;
-            this.clientID = clientID;
+            this.stageID = stageID;
+            this.userID = userID;
             this.client = client;
         }
 
         public void Dispose()
         {
-            Disconnect(this.channelID, this.clientID);
-            this.client.Close();
+            if (this.client.Connected)
+            {
+                this.client.Close();
+            }
         }
 
         public void Start()
@@ -37,7 +39,7 @@ namespace Suyeong.Lib.Net.Tcp
             // 클라이언트에서 오는 메세지를 듣기 위해 별도의 쓰레드를 돌린다.
             Thread thread = new Thread(() =>
             {
-                while (true)
+                while (this.client.Connected)
                 {
                     try
                     {
@@ -57,12 +59,16 @@ namespace Suyeong.Lib.Net.Tcp
                         decompressData = NetUtil.Decompress(data: receiveData);
                         received = NetUtil.DeserializeObject(data: decompressData) as IPacket;
 
-                        Receive(this.channelID, received);
+                        Receive(this.stageID, received);
+                    }
+                    catch (SocketException)
+                    {
+                        Disconnect(this.stageID, this.userID);
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex);
-                        Dispose();
+                        Disconnect(this.stageID, this.userID);
                     }
                 }
             });

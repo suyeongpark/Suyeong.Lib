@@ -9,33 +9,44 @@ namespace Suyeong.Lib.Net.Tcp
     public class TcpClientConcurrencySync : IDisposable
     {
         TcpClient client;
+        string serverIP;
+        int serverPort;
+        Action<IPacket> callback;
 
-        public TcpClientConcurrencySync(string serverIP, int serverPort)
+        public TcpClientConcurrencySync(string serverIP, int serverPort, Action<IPacket> callback)
         {
-            this.client = new TcpClient(hostname: serverIP, port: serverPort);
+            this.serverIP = serverIP;
+            this.serverPort = serverPort;
+            this.callback = callback;
         }
 
         public void Dispose()
         {
-            this.client.Close();
+            if (this.client.Connected)
+            {
+                this.client.Close();
+            }
         }
 
-        public void Start(string channelID, string userID, Action<IPacket> callback)
+        public void Start(string stageID, string userID)
         {
             NetworkStream stream;
             IPacket received;
             byte[] receiveHeader, receiveData, decompressData;
             int nbytes, receiveDataLength;
 
-            // 일단 접속할 channel id와 user id를 보낸다.
-            // protocol에 channel id를 넣고, value에 user id를 넣는다.
-            PacketValue packet = new PacketValue(protocol: channelID, value: userID);
+            // 1. 접속을 생성한다.
+            this.client = new TcpClient(hostname: serverIP, port: serverPort);
+
+            // 2. 접속할 사용자 정보를 보낸다.
+            // protocol에 stage id를 넣고, value에 user id를 넣는다.
+            PacketValue packet = new PacketValue(protocol: stageID, value: userID);
             Send(packet: packet);
 
             // 그 후에 서버에서 오는 메세지를 듣기 위해 별도의 쓰레드를 돌린다.
             Thread thread = new Thread(() =>
             {
-                while (true)
+                while (this.client.Connected)
                 {
                     try
                     {
@@ -55,7 +66,11 @@ namespace Suyeong.Lib.Net.Tcp
                         decompressData = NetUtil.Decompress(data: receiveData);
                         received = NetUtil.DeserializeObject(data: decompressData) as IPacket;
 
-                        callback(received);
+                        this.callback(received);
+                    }
+                    catch (SocketException ex)
+                    {
+                        Dispose();
                     }
                     catch (Exception ex)
                     {
@@ -93,6 +108,17 @@ namespace Suyeong.Lib.Net.Tcp
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        /// <summary>
+        /// 사용자가 stage를 옮길 때는 기존 연결을 종료하고 다시 새로운 연결을 만든다.
+        /// </summary>
+        /// <param name="stageID"></param>
+        /// <param name="userID"></param>
+        public void MoveStage(string stageID, string userID)
+        {
+            Dispose();
+            Start(stageID: stageID, userID: userID);
         }
     }
 
