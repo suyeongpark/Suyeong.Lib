@@ -79,9 +79,9 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpListenerCryptAsyncs : List<TcpListenerSimpleCryptAsync>
+    public class TcpListenerSimpleCryptAsyncs : List<TcpListenerSimpleCryptAsync>
     {
-        public TcpListenerCryptAsyncs()
+        public TcpListenerSimpleCryptAsyncs()
         {
 
         }

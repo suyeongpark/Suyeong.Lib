@@ -50,9 +50,9 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpClientAsyncs : List<UdpClientSimpleAsync>
+    public class UdpClientSimpleAsyncs : List<UdpClientSimpleAsync>
     {
-        public UdpClientAsyncs()
+        public UdpClientSimpleAsyncs()
         {
 
         }

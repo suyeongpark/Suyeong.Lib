@@ -76,9 +76,9 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpListenerAsyncs : List<TcpListenerSimpleAsync>
+    public class TcpListenerSimpleAsyncs : List<TcpListenerSimpleAsync>
     {
-        public TcpListenerAsyncs()
+        public TcpListenerSimpleAsyncs()
         {
 
         }

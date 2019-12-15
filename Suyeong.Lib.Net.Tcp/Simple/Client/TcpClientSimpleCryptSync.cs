@@ -66,9 +66,9 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpClientCryptSyncs : List<TcpClientSimpleCryptSync>
+    public class TcpClientSimpleCryptSyncs : List<TcpClientSimpleCryptSync>
     {
-        public TcpClientCryptSyncs()
+        public TcpClientSimpleCryptSyncs()
         {
 
         }

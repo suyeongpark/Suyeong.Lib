@@ -50,9 +50,9 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpClientSyncs : List<UdpClientSimpleSync>
+    public class UdpClientSimpleSyncs : List<UdpClientSimpleSync>
     {
-        public UdpClientSyncs()
+        public UdpClientSimpleSyncs()
         {
 
         }

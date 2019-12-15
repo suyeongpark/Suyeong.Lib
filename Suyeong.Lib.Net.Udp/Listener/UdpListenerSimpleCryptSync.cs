@@ -61,9 +61,9 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpListenerCryptSyncs : List<UdpListenerSimpleCryptSync>
+    public class UdpListenerSimpleCryptSyncs : List<UdpListenerSimpleCryptSync>
     {
-        public UdpListenerCryptSyncs()
+        public UdpListenerSimpleCryptSyncs()
         {
 
         }

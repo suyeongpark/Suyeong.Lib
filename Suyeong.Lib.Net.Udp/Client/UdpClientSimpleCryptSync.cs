@@ -53,9 +53,9 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpClientCryptSyncs : List<UdpClientSimpleCryptSync>
+    public class UdpClientSimpleCryptSyncs : List<UdpClientSimpleCryptSync>
     {
-        public UdpClientCryptSyncs()
+        public UdpClientSimpleCryptSyncs()
         {
 
         }
