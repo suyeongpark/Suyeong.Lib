@@ -109,17 +109,6 @@ namespace Suyeong.Lib.Net.Tcp
                 Console.WriteLine(ex);
             }
         }
-
-        /// <summary>
-        /// 사용자가 stage를 옮길 때는 기존 연결을 종료하고 다시 새로운 연결을 만든다.
-        /// </summary>
-        /// <param name="stageID"></param>
-        /// <param name="userID"></param>
-        public void MoveStage(string stageID, string userID)
-        {
-            Dispose();
-            Start(stageID: stageID, userID: userID);
-        }
     }
 
     public class TcpClientConcurrencySyncs : List<TcpClientConcurrencySync>

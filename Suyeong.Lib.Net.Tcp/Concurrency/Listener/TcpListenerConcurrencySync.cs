@@ -41,6 +41,7 @@ namespace Suyeong.Lib.Net.Tcp
 
             TcpClient client;
             NetworkStream stream;
+            TcpClientHandlerConcurrencySync handler;
             string stageID, userID;
 
             while (true)
@@ -54,7 +55,16 @@ namespace Suyeong.Lib.Net.Tcp
                     GetStageIdAndUserID(stream: stream, stageID: out stageID, userID: out userID);
 
                     // 사용자 정보를 이용해서 handler를 추가한다.
-                    AddAndStartHandler(client: client, stageID: stageID, userID: userID);
+
+                    // 사용자 정보를 이용해서 handler를 만든다.
+                    handler = new TcpClientHandlerConcurrencySync(stageID: stageID, userID: userID, client: client);
+                    handler.Disconnect += Disconnect;
+                    handler.Receive += Receive;
+
+                    AddStage(handler: handler, stageID: stageID, userID: userID);
+
+                    // hander를 시작한다.
+                    handler.Start();
 
                     // 사용자가 입장한 정보를 broadcast 한다.
                     IPacket sendPacket = this.userEnter(stageID, userID);
@@ -67,28 +77,21 @@ namespace Suyeong.Lib.Net.Tcp
             }
         }
 
-        /// <summary>
-        /// 사용자가 stage를 떠나거나 옮길 때 사용
-        /// </summary>
-        /// <param name="stageID"></param>
-        /// <param name="userID"></param>
-        public void LeaveStage(string stageID, string userID)
+        public IPacket MoveStage(string oldStageID, string newStageID, string userID)
         {
-            TcpClientHandlerConcurrencySyncDic handlerDic;
-            TcpClientHandlerConcurrencySync handler;
+            // 1. 기존 stage에서 제거
+            TcpClientHandlerConcurrencySync handler = RemoveStage(stageID: oldStageID, userID: userID);
+            handler.SetStageID(stageID: newStageID);
 
-            if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
-            {
-                if (handlerDic.TryGetValue(userID, out handler))
-                {
-                    handler.Dispose();
-                }
+            // 2. 기존 stage에 퇴장 알림
+            IPacket exitPacket = this.userExit(oldStageID, userID);
+            BroadcastToStage(stageID: oldStageID, sendPacket: exitPacket);
 
-                handlerDic.Remove(userID);
-            }
+            // 3. 새로운 stage로 입장
+            AddStage(handler: handler, stageID: newStageID, userID: userID);
 
-            IPacket sendPacket = this.userExit(stageID, userID);
-            BroadcastToStage(stageID: stageID, sendPacket: sendPacket);
+            // 4. 새로운 stage에 입장 알림
+            return this.userEnter(newStageID, userID);
         }
 
         public void BroadcastToServer(IPacket sendPacket)
@@ -123,31 +126,69 @@ namespace Suyeong.Lib.Net.Tcp
             userID = connectPacket.Value.ToString();
         }
 
-        void AddAndStartHandler(TcpClient client, string stageID, string userID)
+        void AddStage(TcpClientHandlerConcurrencySync handler, string stageID, string userID)
         {
-            // 사용자 정보를 이용해서 handler를 만든다.
-            TcpClientHandlerConcurrencySync handler = new TcpClientHandlerConcurrencySync(stageID: stageID, userID: userID, client: client);
-            handler.Disconnect += LeaveStage;
-            handler.Receive += Receive;
-
             TcpClientHandlerConcurrencySyncDic handlerDic;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
             {
                 handlerDic.Add(userID, handler);
 
-                handlerDicGroup[stageID] = handlerDic;
+                this.handlerDicGroup[stageID] = handlerDic;
             }
             else
             {
                 handlerDic = new TcpClientHandlerConcurrencySyncDic();
                 handlerDic.Add(userID, handler);
 
-                handlerDicGroup.Add(stageID, handlerDic);
+                this.handlerDicGroup.Add(stageID, handlerDic);
+            }
+        }
+
+        TcpClientHandlerConcurrencySync RemoveStage(string stageID, string userID)
+        {
+            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySync handler;
+
+            if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
+            {
+                if (handlerDic.TryGetValue(userID, out handler))
+                {
+                    handlerDic.Remove(userID);
+                    this.handlerDicGroup[stageID] = handlerDic;
+
+                    return handler;
+                }
             }
 
-            // hander를 시작한다.
-            handler.Start();
+            return null;
+        }
+
+        void Disconnect(string stageID, string userID)
+        {
+            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySync handler;
+
+            if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
+            {
+                if (handlerDic.TryGetValue(userID, out handler))
+                {
+                    handler.Dispose();
+                }
+
+                handlerDic.Remove(userID);
+            }
+
+            IPacket sendPacket = this.userExit(stageID, userID);
+            BroadcastToStage(stageID: stageID, sendPacket: sendPacket);
+        }
+
+
+        void Receive(string stageID, IPacket receivePacket)
+        {
+            // 클라이언트가 발생시킨 요청을 처리하고 그 결과를 채널 내 사용자들에게 모두 broadcasting 한다. 당사자 포함.
+            IPacket sendPacket = this.response(receivePacket);
+            BroadcastToStage(stageID: stageID, sendPacket: sendPacket);
         }
 
         void BroadcastToStage(string stageID, IPacket sendPacket)
@@ -161,13 +202,6 @@ namespace Suyeong.Lib.Net.Tcp
                     kvp.Value.Send(packet: sendPacket);
                 }
             }
-        }
-
-        void Receive(string channelID, IPacket receivePacket)
-        {
-            // 클라이언트가 발생시킨 요청을 처리하고 그 결과를 채널 내 사용자들에게 모두 broadcasting 한다. 당사자 포함.
-            IPacket sendPacket = this.response(receivePacket);
-            BroadcastToStage(stageID: channelID, sendPacket: sendPacket);
         }
     }
 

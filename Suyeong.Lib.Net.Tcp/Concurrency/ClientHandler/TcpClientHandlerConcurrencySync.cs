@@ -29,6 +29,11 @@ namespace Suyeong.Lib.Net.Tcp
             }
         }
 
+        public void SetStageID (string stageID)
+        {
+            this.stageID = stageID;
+        }
+
         public void Start()
         {
             NetworkStream stream;
