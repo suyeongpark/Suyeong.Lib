@@ -9,16 +9,15 @@ namespace Suyeong.Lib.Net.Tcp
     public class TcpClientConcurrencySync : IDisposable
     {
         TcpClient client;
-        string serverIP;
-        int serverPort;
         Action<IPacket> callback;
 
         public TcpClientConcurrencySync(string serverIP, int serverPort, Action<IPacket> callback)
         {
-            this.serverIP = serverIP;
-            this.serverPort = serverPort;
             this.callback = callback;
+            this.client = new TcpClient(hostname: serverIP, port: serverPort);
         }
+
+        public bool Connected { get { return this.client.Connected; } }
 
         public void Dispose()
         {
@@ -35,10 +34,7 @@ namespace Suyeong.Lib.Net.Tcp
             byte[] receiveHeader, receiveData, decompressData;
             int nbytes, receiveDataLength;
 
-            // 1. 접속을 생성한다.
-            this.client = new TcpClient(hostname: serverIP, port: serverPort);
-
-            // 2. 접속할 사용자 정보를 보낸다.
+            // 1. 접속할 사용자 정보를 보낸다.
             // protocol에 stage id를 넣고, value에 user id를 넣는다.
             PacketValue packet = new PacketValue(protocol: stageID, value: userID);
             Send(packet: packet);

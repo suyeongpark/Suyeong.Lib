@@ -21,6 +21,8 @@ namespace Suyeong.Lib.Net.Tcp
             this.client = client;
         }
 
+        public bool Connected { get { return this.client.Connected; } }
+
         public void Dispose()
         {
             if (this.client.Connected)
