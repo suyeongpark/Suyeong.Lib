@@ -18,6 +18,8 @@ namespace Suyeong.Lib.Net.Udp
             this.iv = iv;
         }
 
+        public IPEndPoint ServerEndPoint { get { return this.serverEndPoint; } }
+
         public IPacket Send(IPacket sendPacket)
         {
             IPacket receivePacket = default;

@@ -16,6 +16,8 @@ namespace Suyeong.Lib.Net.Udp
             this.serverEndPoint = new IPEndPoint(address: IPAddress.Parse(serverIP), port: serverPort);
         }
 
+        public IPEndPoint ServerEndPoint { get { return this.serverEndPoint; } }
+
         async public Task<IPacket> Send(IPacket sendPacket)
         {
             IPacket receivePacket = default;

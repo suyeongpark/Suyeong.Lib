@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Suyeong.Lib.Net.Lib;
@@ -18,6 +19,7 @@ namespace Suyeong.Lib.Net.Tcp
         }
 
         public bool Connected { get { return this.client.Connected; } }
+        public EndPoint ServerEndPoint { get { return this.client.Client.RemoteEndPoint; } }
 
         public void Dispose()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using Suyeong.Lib.Net.Lib;
 
@@ -15,6 +16,8 @@ namespace Suyeong.Lib.Net.Tcp
             this.serverIP = serverIP;
             this.serverPort = serverPort;
         }
+
+        public IPEndPoint ServerEndPoint { get { return new IPEndPoint(address: IPAddress.Parse(this.serverIP), port: this.serverPort); } }
 
         public IPacket Send(IPacket sendPacket)
         {
