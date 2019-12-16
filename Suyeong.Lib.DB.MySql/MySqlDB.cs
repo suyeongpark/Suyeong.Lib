@@ -369,7 +369,7 @@ namespace Suyeong.Lib.DB.MySql
                         }
 
                         string values = string.Join(",", list);
-                        string query = $"{queryWithoutValues} {values}";
+                        string query = $"{queryWithoutValues} values {values}";
 
                         using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
                         {
@@ -525,7 +525,7 @@ namespace Suyeong.Lib.DB.MySql
                         }
 
                         string values = string.Join(",", list);
-                        string query = $"{queryWithoutValues} {values}";
+                        string query = $"{queryWithoutValues} values {values}";
 
                         using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
                         {
