@@ -342,69 +342,6 @@ namespace Suyeong.Lib.DB.MySql
             return result > 0;
         }
 
-        /// <summary>
-        /// queryWithoutValues에는 values 이후를 제외하고 입력. ex) "insert into TABLE_NAME (column1, column2, column3)"
-        /// </summary>
-        /// <param name="conStr"></param>
-        /// <param name="query"></param>
-        /// <param name="parametersList"></param>
-        /// <returns></returns>
-        public static bool SetQuery(string conStr, string queryWithoutValues, IEnumerable<MySqlParameter[]> parametersList)
-        {
-            int result = 0;
-
-            try
-            {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
-
-                    using (MySqlTransaction transaction = connection.BeginTransaction())
-                    {
-                        List<string> list = new List<string>();
-
-                        foreach (MySqlParameter[] parameters in parametersList)
-                        {
-                            list.Add(string.Format("({0})", string.Join(", ", parameters.Select(parameter => parameter.Value.ToString()))));
-                        }
-
-                        string values = string.Join(",", list);
-                        string query = $"{queryWithoutValues} values {values}";
-
-                        using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
-                        {
-                            try
-                            {
-                                result = command.ExecuteNonQuery();
-
-                                if (result > 0)
-                                {
-                                    command.Transaction.Commit();
-                                }
-                            }
-                            catch (Exception)
-                            {
-                                try
-                                {
-                                    command.Transaction.Rollback();
-                                }
-                                catch (MySqlException)
-                                {
-                                    throw;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return result > 0;
-        }
-
         async public static Task<bool> SetQueryAsync(string conStr, string query)
         {
             int result = 0;
@@ -485,69 +422,6 @@ namespace Suyeong.Lib.DB.MySql
                             catch (MySqlException)
                             {
                                 throw;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return result > 0;
-        }
-
-        /// <summary>
-        /// queryWithoutValues에는 values 이후를 제외하고 입력. ex) "insert into TABLE_NAME (column1, column2, column3)"
-        /// </summary>
-        /// <param name="conStr"></param>
-        /// <param name="query"></param>
-        /// <param name="parametersList"></param>
-        /// <returns></returns>
-        async public static Task<bool> SetQueryAsync(string conStr, string queryWithoutValues, IEnumerable<MySqlParameter[]> parametersList)
-        {
-            int result = 0;
-
-            try
-            {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
-
-                    using (MySqlTransaction transaction = connection.BeginTransaction())
-                    {
-                        List<string> list = new List<string>();
-
-                        foreach (MySqlParameter[] parameters in parametersList)
-                        {
-                            list.Add(string.Format("({0})", string.Join(", ", parameters.Select(parameter => parameter.Value.ToString()))));
-                        }
-
-                        string values = string.Join(",", list);
-                        string query = $"{queryWithoutValues} values {values}";
-
-                        using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
-                        {
-                            try
-                            {
-                                result = await command.ExecuteNonQueryAsync();
-
-                                if (result > 0)
-                                {
-                                    command.Transaction.Commit();
-                                }
-                            }
-                            catch (Exception)
-                            {
-                                try
-                                {
-                                    command.Transaction.Rollback();
-                                }
-                                catch (MySqlException)
-                                {
-                                    throw;
-                                }
                             }
                         }
                     }
