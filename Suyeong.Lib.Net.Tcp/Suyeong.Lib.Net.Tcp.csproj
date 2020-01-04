@@ -74,4 +74,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)" "E:\Suyeong\TestPrograms\references\Suyeong.Lib.Net.Tcp"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
