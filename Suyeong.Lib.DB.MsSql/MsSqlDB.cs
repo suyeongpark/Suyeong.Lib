@@ -175,7 +175,12 @@ namespace Suyeong.Lib.DB.MsSql
             return table;
         }
 
-        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, SqlParameter[] parameters = null)
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query)
+        {
+            return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query));
+        }
+
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, SqlParameter[] parameters)
         {
             return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters));
         }
@@ -237,7 +242,12 @@ namespace Suyeong.Lib.DB.MsSql
             return dataSet;
         }
 
-        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, SqlParameter[] parameters = null)
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query)
+        {
+            return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query));
+        }
+
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, SqlParameter[] parameters)
         {
             return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters));
         }

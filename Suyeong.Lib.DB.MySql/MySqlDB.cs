@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
@@ -13,6 +11,14 @@ namespace Suyeong.Lib.DB.MySql
         // https://dev.mysql.com/doc/refman/5.7/en/insert.html
         // Oracle이나 MsSql과 달리 별도의 파라미터가 있지는 않고 그냥 values를 여러 번 넘긴다.
         // insert into TABLE_NAME (a,b,c) values (1,2,3),(4,5,6),(7,8,9);
+
+        // mysql bulk update는 아래 참조
+        // https://www.tutorialspoint.com/how-to-bulk-update-mysql-data-with-a-single-query
+        // update UpdateAllDemo
+        //−> set BookName = (CASE BookId WHEN 1000 THEN 'C in Depth'
+        //−> when 1001 THEN 'Java in Depth'
+        //−> END)
+        //−> Where BookId IN (1000,1001);
 
         public static string GetDbConStr(string serverIP, string databaseName, string uid, string password)
         {
@@ -182,9 +188,61 @@ namespace Suyeong.Lib.DB.MySql
             return table;
         }
 
-        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, MySqlParameter[] parameters = null)
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query)
         {
-            return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters));
+            DataTable table = new DataTable();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                    {
+                        adapter.SelectCommand = command;
+                        await adapter.FillAsync(table);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return table;
+        }
+
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, MySqlParameter[] parameters)
+        {
+            DataTable table = new DataTable();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                    {
+                        foreach (MySqlParameter parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
+
+                        adapter.SelectCommand = command;
+                        await adapter.FillAsync(table);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return table;
         }
 
         public static DataSet GetDataSet(string conStr, string query)
@@ -244,9 +302,61 @@ namespace Suyeong.Lib.DB.MySql
             return dataSet;
         }
 
-        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, MySqlParameter[] parameters = null)
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query)
         {
-            return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters));
+            DataSet dataSet = new DataSet();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                    {
+                        adapter.SelectCommand = command;
+                        await adapter.FillAsync(dataSet);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return dataSet;
+        }
+
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, MySqlParameter[] parameters)
+        {
+            DataSet dataSet = new DataSet();
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
+                {
+                    connection.Open();
+
+                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                    {
+                        foreach (MySqlParameter parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
+
+                        adapter.SelectCommand = command;
+                        await adapter.FillAsync(dataSet);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return dataSet;
         }
 
         public static bool SetQuery(string conStr, string query)

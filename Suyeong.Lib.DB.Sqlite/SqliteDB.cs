@@ -177,8 +177,12 @@ namespace Suyeong.Lib.DB.Sqlite
             return table;
         }
 
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query)
+        {
+            return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query));
+        }
 
-        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, SQLiteParameter[] parameters = null)
+        async public static Task<DataTable> GetDataTableAsync(string conStr, string query, SQLiteParameter[] parameters)
         {
             return await Task.Run<DataTable>(() => GetDataTable(conStr: conStr, query: query, parameters: parameters));
         }
@@ -240,7 +244,12 @@ namespace Suyeong.Lib.DB.Sqlite
             return dataSet;
         }
 
-        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, SQLiteParameter[] parameters = null)
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query)
+        {
+            return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query));
+        }
+
+        async public static Task<DataSet> GetDataSetAsync(string conStr, string query, SQLiteParameter[] parameters)
         {
             return await Task.Run<DataSet>(() => GetDataSet(conStr: conStr, query: query, parameters: parameters));
         }
