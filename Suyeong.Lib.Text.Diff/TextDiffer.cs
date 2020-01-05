@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Suyeong.Lib.Text.Diff
@@ -7,34 +8,39 @@ namespace Suyeong.Lib.Text.Diff
     {
         const double SIMILAR_THRESHOLD = 0.65d;
 
-        public static DiffResultViews DiffTexts(IEnumerable<string> mainTexts, IEnumerable<string> subTexts, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub, double similarThreshold = SIMILAR_THRESHOLD)
+        public static DiffResultViewCollection DiffTexts(IEnumerable<string> mainTexts, IEnumerable<string> subTexts, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub, double similarThreshold = SIMILAR_THRESHOLD)
         {
+            if (mainTexts == null || subTexts == null)
+            {
+                throw new NullReferenceException();
+            }
+
             resultDicMain = new DiffResultDic();
             resultDicSub = new DiffResultDic();
 
-            Sentences mainSentences = ConvertSentences(mainTexts);
-            Sentences subSentences = ConvertSentences(subTexts);
+            SentenceCollection mainSentences = ConvertSentences(mainTexts);
+            SentenceCollection subSentences = ConvertSentences(subTexts);
 
             GetDiffResultDic(mainSentences: mainSentences, subSentences: subSentences, similarLimit: similarThreshold, resultDicMain: out resultDicMain, resultDicSub: out resultDicSub);
 
             return ConvertResultToViews(mains: resultDicMain.GetValues(), subs: resultDicSub.GetValues());
         }
 
-        static Sentences ConvertSentences(IEnumerable<string> texts)
+        static SentenceCollection ConvertSentences(IEnumerable<string> texts)
         {
-            Sentences sentences = new Sentences();
+            SentenceCollection sentences = new SentenceCollection();
 
             int index = 0;
 
             foreach (string text in texts)
             {
-                sentences.Add(new Sentence(index: index++, text: text.ToLower()));
+                sentences.Add(new Sentence(index: index++, text: text.ToLowerInvariant()));
             }
 
             return sentences;
         }
 
-        static void GetDiffResultDic(Sentences mainSentences, Sentences subSentences, double similarLimit, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub)
+        static void GetDiffResultDic(SentenceCollection mainSentences, SentenceCollection subSentences, double similarLimit, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub)
         {
             resultDicMain = new DiffResultDic();
             resultDicSub = new DiffResultDic();
@@ -53,7 +59,7 @@ namespace Suyeong.Lib.Text.Diff
                     sub = subSentences[i];
 
                     // 일단 동등한지 확인
-                    if (string.Equals(main.Text, sub.Text))
+                    if (string.Equals(main.Text, sub.Text, StringComparison.InvariantCulture))
                     {
                         resultDicMain.Add(main.Index, new DiffResult(index: main.Index, diffType: DiffType.Same, main: main, sub: sub, sameTexts: main.Texts.ToList(), modifiedTexts: new List<string>()));
                         resultDicSub.Add(sub.Index, new DiffResult(index: sub.Index, diffType: DiffType.Same, main: sub, sub: main, sameTexts: sub.Texts.ToList(), modifiedTexts: new List<string>()));
@@ -120,7 +126,7 @@ namespace Suyeong.Lib.Text.Diff
                 {
                     sub = subTexts[j];
 
-                    if (string.Equals(main, sub))
+                    if (string.Equals(main, sub, StringComparison.InvariantCulture))
                     {
                         isEqual = true;
                         lastIndex = i;
@@ -136,9 +142,9 @@ namespace Suyeong.Lib.Text.Diff
             }
         }
 
-        static DiffResultViews ConvertResultToViews(DiffResults mains, DiffResults subs)
+        static DiffResultViewCollection ConvertResultToViews(DiffResults mains, DiffResults subs)
         {
-            DiffResultViews views = new DiffResultViews();
+            DiffResultViewCollection views = new DiffResultViewCollection();
 
             int index = 1, indexMain = 0, indexSub = 0;
             int count = mains.Count + subs.Count;

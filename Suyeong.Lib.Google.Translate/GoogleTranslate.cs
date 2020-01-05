@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Text;
 
@@ -130,27 +131,29 @@ namespace Suyeong.Lib.Google.Translate
 
         public static string GetTranslate(Language fromLang, Language toLang, string text)
         {
-            WebClient wc = new WebClient();
-            wc.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0");
-            wc.Headers.Add(HttpRequestHeader.AcceptCharset, "UTF-8");
-            wc.Encoding = Encoding.UTF8;
+            using (WebClient wc = new WebClient())
+            {
+                wc.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0");
+                wc.Headers.Add(HttpRequestHeader.AcceptCharset, "UTF-8");
+                wc.Encoding = Encoding.UTF8;
 
-            string url = string.Format(TRANSLATE_URI, LanguageDic[fromLang], LanguageDic[toLang], WebUtility.UrlEncode(text));
+                string url = string.Format(CultureInfo.InvariantCulture, TRANSLATE_URI, new string[] { LanguageDic[fromLang], LanguageDic[toLang], WebUtility.UrlEncode(text), });
 
-            string result = wc.DownloadString(url);
+                string result = wc.DownloadString(url);
 
-            result = result.Remove(0, result.IndexOf(@"<div dir=""ltr"" class=""t0"">")).Replace(@"<div dir=""ltr"" class=""t0"">", "");
-            int last = result.IndexOf("</div>");
-            result = result.Remove(last, result.Length - last);
-            result = result.Replace("\x3cbr\x3e", "");
-            result = result.Replace("\x26amp;", "&");
-            result = result.Replace("\x26quot;", @"""");
-            result = result.Replace("\x26#39;", "'");
-            result = result.Replace("&#8217;", "'");
-            result = result.Replace("&#8225;", "\t");
-            result = result.Replace("\r", Environment.NewLine);
+                result = result.Remove(0, result.IndexOf(@"<div dir=""ltr"" class=""t0"">", StringComparison.InvariantCulture)).Replace(@"<div dir=""ltr"" class=""t0"">", "");
+                int last = result.IndexOf("</div>", StringComparison.InvariantCulture);
+                result = result.Remove(last, result.Length - last);
+                result = result.Replace("\x3cbr\x3e", "");
+                result = result.Replace("\x26amp;", "&");
+                result = result.Replace("\x26quot;", @"""");
+                result = result.Replace("\x26#39;", "'");
+                result = result.Replace("&#8217;", "'");
+                result = result.Replace("&#8225;", "\t");
+                result = result.Replace("\r", Environment.NewLine);
 
-            return WebUtility.HtmlDecode(result);
+                return WebUtility.HtmlDecode(result);
+            }
         }
     }
 }

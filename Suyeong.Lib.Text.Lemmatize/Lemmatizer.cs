@@ -3,11 +3,11 @@ using LemmaSharp;
 
 namespace Suyeong.Lib.Text.Lemmatize
 {
-    public class Lemmatize
+    public class Lemmatizer
     {
         ILemmatizer lemmatizer;
 
-        public Lemmatize(LanguagePrebuilt language = LanguagePrebuilt.English)
+        public Lemmatizer(LanguagePrebuilt language = LanguagePrebuilt.English)
         {
             this.lemmatizer = new LemmatizerPrebuiltCompact(language);
         }
@@ -18,11 +18,11 @@ namespace Suyeong.Lib.Text.Lemmatize
 
             try
             {
-                result = this.lemmatizer.Lemmatize(word.ToLower());
+                result = this.lemmatizer.Lemmatize(word?.ToLowerInvariant());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex);
+                throw;
             }
 
             return string.IsNullOrWhiteSpace(result) ? word : result;
@@ -36,9 +36,9 @@ namespace Suyeong.Lib.Text.Lemmatize
             {
                 result = this.lemmatizer.Lemmatize(lowerWord);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex);
+                throw;
             }
 
             return string.IsNullOrWhiteSpace(result) ? lowerWord : result;

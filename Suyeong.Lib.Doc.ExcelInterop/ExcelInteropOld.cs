@@ -5,7 +5,10 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Suyeong.Lib.Doc.ExcelInterop
 {
-    public static class ExcelInterop
+    /// <summary>
+    /// office는 open xml을 사용하는 편이 좋다. 일단은 놔둠.
+    /// </summary>
+    public static class ExcelInteropOld
     {
         public static DataSet LoadByDataSet(string filePath, bool hasTitle = true)
         {
@@ -80,6 +83,11 @@ namespace Suyeong.Lib.Doc.ExcelInterop
 
         public static bool SaveByDataSet(DataSet dataSet, string filePath, bool hasTitle = true)
         {
+            if (dataSet == null)
+            {
+                throw new NullReferenceException();
+            }
+
             bool result = false;
 
             Excel.Application application = null;
@@ -130,6 +138,11 @@ namespace Suyeong.Lib.Doc.ExcelInterop
 
         public static bool SaveByDataTable(DataTable table, string filePath, bool hasTitle = true)
         {
+            if (table == null)
+            {
+                throw new NullReferenceException();
+            }
+
             bool result = false;
 
             Excel.Application application = null;

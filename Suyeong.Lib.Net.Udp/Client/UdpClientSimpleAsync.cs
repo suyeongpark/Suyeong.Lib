@@ -30,20 +30,20 @@ namespace Suyeong.Lib.Net.Udp
                 {
                     // 1. 보낼 데이터를 압축한다.
                     byte[] sendData = NetUtil.SerializeObject(data: sendPacket);
-                    byte[] compressData = await NetUtil.CompressAsync(data: sendData);
+                    byte[] compressData = await NetUtil.CompressAsync(data: sendData).ConfigureAwait(false);
 
                     // 2. 보낸다.
-                    await client.SendAsync(datagram: compressData, bytes: compressData.Length, endPoint: this.serverEndPoint);
+                    await client.SendAsync(datagram: compressData, bytes: compressData.Length, endPoint: this.serverEndPoint).ConfigureAwait(false);
 
                     // 3. 결과의 데이터를 받는다.
-                    UdpReceiveResult result = await client.ReceiveAsync();
+                    UdpReceiveResult result = await client.ReceiveAsync().ConfigureAwait(false);
 
                     // 4. 결과는 압축되어 있으므로 푼다.
-                    byte[] decompressData = await NetUtil.DecompressAsync(data: result.Buffer);
+                    byte[] decompressData = await NetUtil.DecompressAsync(data: result.Buffer).ConfigureAwait(false);
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
                 }
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine(ex);
             }
@@ -52,9 +52,9 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpClientSimpleAsyncs : List<UdpClientSimpleAsync>
+    public class UdpClientSimpleAsyncCollection : List<UdpClientSimpleAsync>
     {
-        public UdpClientSimpleAsyncs()
+        public UdpClientSimpleAsyncCollection()
         {
 
         }

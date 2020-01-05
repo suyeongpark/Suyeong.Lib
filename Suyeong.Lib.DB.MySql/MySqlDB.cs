@@ -29,21 +29,21 @@ namespace Suyeong.Lib.DB.MySql
         {
             object scalar = null;
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                {
+                    try
                     {
                         scalar = command.ExecuteScalar();
                     }
+                    catch (MySqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -51,15 +51,20 @@ namespace Suyeong.Lib.DB.MySql
 
         public static object GetDataSingle(string conStr, string query, MySqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             object scalar = null;
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                {
+                    try
                     {
                         foreach (MySqlParameter parameter in parameters)
                         {
@@ -68,11 +73,11 @@ namespace Suyeong.Lib.DB.MySql
 
                         scalar = command.ExecuteScalar();
                     }
+                    catch (MySqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -82,21 +87,21 @@ namespace Suyeong.Lib.DB.MySql
         {
             object scalar = null;
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                {
+                    try
                     {
-                        scalar = await command.ExecuteScalarAsync();
+                        scalar = await command.ExecuteScalarAsync().ConfigureAwait(false);
+                    }
+                    catch (MySqlException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -104,28 +109,33 @@ namespace Suyeong.Lib.DB.MySql
 
         async public static Task<object> GetDataSingleAsync(string conStr, string query, MySqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             object scalar = null;
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                {
+                    try
                     {
                         foreach (MySqlParameter parameter in parameters)
                         {
                             command.Parameters.Add(parameter);
                         }
 
-                        scalar = await command.ExecuteScalarAsync();
+                        scalar = await command.ExecuteScalarAsync().ConfigureAwait(false);
+                    }
+                    catch (MySqlException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return scalar;
@@ -135,23 +145,23 @@ namespace Suyeong.Lib.DB.MySql
         {
             DataTable table = new DataTable();
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                {
+                    try
                     {
                         adapter.SelectCommand = command;
                         adapter.Fill(table);
                     }
+                    catch (MySqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return table;
@@ -159,16 +169,21 @@ namespace Suyeong.Lib.DB.MySql
 
         public static DataTable GetDataTable(string conStr, string query, MySqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                {
+                    try
                     {
                         foreach (MySqlParameter parameter in parameters)
                         {
@@ -178,11 +193,11 @@ namespace Suyeong.Lib.DB.MySql
                         adapter.SelectCommand = command;
                         adapter.Fill(table);
                     }
+                    catch (MySqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return table;
@@ -192,23 +207,23 @@ namespace Suyeong.Lib.DB.MySql
         {
             DataTable table = new DataTable();
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                {
+                    try
                     {
                         adapter.SelectCommand = command;
-                        await adapter.FillAsync(table);
+                        await adapter.FillAsync(table).ConfigureAwait(false);
+                    }
+                    catch (MySqlException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return table;
@@ -216,16 +231,21 @@ namespace Suyeong.Lib.DB.MySql
 
         async public static Task<DataTable> GetDataTableAsync(string conStr, string query, MySqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                {
+                    try
                     {
                         foreach (MySqlParameter parameter in parameters)
                         {
@@ -233,13 +253,13 @@ namespace Suyeong.Lib.DB.MySql
                         }
 
                         adapter.SelectCommand = command;
-                        await adapter.FillAsync(table);
+                        await adapter.FillAsync(table).ConfigureAwait(false);
+                    }
+                    catch (MySqlException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return table;
@@ -249,23 +269,23 @@ namespace Suyeong.Lib.DB.MySql
         {
             DataSet dataSet = new DataSet();
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                {
+                    try
                     {
                         adapter.SelectCommand = command;
                         adapter.Fill(dataSet);
                     }
+                    catch (MySqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return dataSet;
@@ -273,16 +293,21 @@ namespace Suyeong.Lib.DB.MySql
 
         public static DataSet GetDataSet(string conStr, string query, MySqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataSet dataSet = new DataSet();
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                {
+                    try
                     {
                         foreach (MySqlParameter parameter in parameters)
                         {
@@ -292,11 +317,11 @@ namespace Suyeong.Lib.DB.MySql
                         adapter.SelectCommand = command;
                         adapter.Fill(dataSet);
                     }
+                    catch (MySqlException)
+                    {
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return dataSet;
@@ -306,23 +331,23 @@ namespace Suyeong.Lib.DB.MySql
         {
             DataSet dataSet = new DataSet();
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                {
+                    try
                     {
                         adapter.SelectCommand = command;
-                        await adapter.FillAsync(dataSet);
+                        await adapter.FillAsync(dataSet).ConfigureAwait(false);
+                    }
+                    catch (MySqlException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return dataSet;
@@ -330,16 +355,21 @@ namespace Suyeong.Lib.DB.MySql
 
         async public static Task<DataSet> GetDataSetAsync(string conStr, string query, MySqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataSet dataSet = new DataSet();
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection))
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter())
+                {
+                    try
                     {
                         foreach (MySqlParameter parameter in parameters)
                         {
@@ -347,13 +377,13 @@ namespace Suyeong.Lib.DB.MySql
                         }
 
                         adapter.SelectCommand = command;
-                        await adapter.FillAsync(dataSet);
+                        await adapter.FillAsync(dataSet).ConfigureAwait(false);
+                    }
+                    catch (MySqlException)
+                    {
+                        throw;
                     }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return dataSet;
@@ -363,41 +393,28 @@ namespace Suyeong.Lib.DB.MySql
         {
             int result = 0;
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (MySqlTransaction transaction = connection.BeginTransaction())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
                 {
-                    connection.Open();
-
-                    using (MySqlTransaction transaction = connection.BeginTransaction())
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    try
                     {
-                        try
-                        {
-                            result = command.ExecuteNonQuery();
+                        result = command.ExecuteNonQuery();
 
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
-                        }
-                        catch (Exception)
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (MySqlException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (MySqlException)
+                    {
+                        command.Transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -405,48 +422,40 @@ namespace Suyeong.Lib.DB.MySql
 
         public static bool SetQuery(string conStr, string query, MySqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             int result = 0;
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (MySqlTransaction transaction = connection.BeginTransaction())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
                 {
-                    connection.Open();
-
-                    using (MySqlTransaction transaction = connection.BeginTransaction())
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    try
                     {
-                        try
+                        foreach (MySqlParameter parameter in parameters)
                         {
-                            foreach (MySqlParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
-
-                            result = command.ExecuteNonQuery();
-
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
+                            command.Parameters.Add(parameter);
                         }
-                        catch (Exception)
+
+                        result = command.ExecuteNonQuery();
+
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (MySqlException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (MySqlException)
+                    {
+                        command.Transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -456,41 +465,28 @@ namespace Suyeong.Lib.DB.MySql
         {
             int result = 0;
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (MySqlTransaction transaction = connection.BeginTransaction())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
                 {
-                    connection.Open();
-
-                    using (MySqlTransaction transaction = connection.BeginTransaction())
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    try
                     {
-                        try
-                        {
-                            result = await command.ExecuteNonQueryAsync();
+                        result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
 
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
-                        }
-                        catch (Exception)
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (MySqlException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (MySqlException)
+                    {
+                        command.Transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;
@@ -498,48 +494,40 @@ namespace Suyeong.Lib.DB.MySql
 
         async public static Task<bool> SetQueryAsync(string conStr, string query, MySqlParameter[] parameters)
         {
+            if (parameters == null)
+            {
+                throw new NullReferenceException();
+            }
+
             int result = 0;
 
-            try
+            using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
             {
-                using (MySqlConnection connection = new MySqlConnection(connectionString: conStr))
+                connection.Open();
+
+                using (MySqlTransaction transaction = connection.BeginTransaction())
+                using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
                 {
-                    connection.Open();
-
-                    using (MySqlTransaction transaction = connection.BeginTransaction())
-                    using (MySqlCommand command = new MySqlCommand(cmdText: query, connection: connection, transaction: transaction))
+                    try
                     {
-                        try
+                        foreach (MySqlParameter parameter in parameters)
                         {
-                            foreach (MySqlParameter parameter in parameters)
-                            {
-                                command.Parameters.Add(parameter);
-                            }
-
-                            result = await command.ExecuteNonQueryAsync();
-
-                            if (result > 0)
-                            {
-                                command.Transaction.Commit();
-                            }
+                            command.Parameters.Add(parameter);
                         }
-                        catch (Exception)
+
+                        result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+                        if (result > 0)
                         {
-                            try
-                            {
-                                command.Transaction.Rollback();
-                            }
-                            catch (MySqlException)
-                            {
-                                throw;
-                            }
+                            command.Transaction.Commit();
                         }
                     }
+                    catch (MySqlException)
+                    {
+                        command.Transaction.Rollback();
+                        throw;
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                throw;
             }
 
             return result > 0;

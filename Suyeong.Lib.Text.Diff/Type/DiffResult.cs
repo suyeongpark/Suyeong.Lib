@@ -43,9 +43,12 @@ namespace Suyeong.Lib.Text.Diff
 
         public DiffResultDic(IEnumerable<KeyValuePair<int, DiffResult>> dic) : base()
         {
-            foreach (KeyValuePair<int, DiffResult> kvp in dic)
+            if (dic != null)
             {
-                this.Add(kvp.Key, kvp.Value);
+                foreach (KeyValuePair<int, DiffResult> kvp in dic)
+                {
+                    this.Add(kvp.Key, kvp.Value);
+                }
             }
         }
 

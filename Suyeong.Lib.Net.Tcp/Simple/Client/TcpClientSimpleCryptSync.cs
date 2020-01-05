@@ -60,7 +60,7 @@ namespace Suyeong.Lib.Net.Tcp
                     receivePacket = NetUtil.DeserializeObject(decryptData) as IPacket;
                 }
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine(ex);
             }
@@ -69,9 +69,9 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpClientSimpleCryptSyncs : List<TcpClientSimpleCryptSync>
+    public class TcpClientSimpleCryptSyncCollection : List<TcpClientSimpleCryptSync>
     {
-        public TcpClientSimpleCryptSyncs()
+        public TcpClientSimpleCryptSyncCollection()
         {
 
         }

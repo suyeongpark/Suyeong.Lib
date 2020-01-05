@@ -1,9 +1,16 @@
-﻿namespace Suyeong.Lib.Text.Diff
+﻿using System;
+
+namespace Suyeong.Lib.Text.Diff
 {
     public static class EditDistance
     {
         public static double FigureEditDistance(string main, string sub)
         {
+            if (string.IsNullOrWhiteSpace(main) || string.IsNullOrWhiteSpace(sub))
+            {
+                throw new NullReferenceException();
+            }
+
             double result;
 
             int mainLength = main.Length, subLength = sub.Length;

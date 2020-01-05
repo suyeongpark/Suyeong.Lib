@@ -46,7 +46,7 @@ namespace Suyeong.Lib.Net.Udp
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
                 }
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine(ex);
             }
@@ -55,9 +55,9 @@ namespace Suyeong.Lib.Net.Udp
         }
     }
 
-    public class UdpClientSimpleCryptSyncs : List<UdpClientSimpleCryptSync>
+    public class UdpClientSimpleCryptSyncCollection : List<UdpClientSimpleCryptSync>
     {
-        public UdpClientSimpleCryptSyncs()
+        public UdpClientSimpleCryptSyncCollection()
         {
 
         }

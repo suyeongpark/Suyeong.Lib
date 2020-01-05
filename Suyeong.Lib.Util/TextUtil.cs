@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -35,7 +36,7 @@ namespace Suyeong.Lib.Util
 
                 for (int i = 0; i < words.Length; i++)
                 {
-                    result[i] = words[i][0].ToString().ToUpper() + words[i].Substring(1);
+                    result[i] = words[i][0].ToString(CultureInfo.InvariantCulture).ToUpperInvariant() + words[i].Substring(1);
                 }
 
                 return string.Join(" ", result);
@@ -80,6 +81,11 @@ namespace Suyeong.Lib.Util
 
         public static bool IsContainTextByIgnoreCase(string source, string text)
         {
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                throw new NullReferenceException();
+            }
+
             return source.IndexOf(text, StringComparison.OrdinalIgnoreCase) > -1;
         }
 

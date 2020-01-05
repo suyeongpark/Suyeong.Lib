@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Acrobat;
@@ -15,9 +16,9 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
 
         const double DISTANCE_SHORT = 1d;
 
-        public static PdfPages GetRawText(string filePath)
+        public static PdfPageCollection GetRawText(string filePath)
         {
-            PdfPages pages = new PdfPages();
+            PdfPageCollection pages = new PdfPageCollection();
 
             AcroAVDoc acroAvDoc = null;
             CAcroPDDoc acroPdDoc = null;
@@ -60,9 +61,9 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             return pages;
         }
 
-        static PdfPages GetPdfPages(int pageCount, string filePath, ref CAcroPDDoc acroPdDoc, ref AcroAVDoc acroAvDoc)
+        static PdfPageCollection GetPdfPages(int pageCount, string filePath, ref CAcroPDDoc acroPdDoc, ref AcroAVDoc acroAvDoc)
         {
-            PdfPages pdfPages = new PdfPages();
+            PdfPageCollection pdfPages = new PdfPageCollection();
 
             CAcroPDPage acroPdPage;
             int width, height, rotate;
@@ -126,7 +127,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
 
             Type type = jso.GetType();
             object jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
-            int wordsCount = int.Parse(jsNumWords.ToString());
+            int wordsCount = int.Parse(jsNumWords.ToString(), CultureInfo.InvariantCulture);
 
             object jsWord;
             object[] jsQuads;
@@ -144,7 +145,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                     jsQuads = type.InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex, i }, null) as object[];
 
                     FindPositionByHorizontal(jsQuads: jsQuads, leftX: out leftX, rightX: out rightX, topY: out topY, bottomY: out bottomY);
-                    rotate = GetRotate(jsQuads: jsQuads, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, indexX: 0, indexY: 1);
+                    rotate = GetRotate(jsQuads: jsQuads);
 
                     pdfTexts.Add(new PdfText(index: pdfTexts.Count, rotate: rotate, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, text: text));
                 }
@@ -159,7 +160,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
 
             Type type = jso.GetType();
             object jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
-            int wordsCount = int.Parse(jsNumWords.ToString());
+            int wordsCount = int.Parse(jsNumWords.ToString(), CultureInfo.InvariantCulture);
 
             object jsWord;
             object[] jsQuads;
@@ -177,7 +178,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                     jsQuads = type.InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex, i }, null) as object[];
 
                     FindPositionByVertical(jsQuads: jsQuads, leftX: out leftX, rightX: out rightX, topY: out topY, bottomY: out bottomY);
-                    rotate = GetRotate(jsQuads: jsQuads, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, indexX: 1, indexY: 0) - pageRotate;
+                    rotate = GetRotate(jsQuads: jsQuads) - pageRotate;
                     rotate = rotate < 0 ? rotate + 360 : rotate;
 
                     // 90도 뒤집어진 경우엔 y축을 기준으로 뒤집는다.
@@ -200,7 +201,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
 
             Type type = jso.GetType();
             object jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
-            int wordsCount = int.Parse(jsNumWords.ToString());
+            int wordsCount = int.Parse(jsNumWords.ToString(), CultureInfo.InvariantCulture);
 
             object jsWord;
             object[] jsQuads;
@@ -218,7 +219,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
                     jsQuads = type.InvokeMember(JSO_GET_PAGE_NTH_WORD_QUADS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex, i }, null) as object[];
 
                     FindPositionByVertical(jsQuads: jsQuads, leftX: out leftX, rightX: out rightX, topY: out topY, bottomY: out bottomY);
-                    rotate = GetRotate(jsQuads: jsQuads, leftX: leftX, rightX: rightX, topY: topY, bottomY: bottomY, indexX: 1, indexY: 0) - pageRotate;
+                    rotate = GetRotate(jsQuads: jsQuads) - pageRotate;
                     rotate = rotate < 0 ? rotate + 360 : rotate;
 
                     // 270도 뒤집어진 경우엔 x축을 기준으로 뒤집는다.
@@ -284,7 +285,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
 
                 foreach (object position in positionArr)
                 {
-                    value = double.Parse(position.ToString());
+                    value = double.Parse(position.ToString(), CultureInfo.InvariantCulture);
 
                     // 회전값이 0일때 짝수가 x, 홀수가 y
                     // 홀수
@@ -338,7 +339,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
 
                 foreach (object position in positionArr)
                 {
-                    value = double.Parse(position.ToString());
+                    value = double.Parse(position.ToString(), CultureInfo.InvariantCulture);
 
                     // 회전값이 0일때 짝수가 y, 홀수가 x
                     // 홀수
@@ -375,7 +376,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             }
         }
 
-        static int GetRotate(object[] jsQuads, double leftX, double rightX, double topY, double bottomY, int indexX, int indexY)
+        static int GetRotate(object[] jsQuads)
         {
             // 회전값 0일 때
             // 0 - LT X
@@ -418,9 +419,9 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             // 7 - LT X
 
             object[] positionArr = jsQuads[0] as object[];
-            double val0 = double.Parse(positionArr[0].ToString());
-            double val2 = double.Parse(positionArr[2].ToString());
-            double val6 = double.Parse(positionArr[6].ToString());
+            double val0 = double.Parse(positionArr[0].ToString(), CultureInfo.InvariantCulture);
+            double val2 = double.Parse(positionArr[2].ToString(), CultureInfo.InvariantCulture);
+            double val6 = double.Parse(positionArr[6].ToString(), CultureInfo.InvariantCulture);
 
             // 0과 2가 같다는 것은 둘이 y이라는 뜻
             if (val0 == val2)

@@ -20,14 +20,14 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
         public PdfTexts PdfTexts { get; private set; }
     }
 
-    public class PdfPages : List<PdfPage>
+    public class PdfPageCollection : List<PdfPage>
     {
-        public PdfPages()
+        public PdfPageCollection()
         {
 
         }
 
-        public PdfPages(IEnumerable<PdfPage> pdfPages) : base()
+        public PdfPageCollection(IEnumerable<PdfPage> pdfPages) : base()
         {
             this.AddRange(pdfPages);
         }

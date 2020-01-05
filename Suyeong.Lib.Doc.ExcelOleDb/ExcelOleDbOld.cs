@@ -7,10 +7,15 @@ using System.Text;
 
 namespace Suyeong.Lib.Doc.ExcelOleDb
 {
-    public static class ExcelOleDb
+    public static class ExcelOleDbOld
     {
         public static DataSet LoadByDataSet(string filePath, IEnumerable<string> sheetNames, bool hasTitle = true)
         {
+            if (sheetNames == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataSet dataSet = new DataSet();
 
             try
@@ -61,6 +66,11 @@ namespace Suyeong.Lib.Doc.ExcelOleDb
 
         public static bool SaveByDataSet(DataSet dataSet, string filePath, bool hasTitle = true)
         {
+            if (dataSet == null)
+            {
+                throw new NullReferenceException();
+            }
+
             bool result = false;
 
             try
@@ -82,6 +92,11 @@ namespace Suyeong.Lib.Doc.ExcelOleDb
 
         public static bool SaveByDataTable(DataTable table, string filePath, bool hasTitle = true)
         {
+            if (table == null)
+            {
+                throw new NullReferenceException();
+            }
+
             bool result = false;
 
             try
@@ -197,11 +212,11 @@ namespace Suyeong.Lib.Doc.ExcelOleDb
 
         static string GetConStr(string filePath, bool hasTitle)
         {
-            string extension = Path.GetExtension(filePath).ToLower();
+            string extension = Path.GetExtension(filePath).ToLowerInvariant();
             string HDR = hasTitle ? "YES" : "NO";
 
             // 2007 이상용
-            if (string.Equals(extension, ".xlsx"))
+            if (string.Equals(extension, ".xlsx", StringComparison.InvariantCulture))
             {
                 return $"Provider=Microsoft.ACE.OLEDB.12.0;Extended Properties='Excel 12.0 XML;HDE={HDR};';Data Source={filePath};";
             }

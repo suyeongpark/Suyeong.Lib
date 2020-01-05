@@ -4,7 +4,7 @@ using Word = Microsoft.Office.Interop.Word;
 
 namespace Suyeong.Lib.Doc.WordInterop
 {
-    public static class WordInterop
+    public static class WordInteropOld
     {
         public static bool ExportToPdf(string wordPath, string pdfPath)
         {

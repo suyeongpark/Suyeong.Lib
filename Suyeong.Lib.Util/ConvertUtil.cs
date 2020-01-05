@@ -143,36 +143,71 @@ namespace Suyeong.Lib.Util
 
         public static string DataSetToCsv(DataSet dataSet)
         {
+            if (dataSet == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return DataSetToSeparateValue(dataSet: dataSet, separate: ",");
         }
 
         public static string DataSetToTsv(DataSet dataSet)
         {
+            if (dataSet == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return DataSetToSeparateValue(dataSet: dataSet, separate: "\t");
         }
 
-        public static string DataTableToCsv(DataTable dataTable)
+        public static string DataTableToCsv(DataTable table)
         {
-            return DataTableToSeparateValue(dataTable: dataTable, separate: ",");
+            if (table == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            return DataTableToSeparateValue(table: table, separate: ",");
         }
 
-        public static string DataTableToTsv(DataTable dataTable)
+        public static string DataTableToTsv(DataTable table)
         {
-            return DataTableToSeparateValue(dataTable: dataTable, separate: "\t");
+            if (table == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            return DataTableToSeparateValue(table: table, separate: "\t");
         }
 
         public static string ListToCsv<T>(IEnumerable<T> dataList)
         {
+            if (dataList == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return ListToSeparateValue(list: dataList, separate: ",");
         }
 
         public static string ListToTsv<T>(IEnumerable<T> dataList)
         {
+            if (dataList == null)
+            {
+                throw new NullReferenceException();
+            }
+
             return ListToSeparateValue(list: dataList, separate: "\t");
         }
 
         public static DataTable ListToDataTable<T>(IEnumerable<T> list)
         {
+            if (list == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
             FieldInfo[] fieldInfos = typeof(T).GetFields();
@@ -200,6 +235,11 @@ namespace Suyeong.Lib.Util
 
         public static DataTable ListToDataTableFieldOnly<T>(IEnumerable<T> list)
         {
+            if (list == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
             FieldInfo[] fieldInfos = typeof(T).GetFields();
@@ -221,6 +261,11 @@ namespace Suyeong.Lib.Util
 
         public static DataTable ListToDataTablePropertyOnly<T>(IEnumerable<T> list)
         {
+            if (list == null)
+            {
+                throw new NullReferenceException();
+            }
+
             DataTable table = new DataTable();
 
             PropertyInfo[] propertyInfos = typeof(T).GetProperties();
@@ -297,7 +342,7 @@ namespace Suyeong.Lib.Util
 
             foreach (DataTable table in dataSet.Tables)
             {
-                sb.AppendLine(DataTableToSeparateValue(dataTable: table, separate: separate));
+                sb.AppendLine(DataTableToSeparateValue(table: table, separate: separate));
                 sb.AppendLine("");  // table 사이를 구분하기 위한 공백
             }
 
@@ -305,18 +350,18 @@ namespace Suyeong.Lib.Util
         }
 
 
-        static string DataTableToSeparateValue(DataTable dataTable, string separate)
+        static string DataTableToSeparateValue(DataTable table, string separate)
         {
             StringBuilder sb = new StringBuilder();
 
-            string title = string.Join(separate, Utils.GetColNamesFromDataTable(table: dataTable));
+            string title = string.Join(separate, Utils.GetColNamesFromDataTable(table: table));
 
             if (!string.IsNullOrWhiteSpace(title))
             {
                 sb.AppendLine(title);
             }
 
-            foreach (DataRow row in dataTable.Rows)
+            foreach (DataRow row in table.Rows)
             {
                 sb.AppendLine(string.Join(separate, row.ItemArray));
             }

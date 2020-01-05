@@ -57,7 +57,7 @@ namespace Suyeong.Lib.Net.Tcp
                     receivePacket = NetUtil.DeserializeObject(data: decompressData) as IPacket;
                 }
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine(ex);
             }
@@ -66,9 +66,9 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpClientSimpleSyncs : List<TcpClientSimpleSync>
+    public class TcpClientSimpleSyncCollection : List<TcpClientSimpleSync>
     {
-        public TcpClientSimpleSyncs()
+        public TcpClientSimpleSyncCollection()
         {
 
         }
