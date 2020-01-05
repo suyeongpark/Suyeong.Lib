@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Threading;
 using Suyeong.Lib.Net.Lib;
 
 namespace Suyeong.Lib.Net.Tcp
@@ -127,17 +126,17 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpClientHandlerConcurrencySyncDic : Dictionary<string, TcpClientHandlerConcurrencySync>
+    public class TcpClientHandlerConcurrencySyncDictionary : Dictionary<string, TcpClientHandlerConcurrencySync>
     {
-        public TcpClientHandlerConcurrencySyncDic()
+        public TcpClientHandlerConcurrencySyncDictionary()
         {
 
         }
     }
 
-    public class TcpClientHandlerConcurrencySyncDicGroup : Dictionary<string, TcpClientHandlerConcurrencySyncDic>
+    public class TcpClientHandlerConcurrencySyncGroupDictionary : Dictionary<string, TcpClientHandlerConcurrencySyncDictionary>
     {
-        public TcpClientHandlerConcurrencySyncDicGroup()
+        public TcpClientHandlerConcurrencySyncGroupDictionary()
         {
 
         }

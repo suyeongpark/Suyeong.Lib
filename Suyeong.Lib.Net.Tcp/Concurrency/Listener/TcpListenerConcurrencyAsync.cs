@@ -10,7 +10,7 @@ namespace Suyeong.Lib.Net.Tcp
     public class TcpListenerConcurrencyAsync : IDisposable
     {
         TcpListener listener;
-        TcpClientHandlerConcurrencyAsyncDicGroup handlerDicGroup;
+        TcpClientHandlerConcurrencyAsyncGroupDictionary handlerDicGroup;
         Func<string, string, Task<IPacket>> userEnterAsync, userExitAsync;
         Func<IPacket, Task<IPacket>> response;
         bool disposedValue;  // 중복호출 제거용
@@ -29,7 +29,7 @@ namespace Suyeong.Lib.Net.Tcp
             this.response = responseCallbakAsync;
 
             this.listener = new TcpListener(new IPEndPoint(address: IPAddress.Any, port: portNum));
-            this.handlerDicGroup = new TcpClientHandlerConcurrencyAsyncDicGroup();
+            this.handlerDicGroup = new TcpClientHandlerConcurrencyAsyncGroupDictionary();
             this.disposedValue = false;
         }
 
@@ -126,7 +126,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         async public Task DisconnectAsync(string stageID, string userID)
         {
-            TcpClientHandlerConcurrencyAsyncDic handlerDic;
+            TcpClientHandlerConcurrencyAsyncDictionary handlerDic;
             TcpClientHandlerConcurrencyAsync handler;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
@@ -163,7 +163,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         async public Task BroadcastToServerAsync(IPacket sendPacket)
         {
-            foreach (KeyValuePair<string, TcpClientHandlerConcurrencyAsyncDic> kvp in this.handlerDicGroup)
+            foreach (KeyValuePair<string, TcpClientHandlerConcurrencyAsyncDictionary> kvp in this.handlerDicGroup)
             {
                 foreach (KeyValuePair<string, TcpClientHandlerConcurrencyAsync> kvp2 in kvp.Value)
                 {
@@ -174,7 +174,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         void AddStage(TcpClientHandlerConcurrencyAsync handler, string stageID, string userID)
         {
-            TcpClientHandlerConcurrencyAsyncDic handlerDic;
+            TcpClientHandlerConcurrencyAsyncDictionary handlerDic;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
             {
@@ -184,7 +184,7 @@ namespace Suyeong.Lib.Net.Tcp
             }
             else
             {
-                handlerDic = new TcpClientHandlerConcurrencyAsyncDic();
+                handlerDic = new TcpClientHandlerConcurrencyAsyncDictionary();
                 handlerDic.Add(userID, handler);
 
                 this.handlerDicGroup.Add(stageID, handlerDic);
@@ -193,7 +193,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         TcpClientHandlerConcurrencyAsync RemoveStage(string stageID, string userID)
         {
-            TcpClientHandlerConcurrencyAsyncDic handlerDic;
+            TcpClientHandlerConcurrencyAsyncDictionary handlerDic;
             TcpClientHandlerConcurrencyAsync handler;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
@@ -225,7 +225,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         async Task BroadcastToStageAsync(string stageID, IPacket sendPacket)
         {
-            TcpClientHandlerConcurrencyAsyncDic handlerDic;
+            TcpClientHandlerConcurrencyAsyncDictionary handlerDic;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
             {

@@ -22,26 +22,26 @@ namespace Suyeong.Lib.Text.Diff
         public List<string> ModifiedTexts { get; private set; }
     }
 
-    public class DiffResults : List<DiffResult>
+    public class DiffResultCollection : List<DiffResult>
     {
-        public DiffResults()
+        public DiffResultCollection()
         {
         }
 
-        public DiffResults(IEnumerable<DiffResult> diffResults) : base()
+        public DiffResultCollection(IEnumerable<DiffResult> diffResults) : base()
         {
             this.AddRange(diffResults);
         }
     }
 
-    public class DiffResultDic : Dictionary<int, DiffResult>
+    public class DiffResultDictionary : Dictionary<int, DiffResult>
     {
-        public DiffResultDic()
+        public DiffResultDictionary()
         {
 
         }
 
-        public DiffResultDic(IEnumerable<KeyValuePair<int, DiffResult>> dic) : base()
+        public DiffResultDictionary(IEnumerable<KeyValuePair<int, DiffResult>> dic) : base()
         {
             if (dic != null)
             {
@@ -52,9 +52,9 @@ namespace Suyeong.Lib.Text.Diff
             }
         }
 
-        public DiffResults GetValues()
+        public DiffResultCollection GetValueCollection()
         {
-            return new DiffResults(this.Values);
+            return new DiffResultCollection(this.Values);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Suyeong.Lib.Net.Tcp
     public class TcpListenerConcurrencySync : IDisposable
     {
         TcpListener listener;
-        TcpClientHandlerConcurrencySyncDicGroup handlerDicGroup;
+        TcpClientHandlerConcurrencySyncGroupDictionary handlerDicGroup;
         Func<string, string, IPacket> userEnter, userExit;
         Func<IPacket, IPacket> response;
         bool disposedValue;  // 중복호출 제거용
@@ -29,7 +29,7 @@ namespace Suyeong.Lib.Net.Tcp
             this.response = responseCallbak;
 
             this.listener = new TcpListener(new IPEndPoint(address: IPAddress.Any, port: portNum));
-            this.handlerDicGroup = new TcpClientHandlerConcurrencySyncDicGroup();
+            this.handlerDicGroup = new TcpClientHandlerConcurrencySyncGroupDictionary();
             this.disposedValue = false;
         }
 
@@ -129,7 +129,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         public void Disconnect(string stageID, string userID)
         {
-            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySyncDictionary handlerDic;
             TcpClientHandlerConcurrencySync handler;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
@@ -166,7 +166,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         public void BroadcastToServer(IPacket sendPacket)
         {
-            foreach (KeyValuePair<string, TcpClientHandlerConcurrencySyncDic> kvp in this.handlerDicGroup)
+            foreach (KeyValuePair<string, TcpClientHandlerConcurrencySyncDictionary> kvp in this.handlerDicGroup)
             {
                 foreach (KeyValuePair<string, TcpClientHandlerConcurrencySync> kvp2 in kvp.Value)
                 {
@@ -177,7 +177,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         void AddStage(TcpClientHandlerConcurrencySync handler, string stageID, string userID)
         {
-            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySyncDictionary handlerDic;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
             {
@@ -187,7 +187,7 @@ namespace Suyeong.Lib.Net.Tcp
             }
             else
             {
-                handlerDic = new TcpClientHandlerConcurrencySyncDic();
+                handlerDic = new TcpClientHandlerConcurrencySyncDictionary();
                 handlerDic.Add(userID, handler);
 
                 this.handlerDicGroup.Add(stageID, handlerDic);
@@ -196,7 +196,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         TcpClientHandlerConcurrencySync RemoveStage(string stageID, string userID)
         {
-            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySyncDictionary handlerDic;
             TcpClientHandlerConcurrencySync handler;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
@@ -228,7 +228,7 @@ namespace Suyeong.Lib.Net.Tcp
 
         void BroadcastToStage(string stageID, IPacket sendPacket)
         {
-            TcpClientHandlerConcurrencySyncDic handlerDic;
+            TcpClientHandlerConcurrencySyncDictionary handlerDic;
 
             if (this.handlerDicGroup.TryGetValue(stageID, out handlerDic))
             {

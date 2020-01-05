@@ -8,22 +8,22 @@ namespace Suyeong.Lib.Text.Diff
     {
         const double SIMILAR_THRESHOLD = 0.65d;
 
-        public static DiffResultViewCollection DiffTexts(IEnumerable<string> mainTexts, IEnumerable<string> subTexts, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub, double similarThreshold = SIMILAR_THRESHOLD)
+        public static DiffResultViewCollection DiffTexts(IEnumerable<string> mainTexts, IEnumerable<string> subTexts, out DiffResultDictionary resultDicMain, out DiffResultDictionary resultDicSub, double similarThreshold = SIMILAR_THRESHOLD)
         {
             if (mainTexts == null || subTexts == null)
             {
                 throw new NullReferenceException();
             }
 
-            resultDicMain = new DiffResultDic();
-            resultDicSub = new DiffResultDic();
+            resultDicMain = new DiffResultDictionary();
+            resultDicSub = new DiffResultDictionary();
 
             SentenceCollection mainSentences = ConvertSentences(mainTexts);
             SentenceCollection subSentences = ConvertSentences(subTexts);
 
             GetDiffResultDic(mainSentences: mainSentences, subSentences: subSentences, similarLimit: similarThreshold, resultDicMain: out resultDicMain, resultDicSub: out resultDicSub);
 
-            return ConvertResultToViews(mains: resultDicMain.GetValues(), subs: resultDicSub.GetValues());
+            return ConvertResultToViews(mains: resultDicMain.GetValueCollection(), subs: resultDicSub.GetValueCollection());
         }
 
         static SentenceCollection ConvertSentences(IEnumerable<string> texts)
@@ -40,10 +40,10 @@ namespace Suyeong.Lib.Text.Diff
             return sentences;
         }
 
-        static void GetDiffResultDic(SentenceCollection mainSentences, SentenceCollection subSentences, double similarLimit, out DiffResultDic resultDicMain, out DiffResultDic resultDicSub)
+        static void GetDiffResultDic(SentenceCollection mainSentences, SentenceCollection subSentences, double similarLimit, out DiffResultDictionary resultDicMain, out DiffResultDictionary resultDicSub)
         {
-            resultDicMain = new DiffResultDic();
-            resultDicSub = new DiffResultDic();
+            resultDicMain = new DiffResultDictionary();
+            resultDicSub = new DiffResultDictionary();
 
             int lastIndex = -1, intersectCount;
             Sentence sub = new Sentence();
@@ -105,7 +105,7 @@ namespace Suyeong.Lib.Text.Diff
             }
 
             // 순서가 꼬였으므로 순서대로 정렬한다.
-            resultDicSub = new DiffResultDic(resultDicSub.OrderBy(kvp => kvp.Key));
+            resultDicSub = new DiffResultDictionary(resultDicSub.OrderBy(kvp => kvp.Key));
         }
 
         static void GetSameAndModifiedTexts(string[] mainTexts, string[] subTexts, out List<string> sameTexts, out List<string> modifiedTexts)
@@ -142,7 +142,7 @@ namespace Suyeong.Lib.Text.Diff
             }
         }
 
-        static DiffResultViewCollection ConvertResultToViews(DiffResults mains, DiffResults subs)
+        static DiffResultViewCollection ConvertResultToViews(DiffResultCollection mains, DiffResultCollection subs)
         {
             DiffResultViewCollection views = new DiffResultViewCollection();
 

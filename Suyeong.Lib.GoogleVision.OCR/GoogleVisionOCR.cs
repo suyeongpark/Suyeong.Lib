@@ -5,9 +5,9 @@ namespace Suyeong.Lib.GoogleVision.OCR
 {
     public static class GoogleVisionOCR
     {
-        public static OcrTexts DetectTextByGoogleVision(string imagePath)
+        public static OcrTextCollection DetectTextByGoogleVision(string imagePath)
         {
-            OcrTexts textBlocks = new OcrTexts();
+            OcrTextCollection textBlocks = new OcrTextCollection();
 
             ImageAnnotatorClient client = ImageAnnotatorClient.Create();
             IReadOnlyList<EntityAnnotation> response = client.DetectText(Image.FromFile(imagePath));

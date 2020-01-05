@@ -127,17 +127,17 @@ namespace Suyeong.Lib.Net.Tcp
         }
     }
 
-    public class TcpClientHandlerConcurrencyAsyncDic : Dictionary<string, TcpClientHandlerConcurrencyAsync>
+    public class TcpClientHandlerConcurrencyAsyncDictionary : Dictionary<string, TcpClientHandlerConcurrencyAsync>
     {
-        public TcpClientHandlerConcurrencyAsyncDic()
+        public TcpClientHandlerConcurrencyAsyncDictionary()
         {
 
         }
     }
 
-    public class TcpClientHandlerConcurrencyAsyncDicGroup : Dictionary<string, TcpClientHandlerConcurrencyAsyncDic>
+    public class TcpClientHandlerConcurrencyAsyncGroupDictionary : Dictionary<string, TcpClientHandlerConcurrencyAsyncDictionary>
     {
-        public TcpClientHandlerConcurrencyAsyncDicGroup()
+        public TcpClientHandlerConcurrencyAsyncGroupDictionary()
         {
 
         }
