@@ -67,7 +67,7 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
 
             CAcroPDPage acroPdPage;
             int width, height, rotate;
-            PdfTexts pdfTexts;
+            PdfTextCollection pdfTexts;
             object jso = acroPdDoc.GetJSObject();
 
             for (int i = 0; i < pageCount; i++)
@@ -121,9 +121,9 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             return pdfPages;
         }
 
-        static PdfTexts GetPdfTextsDefault(int pageIndex, object jso)
+        static PdfTextCollection GetPdfTextsDefault(int pageIndex, object jso)
         {
-            PdfTexts pdfTexts = new PdfTexts();
+            PdfTextCollection pdfTexts = new PdfTextCollection();
 
             Type type = jso.GetType();
             object jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
@@ -154,9 +154,9 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             return pdfTexts.Count > 0 ? UpdateBraket(oldTexts: pdfTexts) : pdfTexts;
         }
 
-        static PdfTexts GetPdfTexts90(int pageIndex, int pageRotate, int pageHeight, object jso)
+        static PdfTextCollection GetPdfTexts90(int pageIndex, int pageRotate, int pageHeight, object jso)
         {
-            PdfTexts pdfTexts = new PdfTexts();
+            PdfTextCollection pdfTexts = new PdfTextCollection();
 
             Type type = jso.GetType();
             object jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
@@ -195,9 +195,9 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             return pdfTexts.Count > 0 ? UpdateBraket(oldTexts: pdfTexts) : pdfTexts;
         }
 
-        static PdfTexts GetPdfTexts270(int pageIndex, int pageRotate, int pageWidth, object jso)
+        static PdfTextCollection GetPdfTexts270(int pageIndex, int pageRotate, int pageWidth, object jso)
         {
-            PdfTexts pdfTexts = new PdfTexts();
+            PdfTextCollection pdfTexts = new PdfTextCollection();
 
             Type type = jso.GetType();
             object jsNumWords = type.InvokeMember(JSO_GET_PAGE_NUM_WORDS, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, jso, new object[] { pageIndex }, null);
@@ -237,9 +237,9 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
         }
 
         // 간격이 좁은 단어는 하나로 합친다.
-        static PdfTexts UpdateBraket(PdfTexts oldTexts)
+        static PdfTextCollection UpdateBraket(PdfTextCollection oldTexts)
         {
-            PdfTexts newTexts = new PdfTexts();
+            PdfTextCollection newTexts = new PdfTextCollection();
             PdfText last, current;
 
             if (oldTexts.Count > 0)

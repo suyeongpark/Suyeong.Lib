@@ -47,14 +47,14 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
         }
     }
 
-    public class PdfTexts : List<PdfText>
+    public class PdfTextCollection : List<PdfText>
     {
-        public PdfTexts()
+        public PdfTextCollection()
         {
 
         }
 
-        public PdfTexts(IEnumerable<PdfText> pdfTexts) : base()
+        public PdfTextCollection(IEnumerable<PdfText> pdfTexts) : base()
         {
             this.AddRange(pdfTexts);
         }
