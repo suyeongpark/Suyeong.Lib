@@ -15,7 +15,7 @@ namespace Suyeong.Lib.Doc.Detector
         /// MergeTextsGroup은 도면 같이 아예 줄 같은게 없는 곳에서 뭉쳐진 텍스트틀 합하는 것.
         /// </summary>
 
-        public static TextBlockSetCollection MergeTextLineByHorizontal(TextBlockCollection sources, double sizeRatio = SIZE_RATIO)
+        public static TextBlockSetCollection MergeTextLineByHorizontal(TextBlockCollection sources, double sizeRatio = SIZE_RATIO, double alignRatio = ALIGN_RATIO)
         {
             TextBlockSetCollection lineTexts = new TextBlockSetCollection();
 
@@ -23,13 +23,16 @@ namespace Suyeong.Lib.Doc.Detector
             TextBlock main, sub;
 
             Dictionary<int, int> duplicateDic = new Dictionary<int, int>();
-            int index = 0;
+            int size, align, index = 0;
 
             for (int i = 0; i < sources.Count; i++)
             {
                 if (!duplicateDic.ContainsKey(i))
                 {
                     main = sources[i];
+
+                    size = (int)Math.Round(main.Height * sizeRatio, MidpointRounding.AwayFromZero);
+                    align = (int)Math.Round(main.Height * alignRatio, MidpointRounding.AwayFromZero);
 
                     textsLine = new TextBlockCollection();
                     textsLine.Add(main);
@@ -42,8 +45,8 @@ namespace Suyeong.Lib.Doc.Detector
 
                         if (!duplicateDic.ContainsKey(j))
                         {
-                            if (Math.Abs(main.Height - sub.Height) < main.Height * sizeRatio &&
-                                main.TopY <= sub.BottomY && main.BottomY >= sub.TopY)
+                            if (IsSameFontSizeByHorizontal(blockA: main, blockB: sub, size: size) &&
+                                IsAlignByHorizontal(blockA: main, blockB: sub, align: align))
                             {
                                 textsLine.Add(sub);
                                 duplicateDic.Add(j, j);
@@ -58,7 +61,7 @@ namespace Suyeong.Lib.Doc.Detector
             return lineTexts;
         }
 
-        public static TextBlockSetCollection MergeTextLineByVertical(TextBlockCollection sources, bool isBottomFirst = true, double sizeRatio = SIZE_RATIO)
+        public static TextBlockSetCollection MergeTextLineByVertical(TextBlockCollection sources, bool isBottomFirst = true, double sizeRatio = SIZE_RATIO, double alignRatio = ALIGN_RATIO)
         {
             TextBlockSetCollection lineTexts = new TextBlockSetCollection();
 
@@ -66,13 +69,16 @@ namespace Suyeong.Lib.Doc.Detector
             TextBlock main, sub;
 
             Dictionary<int, int> duplicateDic = new Dictionary<int, int>();
-            int index = 0;
+            int size, align, index = 0;
 
             for (int i = 0; i < sources.Count; i++)
             {
                 if (!duplicateDic.ContainsKey(i))
                 {
                     main = sources[i];
+
+                    size = (int)Math.Round(main.Width * sizeRatio, MidpointRounding.AwayFromZero);
+                    align = (int)Math.Round(main.Width * alignRatio, MidpointRounding.AwayFromZero);
 
                     textsLine = new TextBlockCollection();
                     textsLine.Add(main);
@@ -85,8 +91,8 @@ namespace Suyeong.Lib.Doc.Detector
 
                         if (!duplicateDic.ContainsKey(j))
                         {
-                            if (Math.Abs(main.Width - sub.Width) < main.Width * sizeRatio &&
-                                main.LeftX <= sub.RightX && main.RightX >= sub.LeftX)
+                            if (IsSameFontSizeByVertical(blockA: main, blockB: sub, size: size) &&
+                                IsAlignByVertical(blockA: main, blockB: sub, align: align))
                             {
                                 textsLine.Add(sub);
                                 duplicateDic.Add(j, j);
@@ -211,7 +217,7 @@ namespace Suyeong.Lib.Doc.Detector
         {
             // line을 찾을 때는 current topY < source bottomY && current bottomY > source topY 이면 충분했지만, line이 없는 문서에서는 정렬을 봐야 한다.
             // 정렬이 되었으면 같은 단어로 본다.
-            return Math.Abs(blockA.TopY - blockB.TopY) < align || Math.Abs(blockA.CenterY - blockB.CenterY) < align || Math.Abs(blockA.BottomY - blockB.BottomY) < align;
+            return Math.Abs(blockA.BottomY - blockB.BottomY) < align || Math.Abs(blockA.CenterY - blockB.CenterY) < align || Math.Abs(blockA.TopY - blockB.TopY) < align;
         }
 
         static bool IsAlignByVertical(TextBlock blockA, TextBlock blockB, int align)
