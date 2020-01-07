@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Suyeong.Lib.Doc.Detector
+namespace Suyeong.Lib.Algorithm.DocDetector
 {
     public struct TextBlock
     {

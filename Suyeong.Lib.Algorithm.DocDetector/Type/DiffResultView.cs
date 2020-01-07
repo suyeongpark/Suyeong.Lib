@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Suyeong.Lib.Text.Diff
+namespace Suyeong.Lib.Algorithm.DocDetector
 {
     public struct DiffResultView
     {

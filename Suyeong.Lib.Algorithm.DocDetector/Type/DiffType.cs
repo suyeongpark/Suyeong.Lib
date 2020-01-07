@@ -1,4 +1,4 @@
-﻿namespace Suyeong.Lib.Text.Diff
+﻿namespace Suyeong.Lib.Algorithm.DocDetector
 {
     public enum DiffType
     {

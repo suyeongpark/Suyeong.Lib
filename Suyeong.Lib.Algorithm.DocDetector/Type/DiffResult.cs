@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace Suyeong.Lib.Text.Diff
+namespace Suyeong.Lib.Algorithm.DocDetector
 {
     public struct DiffResult
     {
-        public DiffResult(int index, DiffType diffType, Sentence main, Sentence sub, List<string> sameTexts, List<string> modifiedTexts)
+        public DiffResult(int index, DiffType diffType, DiffSentence main, DiffSentence sub, List<string> sameTexts, List<string> modifiedTexts)
         {
             this.Index = index;
             this.DiffType = diffType;
@@ -16,8 +16,8 @@ namespace Suyeong.Lib.Text.Diff
 
         public int Index { get; private set; }
         public DiffType DiffType { get; private set; }
-        public Sentence Main { get; private set; }
-        public Sentence Sub { get; private set; }
+        public DiffSentence Main { get; private set; }
+        public DiffSentence Sub { get; private set; }
         public List<string> SameTexts { get; private set; }
         public List<string> ModifiedTexts { get; private set; }
     }

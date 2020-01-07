@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Suyeong.Lib.Text.Diff
+namespace Suyeong.Lib.Algorithm.DocDetector
 {
     public static class EditDistance
     {

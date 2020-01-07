@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Suyeong.Lib.Text.Diff
+namespace Suyeong.Lib.Algorithm.DocDetector
 {
     public static class TextDiffer
     {
@@ -18,39 +18,39 @@ namespace Suyeong.Lib.Text.Diff
             resultDicMain = new DiffResultDictionary();
             resultDicSub = new DiffResultDictionary();
 
-            SentenceCollection mainSentences = ConvertSentences(mainTexts);
-            SentenceCollection subSentences = ConvertSentences(subTexts);
+            DiffSentenceCollection mainSentences = ConvertSentences(mainTexts);
+            DiffSentenceCollection subSentences = ConvertSentences(subTexts);
 
             GetDiffResultDic(mainSentences: mainSentences, subSentences: subSentences, similarLimit: similarThreshold, resultDicMain: out resultDicMain, resultDicSub: out resultDicSub);
 
             return ConvertResultToViews(mains: resultDicMain.GetValueCollection(), subs: resultDicSub.GetValueCollection());
         }
 
-        static SentenceCollection ConvertSentences(IEnumerable<string> texts)
+        static DiffSentenceCollection ConvertSentences(IEnumerable<string> texts)
         {
-            SentenceCollection sentences = new SentenceCollection();
+            DiffSentenceCollection sentences = new DiffSentenceCollection();
 
             int index = 0;
 
             foreach (string text in texts)
             {
-                sentences.Add(new Sentence(index: index++, text: text.ToLowerInvariant()));
+                sentences.Add(new DiffSentence(index: index++, text: text.ToLowerInvariant()));
             }
 
             return sentences;
         }
 
-        static void GetDiffResultDic(SentenceCollection mainSentences, SentenceCollection subSentences, double similarLimit, out DiffResultDictionary resultDicMain, out DiffResultDictionary resultDicSub)
+        static void GetDiffResultDic(DiffSentenceCollection mainSentences, DiffSentenceCollection subSentences, double similarLimit, out DiffResultDictionary resultDicMain, out DiffResultDictionary resultDicSub)
         {
             resultDicMain = new DiffResultDictionary();
             resultDicSub = new DiffResultDictionary();
 
             int lastIndex = -1, intersectCount;
-            Sentence sub = new Sentence();
+            DiffSentence sub = new DiffSentence();
             List<string> sameTexts, modifiedTexts;
             bool find;
 
-            foreach (Sentence main in mainSentences)
+            foreach (DiffSentence main in mainSentences)
             {
                 find = false;
 
@@ -91,16 +91,16 @@ namespace Suyeong.Lib.Text.Diff
 
                 if (!find)
                 {
-                    resultDicMain.Add(main.Index, new DiffResult(index: main.Index, diffType: DiffType.Removed, main: main, sub: new Sentence(), sameTexts: new List<string>(), modifiedTexts: main.Texts.ToList()));
+                    resultDicMain.Add(main.Index, new DiffResult(index: main.Index, diffType: DiffType.Removed, main: main, sub: new DiffSentence(), sameTexts: new List<string>(), modifiedTexts: main.Texts.ToList()));
                 }
             }
 
             // 위에서 처리하고 남은 right sentence는 add로 처리한다.
-            foreach (Sentence sentence in subSentences)
+            foreach (DiffSentence sentence in subSentences)
             {
                 if (!resultDicSub.ContainsKey(sentence.Index))
                 {
-                    resultDicSub.Add(sentence.Index, new DiffResult(index: sentence.Index, diffType: DiffType.Added, main: sentence, sub: new Sentence(), sameTexts: new List<string>(), modifiedTexts: sentence.Texts.ToList()));
+                    resultDicSub.Add(sentence.Index, new DiffResult(index: sentence.Index, diffType: DiffType.Added, main: sentence, sub: new DiffSentence(), sameTexts: new List<string>(), modifiedTexts: sentence.Texts.ToList()));
                 }
             }
 

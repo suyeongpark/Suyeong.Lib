@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Suyeong.Lib.Doc.Detector
+namespace Suyeong.Lib.Algorithm.DocDetector
 {
     public struct TextBlockSet
     {
