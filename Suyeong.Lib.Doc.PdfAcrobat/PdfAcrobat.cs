@@ -274,51 +274,92 @@ namespace Suyeong.Lib.Doc.PdfAcrobat
             topY = double.MinValue;
             bottomY = double.MaxValue;
 
-            int count;
+            int count = 0;
             double value;
 
-            // 세로인 경우 jsQuads가 여러개 나온다.
-            foreach (object[] positionArr in jsQuads)
+            // 가로인데 단어가 줄을 넘어가는 경우도 quad가 여러개 나온다. 현재로서는 처리가 애매하므로, 0번만 사용한다.
+            foreach (object position in jsQuads[0] as object[])
             {
-                count = 0;
+                value = double.Parse(position.ToString(), CultureInfo.InvariantCulture);
 
-                foreach (object position in positionArr)
+                // 회전값이 0일때 짝수가 x, 홀수가 y
+                // 홀수
+                if (count == 1)
                 {
-                    value = double.Parse(position.ToString(), CultureInfo.InvariantCulture);
-
-                    // 회전값이 0일때 짝수가 x, 홀수가 y
-                    // 홀수
-                    if (count == 1)
+                    if (value < bottomY)
                     {
-                        if (value < bottomY)
-                        {
-                            bottomY = value;
-                        }
-
-                        if (value > topY)
-                        {
-                            topY = value;
-                        }
-
-                        count = 0;
+                        bottomY = value;
                     }
-                    // 짝수
-                    else
+
+                    if (value > topY)
                     {
-                        if (value < leftX)
-                        {
-                            leftX = value;
-                        }
-
-                        if (value > rightX)
-                        {
-                            rightX = value;
-                        }
-
-                        count++;
+                        topY = value;
                     }
+
+                    count = 0;
+                }
+                // 짝수
+                else
+                {
+                    if (value < leftX)
+                    {
+                        leftX = value;
+                    }
+
+                    if (value > rightX)
+                    {
+                        rightX = value;
+                    }
+
+                    count++;
                 }
             }
+
+            //int count;
+            //double value;
+
+            //// 세로인 경우 jsQuads가 여러개 나온다.
+            //foreach (object[] positionArr in jsQuads)
+            //{
+            //    count = 0;
+
+            //    foreach (object position in positionArr)
+            //    {
+            //        value = double.Parse(position.ToString(), CultureInfo.InvariantCulture);
+
+            //        // 회전값이 0일때 짝수가 x, 홀수가 y
+            //        // 홀수
+            //        if (count == 1)
+            //        {
+            //            if (value < bottomY)
+            //            {
+            //                bottomY = value;
+            //            }
+
+            //            if (value > topY)
+            //            {
+            //                topY = value;
+            //            }
+
+            //            count = 0;
+            //        }
+            //        // 짝수
+            //        else
+            //        {
+            //            if (value < leftX)
+            //            {
+            //                leftX = value;
+            //            }
+
+            //            if (value > rightX)
+            //            {
+            //                rightX = value;
+            //            }
+
+            //            count++;
+            //        }
+            //    }
+            //}
         }
 
         static void FindPositionByVertical(object[] jsQuads, out double leftX, out double rightX, out double topY, out double bottomY)
