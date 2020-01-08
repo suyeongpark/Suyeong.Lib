@@ -43,8 +43,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Doc.OpenXML", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Old", "Old", "{246CBB7D-EACD-459D-88D2-F78986709DAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Algorithm.DocDetector", "Suyeong.Lib.Algorithm.DocDetector\Suyeong.Lib.Algorithm.DocDetector.csproj", "{2EC6533B-02A3-449D-B951-E1D1DBD918D9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,10 +125,6 @@ Global
 		{F010B3CA-6E97-4513-92BB-CFAE760F0159}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F010B3CA-6E97-4513-92BB-CFAE760F0159}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F010B3CA-6E97-4513-92BB-CFAE760F0159}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2EC6533B-02A3-449D-B951-E1D1DBD918D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EC6533B-02A3-449D-B951-E1D1DBD918D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EC6533B-02A3-449D-B951-E1D1DBD918D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EC6533B-02A3-449D-B951-E1D1DBD918D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
