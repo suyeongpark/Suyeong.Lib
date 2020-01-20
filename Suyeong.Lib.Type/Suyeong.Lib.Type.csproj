@@ -46,6 +46,7 @@
     <Compile Include="Interface\Diagrams\ICircle.cs" />
     <Compile Include="Interface\Diagrams\IDiagram.cs" />
     <Compile Include="Interface\Diagrams\IEllipse.cs" />
+    <Compile Include="Interface\Diagrams\IMultiLine.cs" />
     <Compile Include="Interface\Diagrams\ILine.cs" />
     <Compile Include="Interface\Diagrams\IPoint.cs" />
     <Compile Include="Interface\Diagrams\IPoly.cs" />
