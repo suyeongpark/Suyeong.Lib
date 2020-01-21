@@ -40,7 +40,7 @@ namespace Suyeong.Lib.DB.MsSql
         {
             if (parameters == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException(nameof(parameters));
             }
 
             object scalar = null;
@@ -98,7 +98,7 @@ namespace Suyeong.Lib.DB.MsSql
         {
             if (parameters == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException(nameof(parameters));
             }
 
             object scalar = null;
@@ -158,7 +158,7 @@ namespace Suyeong.Lib.DB.MsSql
         {
             if (parameters == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException(nameof(parameters));
             }
 
             DataTable table = new DataTable();
@@ -230,7 +230,7 @@ namespace Suyeong.Lib.DB.MsSql
         {
             if (parameters == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException(nameof(parameters));
             }
 
             DataSet dataSet = new DataSet();
@@ -307,7 +307,7 @@ namespace Suyeong.Lib.DB.MsSql
         {
             if (parameters == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException(nameof(parameters));
             }
 
             int result = 0;
@@ -348,11 +348,11 @@ namespace Suyeong.Lib.DB.MsSql
         {
             if (table == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException(nameof(table));
             }
             else if (string.IsNullOrWhiteSpace(table.TableName))
             {
-                throw new ArgumentNullException(table.TableName);
+                throw new NullReferenceException(table.TableName);
             }
 
             bool result = false;
@@ -423,7 +423,7 @@ namespace Suyeong.Lib.DB.MsSql
         {
             if (parameters == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException(nameof(parameters));
             }
 
             int result = 0;
@@ -464,11 +464,11 @@ namespace Suyeong.Lib.DB.MsSql
         {
             if (table == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException(nameof(table));
             }
             else if (string.IsNullOrWhiteSpace(table.TableName))
             {
-                throw new ArgumentNullException(table.TableName);
+                throw new NullReferenceException(table.TableName);
             }
 
             bool result = false;
