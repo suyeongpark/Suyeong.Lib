@@ -35,9 +35,10 @@ namespace Suyeong.Lib.Util
 
         public static bool IsPointBetweenLine(int lineStartX, int lineStartY, int lineEndX, int lineEndY, int x, int y)
         {
-            int crossProduct = (y - lineStartY) * (lineEndX - lineStartX) - (x - lineStartX) * (lineEndY - lineStartY);
+            int lengthPointWithStart = (x - lineStartX) * (x - lineStartX) + (y - lineStartY) * (y - lineStartY);
+            int lengthLine = (x - lineStartX) * (x - lineStartX) + (y - lineStartY) * (y - lineStartY);
 
-            if (Math.Abs(crossProduct) != 0)
+            if (lengthPointWithStart > lengthLine)
             {
                 return false;
             }
@@ -64,9 +65,10 @@ namespace Suyeong.Lib.Util
 
         public static bool IsPointBetweenLine(long lineStartX, long lineStartY, long lineEndX, long lineEndY, long x, long y)
         {
-            long crossProduct = (y - lineStartY) * (lineEndX - lineStartX) - (x - lineStartX) * (lineEndY - lineStartY);
+            long lengthPointWithStart = (x - lineStartX) * (x - lineStartX) + (y - lineStartY) * (y - lineStartY);
+            long lengthLine = (x - lineStartX) * (x - lineStartX) + (y - lineStartY) * (y - lineStartY);
 
-            if (Math.Abs(crossProduct) != 0)
+            if (lengthPointWithStart > lengthLine)
             {
                 return false;
             }
@@ -93,9 +95,10 @@ namespace Suyeong.Lib.Util
 
         public static bool IsPointBetweenLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY, float x, float y)
         {
-            float crossProduct = (y - lineStartY) * (lineEndX - lineStartX) - (x - lineStartX) * (lineEndY - lineStartY);
+            float lengthPointWithStart = (x - lineStartX) * (x - lineStartX) + (y - lineStartY) * (y - lineStartY);
+            float lengthLine = (x - lineStartX) * (x - lineStartX) + (y - lineStartY) * (y - lineStartY);
 
-            if (Math.Abs(crossProduct) > float.Epsilon)
+            if (lengthPointWithStart > lengthLine)
             {
                 return false;
             }
@@ -122,9 +125,10 @@ namespace Suyeong.Lib.Util
 
         public static bool IsPointBetweenLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
         {
-            double crossProduct = (y - lineStartY) * (lineEndX - lineStartX) - (x - lineStartX) * (lineEndY - lineStartY);
+            double lengthPointWithStart = (x - lineStartX) * (x - lineStartX) + (y - lineStartY) * (y - lineStartY);
+            double lengthLine = (x - lineStartX) * (x - lineStartX) + (y - lineStartY) * (y - lineStartY);
 
-            if (Math.Abs(crossProduct) > double.Epsilon)
+            if (lengthPointWithStart > lengthLine)
             {
                 return false;
             }
