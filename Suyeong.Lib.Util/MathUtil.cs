@@ -33,6 +33,93 @@ namespace Suyeong.Lib.Util
             return (num < double.Epsilon && num > -double.Epsilon);
         }
 
+        public static bool IsPointBetweenLine(int lineStartX, int lineStartY, int lineEndX, int lineEndY, int x, int y)
+        {
+            int crossProduct = (y - lineStartY) * (lineEndX - lineStartX) - (x - lineStartX) * (lineEndY - lineStartY);
+
+            if (Math.Abs(crossProduct) != 0)
+            {
+                return false;
+            }
+
+            int dotProduct = (x - lineStartX) * (lineEndX - lineStartX) + (y - lineStartY) * (lineEndY - lineStartY);
+
+            if (dotProduct < 0)
+            {
+                return false;
+            }
+
+            int deltaX = lineEndX - lineStartX;
+            int deltaY = lineEndX - lineStartX;
+
+            int length = deltaX * deltaX + deltaY * deltaY;
+
+            if (dotProduct > length)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsPointBetweenLine(long lineStartX, long lineStartY, long lineEndX, long lineEndY, long x, long y)
+        {
+            long crossProduct = (y - lineStartY) * (lineEndX - lineStartX) - (x - lineStartX) * (lineEndY - lineStartY);
+
+            if (Math.Abs(crossProduct) != 0)
+            {
+                return false;
+            }
+
+            long dotProduct = (x - lineStartX) * (lineEndX - lineStartX) + (y - lineStartY) * (lineEndY - lineStartY);
+
+            if (dotProduct < 0)
+            {
+                return false;
+            }
+
+            long deltaX = lineEndX - lineStartX;
+            long deltaY = lineEndX - lineStartX;
+
+            long length = deltaX * deltaX + deltaY * deltaY;
+
+            if (dotProduct > length)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsPointBetweenLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY, float x, float y)
+        {
+            float crossProduct = (y - lineStartY) * (lineEndX - lineStartX) - (x - lineStartX) * (lineEndY - lineStartY);
+
+            if (Math.Abs(crossProduct) > float.Epsilon)
+            {
+                return false;
+            }
+
+            float dotProduct = (x - lineStartX) * (lineEndX - lineStartX) + (y - lineStartY) * (lineEndY - lineStartY);
+
+            if (dotProduct < 0)
+            {
+                return false;
+            }
+
+            float deltaX = lineEndX - lineStartX;
+            float deltaY = lineEndX - lineStartX;
+
+            float length = deltaX * deltaX + deltaY * deltaY;
+
+            if (dotProduct > length)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public static bool IsPointBetweenLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
         {
             double crossProduct = (y - lineStartY) * (lineEndX - lineStartX) - (x - lineStartX) * (lineEndY - lineStartY);
