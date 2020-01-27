@@ -51,7 +51,7 @@ namespace Suyeong.Lib.Util
             }
 
             int deltaX = lineEndX - lineStartX;
-            int deltaY = lineEndX - lineStartX;
+            int deltaY = lineEndY - lineStartY;
 
             int length = deltaX * deltaX + deltaY * deltaY;
 
@@ -81,7 +81,7 @@ namespace Suyeong.Lib.Util
             }
 
             long deltaX = lineEndX - lineStartX;
-            long deltaY = lineEndX - lineStartX;
+            long deltaY = lineEndY - lineStartY;
 
             long length = deltaX * deltaX + deltaY * deltaY;
 
@@ -111,7 +111,7 @@ namespace Suyeong.Lib.Util
             }
 
             float deltaX = lineEndX - lineStartX;
-            float deltaY = lineEndX - lineStartX;
+            float deltaY = lineEndY - lineStartY;
 
             float length = deltaX * deltaX + deltaY * deltaY;
 
@@ -141,7 +141,7 @@ namespace Suyeong.Lib.Util
             }
 
             double deltaX = lineEndX - lineStartX;
-            double deltaY = lineEndX - lineStartX;
+            double deltaY = lineEndY - lineStartY;
 
             double length = deltaX * deltaX + deltaY * deltaY;
 
