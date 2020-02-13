@@ -57,6 +57,7 @@
     <Compile Include="MathUtil.cs" />
     <Compile Include="DateUtil.cs" />
     <Compile Include="StreamUtil.cs" />
+    <Compile Include="EditDistance.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
