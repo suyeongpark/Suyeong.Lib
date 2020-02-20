@@ -42,17 +42,17 @@ namespace Suyeong.Lib.Mathematics
             int vec2X = lineEndX - lineStartX;
             int vec2Y = lineEndY - lineStartY;
 
-            int normSqaure1 = vec1X * vec1X + vec1Y * vec1Y;
-            int normSqaure2 = vec2X * vec2X + vec2Y * vec2Y;
+            int normSquare1 = vec1X * vec1X + vec1Y * vec1Y;
+            int normSquare2 = vec2X * vec2X + vec2Y * vec2Y;
 
-            if (normSqaure1 > normSqaure2)
+            if (normSquare1 > normSquare2)
             {
                 return false;
             }
 
             int docProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return docProduct * docProduct == normSqaure1 * normSqaure2;
+            return docProduct * docProduct == normSquare1 * normSquare2;
         }
 
         public static bool IsPointInLine(long lineStartX, long lineStartY, long lineEndX, long lineEndY, long x, long y)
@@ -63,17 +63,17 @@ namespace Suyeong.Lib.Mathematics
             long vec2X = lineEndX - lineStartX;
             long vec2Y = lineEndY - lineStartY;
 
-            long normSqaure1 = vec1X * vec1X + vec1Y * vec1Y;
-            long normSqaure2 = vec2X * vec2X + vec2Y * vec2Y;
+            long normSquare1 = vec1X * vec1X + vec1Y * vec1Y;
+            long normSquare2 = vec2X * vec2X + vec2Y * vec2Y;
 
-            if (normSqaure1 > normSqaure2)
+            if (normSquare1 > normSquare2)
             {
                 return false;
             }
 
             long docProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return docProduct * docProduct == normSqaure1 * normSqaure2;
+            return docProduct * docProduct == normSquare1 * normSquare2;
         }
 
         public static bool IsPointInLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY, float x, float y)
@@ -84,17 +84,17 @@ namespace Suyeong.Lib.Mathematics
             float vec2X = lineEndX - lineStartX;
             float vec2Y = lineEndY - lineStartY;
 
-            float normSqaure1 = vec1X * vec1X + vec1Y * vec1Y;
-            float normSqaure2 = vec2X * vec2X + vec2Y * vec2Y;
+            float normSquare1 = vec1X * vec1X + vec1Y * vec1Y;
+            float normSquare2 = vec2X * vec2X + vec2Y * vec2Y;
 
-            if (normSqaure1 > normSqaure2)
+            if (normSquare1 > normSquare2)
             {
                 return false;
             }
 
             float docProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return docProduct * docProduct == normSqaure1 * normSqaure2;
+            return docProduct * docProduct == normSquare1 * normSquare2;
         }
 
         public static bool IsPointInLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
@@ -105,17 +105,17 @@ namespace Suyeong.Lib.Mathematics
             double vec2X = lineEndX - lineStartX;
             double vec2Y = lineEndY - lineStartY;
 
-            double normSqaure1 = vec1X * vec1X + vec1Y * vec1Y;
-            double normSqaure2 = vec2X * vec2X + vec2Y * vec2Y;
+            double normSquare1 = vec1X * vec1X + vec1Y * vec1Y;
+            double normSquare2 = vec2X * vec2X + vec2Y * vec2Y;
 
-            if (normSqaure1 > normSqaure2)
+            if (normSquare1 > normSquare2)
             {
                 return false;
             }
 
             double docProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return docProduct * docProduct == normSqaure1 * normSqaure2;
+            return docProduct * docProduct == normSquare1 * normSquare2;
         }
 
         public static double RadianToDegree(double radian)
