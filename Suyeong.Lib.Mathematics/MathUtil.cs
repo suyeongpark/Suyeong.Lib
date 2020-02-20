@@ -9,6 +9,7 @@ namespace Suyeong.Lib.Mathematics
         {
             return IsZero(Den) ? 0f : (float)Math.Round((double)Num / (double)Den) * 1000f * 0.001f;
         }
+
         public static double Round(double Num, double Den)
         {
             return IsZero(Den) ? 0f : Math.Round(Num / Den) * 1000d * 0.001d;
@@ -26,12 +27,12 @@ namespace Suyeong.Lib.Mathematics
 
         public static bool IsZero(float num)
         {
-            return (num < float.Epsilon && num > -float.Epsilon);
+            return Math.Abs(num) < float.Epsilon;
         }
 
         public static bool IsZero(double num)
         {
-            return (num < double.Epsilon && num > -double.Epsilon);
+            return Math.Abs(num) < double.Epsilon;
         }
 
         public static bool IsPointInLine(int lineStartX, int lineStartY, int lineEndX, int lineEndY, int x, int y)
@@ -94,7 +95,7 @@ namespace Suyeong.Lib.Mathematics
 
             float docProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return docProduct * docProduct == normSquare1 * normSquare2;
+            return IsEqual(docProduct * docProduct, normSquare1 * normSquare2);
         }
 
         public static bool IsPointInLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
@@ -115,7 +116,7 @@ namespace Suyeong.Lib.Mathematics
 
             double docProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return docProduct * docProduct == normSquare1 * normSquare2;
+            return IsEqual(docProduct * docProduct, normSquare1 * normSquare2);
         }
 
         public static double RadianToDegree(double radian)
