@@ -19,17 +19,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Net.Udp", "Suye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Util", "Suyeong.Lib.Util\Suyeong.Lib.Util.csproj", "{F1049D81-A42A-4566-BEC3-10677A283009}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Doc.ExcelInterop", "Suyeong.Lib.Doc.ExcelInterop\Suyeong.Lib.Doc.ExcelInterop.csproj", "{22628917-EE24-40C3-B6A3-96497A695859}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Doc.ExcelOleDb", "Suyeong.Lib.Doc.ExcelOleDb\Suyeong.Lib.Doc.ExcelOleDb.csproj", "{4D7DAAD2-077E-48C5-B268-94D9812F04F4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Doc.PdfAcrobat", "Suyeong.Lib.Doc.PdfAcrobat\Suyeong.Lib.Doc.PdfAcrobat.csproj", "{B65C8B13-86FB-48EB-BC63-1CEE3C97336B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Doc.WordInterop", "Suyeong.Lib.Doc.WordInterop\Suyeong.Lib.Doc.WordInterop.csproj", "{E2167C70-746F-4E66-9FA6-B2E893E088FE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Text.Lemmatize", "Suyeong.Lib.Text.Lemmatize\Suyeong.Lib.Text.Lemmatize.csproj", "{B6A176B6-33B0-48E0-950C-C63F018BC7D5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.OCR.Tesseract", "Suyeong.Lib.OCR.Tesseract\Suyeong.Lib.OCR.Tesseract.csproj", "{E7B8BBFE-5805-4041-A2A9-8D206126B573}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.GoogleVision.Translate", "Suyeong.Lib.GoogleVision.Translate\Suyeong.Lib.GoogleVision.Translate.csproj", "{14A11E75-BC6F-4E22-82C6-349988F142C1}"
 EndProject
@@ -41,9 +33,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Net.Lib", "Suye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Doc.OpenXML", "Suyeong.Lib.Doc.OpenXML\Suyeong.Lib.Doc.OpenXML.csproj", "{F010B3CA-6E97-4513-92BB-CFAE760F0159}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Old", "Old", "{246CBB7D-EACD-459D-88D2-F78986709DAF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Type", "Suyeong.Lib.Type\Suyeong.Lib.Type.csproj", "{5D2438F2-2DF6-4837-B9BC-92F0C8A125C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suyeong.Lib.Mathematics", "Suyeong.Lib.Mathematics\Suyeong.Lib.Mathematics.csproj", "{DC162ACD-E12D-4F82-A299-6E960FA1DC0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,30 +75,14 @@ Global
 		{F1049D81-A42A-4566-BEC3-10677A283009}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1049D81-A42A-4566-BEC3-10677A283009}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1049D81-A42A-4566-BEC3-10677A283009}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22628917-EE24-40C3-B6A3-96497A695859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22628917-EE24-40C3-B6A3-96497A695859}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22628917-EE24-40C3-B6A3-96497A695859}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22628917-EE24-40C3-B6A3-96497A695859}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4D7DAAD2-077E-48C5-B268-94D9812F04F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D7DAAD2-077E-48C5-B268-94D9812F04F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D7DAAD2-077E-48C5-B268-94D9812F04F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D7DAAD2-077E-48C5-B268-94D9812F04F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B65C8B13-86FB-48EB-BC63-1CEE3C97336B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B65C8B13-86FB-48EB-BC63-1CEE3C97336B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B65C8B13-86FB-48EB-BC63-1CEE3C97336B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B65C8B13-86FB-48EB-BC63-1CEE3C97336B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2167C70-746F-4E66-9FA6-B2E893E088FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2167C70-746F-4E66-9FA6-B2E893E088FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2167C70-746F-4E66-9FA6-B2E893E088FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2167C70-746F-4E66-9FA6-B2E893E088FE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6A176B6-33B0-48E0-950C-C63F018BC7D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B6A176B6-33B0-48E0-950C-C63F018BC7D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6A176B6-33B0-48E0-950C-C63F018BC7D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6A176B6-33B0-48E0-950C-C63F018BC7D5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E7B8BBFE-5805-4041-A2A9-8D206126B573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7B8BBFE-5805-4041-A2A9-8D206126B573}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7B8BBFE-5805-4041-A2A9-8D206126B573}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7B8BBFE-5805-4041-A2A9-8D206126B573}.Release|Any CPU.Build.0 = Release|Any CPU
 		{14A11E75-BC6F-4E22-82C6-349988F142C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{14A11E75-BC6F-4E22-82C6-349988F142C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14A11E75-BC6F-4E22-82C6-349988F142C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -131,15 +107,13 @@ Global
 		{5D2438F2-2DF6-4837-B9BC-92F0C8A125C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D2438F2-2DF6-4837-B9BC-92F0C8A125C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D2438F2-2DF6-4837-B9BC-92F0C8A125C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC162ACD-E12D-4F82-A299-6E960FA1DC0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC162ACD-E12D-4F82-A299-6E960FA1DC0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC162ACD-E12D-4F82-A299-6E960FA1DC0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC162ACD-E12D-4F82-A299-6E960FA1DC0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{22628917-EE24-40C3-B6A3-96497A695859} = {246CBB7D-EACD-459D-88D2-F78986709DAF}
-		{4D7DAAD2-077E-48C5-B268-94D9812F04F4} = {246CBB7D-EACD-459D-88D2-F78986709DAF}
-		{E2167C70-746F-4E66-9FA6-B2E893E088FE} = {246CBB7D-EACD-459D-88D2-F78986709DAF}
-		{E7B8BBFE-5805-4041-A2A9-8D206126B573} = {246CBB7D-EACD-459D-88D2-F78986709DAF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8CA1ED83-D11C-400E-8059-36E3E768C3B7}

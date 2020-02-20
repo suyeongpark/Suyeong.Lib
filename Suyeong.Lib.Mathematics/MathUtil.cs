@@ -1,0 +1,141 @@
+﻿using System;
+using System.Numerics;
+
+namespace Suyeong.Lib.Mathematics
+{
+    public static class MathUtil
+    {
+        public static float Round(float Num, float Den)
+        {
+            return IsZero(Den) ? 0f : (float)Math.Round((double)Num / (double)Den) * 1000f * 0.001f;
+        }
+        public static double Round(double Num, double Den)
+        {
+            return IsZero(Den) ? 0f : Math.Round(Num / Den) * 1000d * 0.001d;
+        }
+
+        public static bool IsEqual(float val1, float val2)
+        {
+            return IsZero(num: val1 - val2);
+        }
+
+        public static bool IsEqual(double val1, double val2)
+        {
+            return IsZero(num: val1 - val2);
+        }
+
+        public static bool IsZero(float num)
+        {
+            return (num < float.Epsilon && num > -float.Epsilon);
+        }
+
+        public static bool IsZero(double num)
+        {
+            return (num < double.Epsilon && num > -double.Epsilon);
+        }
+
+        public static bool IsPointInLine(int lineStartX, int lineStartY, int lineEndX, int lineEndY, int x, int y)
+        {
+            int vec1X = x - lineStartX;
+            int vec1Y = y - lineStartY;
+
+            int vec2X = lineEndX - lineStartX;
+            int vec2Y = lineEndY - lineStartY;
+
+            int normSqaure1 = vec1X * vec1X + vec1Y * vec1Y;
+            int normSqaure2 = vec2X * vec2X + vec2Y * vec2Y;
+
+            if (normSqaure1 > normSqaure2)
+            {
+                return false;
+            }
+
+            int docProduct = vec1X * vec2X + vec1Y * vec2Y;
+
+            return docProduct * docProduct == normSqaure1 * normSqaure2;
+        }
+
+        public static bool IsPointInLine(long lineStartX, long lineStartY, long lineEndX, long lineEndY, long x, long y)
+        {
+            long vec1X = x - lineStartX;
+            long vec1Y = y - lineStartY;
+
+            long vec2X = lineEndX - lineStartX;
+            long vec2Y = lineEndY - lineStartY;
+
+            long normSqaure1 = vec1X * vec1X + vec1Y * vec1Y;
+            long normSqaure2 = vec2X * vec2X + vec2Y * vec2Y;
+
+            if (normSqaure1 > normSqaure2)
+            {
+                return false;
+            }
+
+            long docProduct = vec1X * vec2X + vec1Y * vec2Y;
+
+            return docProduct * docProduct == normSqaure1 * normSqaure2;
+        }
+
+        public static bool IsPointInLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY, float x, float y)
+        {
+            float vec1X = x - lineStartX;
+            float vec1Y = y - lineStartY;
+
+            float vec2X = lineEndX - lineStartX;
+            float vec2Y = lineEndY - lineStartY;
+
+            float normSqaure1 = vec1X * vec1X + vec1Y * vec1Y;
+            float normSqaure2 = vec2X * vec2X + vec2Y * vec2Y;
+
+            if (normSqaure1 > normSqaure2)
+            {
+                return false;
+            }
+
+            float docProduct = vec1X * vec2X + vec1Y * vec2Y;
+
+            return docProduct * docProduct == normSqaure1 * normSqaure2;
+        }
+
+        public static bool IsPointInLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
+        {
+            double vec1X = x - lineStartX;
+            double vec1Y = y - lineStartY;
+
+            double vec2X = lineEndX - lineStartX;
+            double vec2Y = lineEndY - lineStartY;
+
+            double normSqaure1 = vec1X * vec1X + vec1Y * vec1Y;
+            double normSqaure2 = vec2X * vec2X + vec2Y * vec2Y;
+
+            if (normSqaure1 > normSqaure2)
+            {
+                return false;
+            }
+
+            double docProduct = vec1X * vec2X + vec1Y * vec2Y;
+
+            return docProduct * docProduct == normSqaure1 * normSqaure2;
+        }
+
+        public static double RadianToDegree(double radian)
+        {
+            return radian * 180d / Math.PI;
+        }
+
+        public static double DegreeToRadian(double angle)
+        {
+            return angle * Math.PI / 180d;
+        }
+
+        public static double PixelToPoint(double dpi, double pointPerInch, double value)
+        {
+            return value * pointPerInch / dpi;
+        }
+
+        public static double PointToPixel(double dpi, double pointPerInch, double value)
+        {
+            return value * dpi / pointPerInch;
+        }
+    }
+}
