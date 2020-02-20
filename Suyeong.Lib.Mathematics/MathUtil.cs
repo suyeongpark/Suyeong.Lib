@@ -51,9 +51,14 @@ namespace Suyeong.Lib.Mathematics
                 return false;
             }
 
-            int docProduct = vec1X * vec2X + vec1Y * vec2Y;
+            int dotProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return docProduct * docProduct == normSquare1 * normSquare2;
+            if (dotProduct < 0)
+            {
+                return false;
+            }
+
+            return dotProduct * dotProduct == normSquare1 * normSquare2;
         }
 
         public static bool IsPointInLine(long lineStartX, long lineStartY, long lineEndX, long lineEndY, long x, long y)
@@ -72,9 +77,14 @@ namespace Suyeong.Lib.Mathematics
                 return false;
             }
 
-            long docProduct = vec1X * vec2X + vec1Y * vec2Y;
+            long dotProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return docProduct * docProduct == normSquare1 * normSquare2;
+            if (dotProduct < 0)
+            {
+                return false;
+            }
+
+            return dotProduct * dotProduct == normSquare1 * normSquare2;
         }
 
         public static bool IsPointInLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY, float x, float y)
@@ -93,9 +103,14 @@ namespace Suyeong.Lib.Mathematics
                 return false;
             }
 
-            float docProduct = vec1X * vec2X + vec1Y * vec2Y;
+            float dotProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return IsEqual(docProduct * docProduct, normSquare1 * normSquare2);
+            if (dotProduct < 0)
+            {
+                return false;
+            }
+
+            return IsEqual(dotProduct * dotProduct, normSquare1 * normSquare2);
         }
 
         public static bool IsPointInLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
@@ -114,9 +129,14 @@ namespace Suyeong.Lib.Mathematics
                 return false;
             }
 
-            double docProduct = vec1X * vec2X + vec1Y * vec2Y;
+            double dotProduct = vec1X * vec2X + vec1Y * vec2Y;
 
-            return IsEqual(docProduct * docProduct, normSquare1 * normSquare2);
+            if (dotProduct < 0)
+            {
+                return false;
+            }
+
+            return IsEqual(dotProduct * dotProduct, normSquare1 * normSquare2);
         }
 
         public static double RadianToDegree(double radian)
