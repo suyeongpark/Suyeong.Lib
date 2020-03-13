@@ -199,8 +199,10 @@ namespace Suyeong.Lib.Mathematics
             int cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
             int cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
 
-            // 두 ccw를 곱해도 되지만, int 형의 저장 범위를 벗어나는 값이 들어오면 에러가 나서 부호 기준으로 처리
-            return ((abac > 0 && abad < 0) || (abac < 0 && abad > 0)) && ((cdca > 0 && cdcb < 0) || (cdca < 0 && cdcb > 0));
+            // 1. 두 선분이 한 점에서 만나는 경우
+            // 2. 두 선분이 교차하는 경우
+            return (abac * abad == 0 && cdca * cdcb == 0) ||
+                ((abac > 0 && abad < 0) || (abac < 0 && abad > 0)) && ((cdca > 0 && cdcb < 0) || (cdca < 0 && cdcb > 0));
         }
     }
 }
