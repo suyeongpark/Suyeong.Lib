@@ -119,7 +119,7 @@ namespace Suyeong.Lib.Mathematics
             return ax * by - ay * bx;
         }
 
-        public static bool IsPodoubleInLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
+        public static bool IsPointInLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
         {
             double vec1X = x - lineStartX;
             double vec1Y = y - lineStartY;

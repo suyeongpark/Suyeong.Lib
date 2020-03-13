@@ -119,7 +119,7 @@ namespace Suyeong.Lib.Mathematics
             return ax * by - ay * bx;
         }
 
-        public static bool IsPofloatInLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY, float x, float y)
+        public static bool IsPointInLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY, float x, float y)
         {
             float vec1X = x - lineStartX;
             float vec1Y = y - lineStartY;

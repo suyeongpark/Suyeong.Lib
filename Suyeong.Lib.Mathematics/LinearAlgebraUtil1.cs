@@ -119,7 +119,7 @@ namespace Suyeong.Lib.Mathematics
             return ax * by - ay * bx;
         }
 
-        public static bool IsPolongInLine(long lineStartX, long lineStartY, long lineEndX, long lineEndY, long x, long y)
+        public static bool IsPointInLine(long lineStartX, long lineStartY, long lineEndX, long lineEndY, long x, long y)
         {
             long vec1X = x - lineStartX;
             long vec1Y = y - lineStartY;
