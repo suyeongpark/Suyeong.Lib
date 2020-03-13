@@ -11,6 +11,16 @@ namespace Suyeong.Lib.Util
 {
     public static class ConvertUtil
     {
+        public static double PixelToPoint(double dpi, double pointPerInch, double value)
+        {
+            return value * pointPerInch / dpi;
+        }
+
+        public static double PointToPixel(double dpi, double pointPerInch, double value)
+        {
+            return value * dpi / pointPerInch;
+        }
+
         public static double ExponentialStringToDouble(string value)
         {
             double result = 0d;

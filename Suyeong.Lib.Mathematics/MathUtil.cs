@@ -4,14 +4,14 @@ namespace Suyeong.Lib.Mathematics
 {
     public static class MathUtil
     {
-        public static float Round(float Num, float Den)
+        public static float Round(float num, float den)
         {
-            return IsZero(Den) ? 0f : (float)Math.Round((double)Num / (double)Den) * 1000f * 0.001f;
+            return IsZero(den) ? 0f : (float)Math.Round((double)num / (double)den) * 1000f * 0.001f;
         }
 
-        public static double Round(double Num, double Den)
+        public static double Round(double num, double den)
         {
-            return IsZero(Den) ? 0f : Math.Round(Num / Den) * 1000d * 0.001d;
+            return IsZero(den) ? 0f : Math.Round(num / den) * 1000d * 0.001d;
         }
 
         public static bool IsEqual(float val1, float val2)
