@@ -199,7 +199,8 @@ namespace Suyeong.Lib.Mathematics
             float cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
             float cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
 
-            return abac * abad < 0 && cdca * cdcb < 0;
+            // 두 ccw를 곱해도 되지만, float 형의 저장 범위를 벗어나는 값이 들어오면 에러가 나서 부호 기준으로 처리
+            return ((abac > 0f && abad < 0f) || (abac < 0f && abad > 0f)) && ((cdca > 0f && cdcb < 0f) || (cdca < 0f && cdcb > 0f));
         }
     }
 }

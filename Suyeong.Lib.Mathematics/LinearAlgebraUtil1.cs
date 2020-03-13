@@ -199,7 +199,8 @@ namespace Suyeong.Lib.Mathematics
             long cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
             long cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
 
-            return abac * abad < 0 && cdca * cdcb < 0;
+            // 두 ccw를 곱해도 되지만, long 형의 저장 범위를 벗어나는 값이 들어오면 에러가 나서 부호 기준으로 처리
+            return ((abac > 0L && abad < 0L) || (abac < 0L && abad > 0L)) && ((cdca > 0L && cdcb < 0L) || (cdca < 0L && cdcb > 0L));
         }
     }
 }
