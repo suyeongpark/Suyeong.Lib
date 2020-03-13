@@ -1,0 +1,177 @@
+﻿using System;
+using System.Numerics;
+
+namespace Suyeong.Lib.Mathematics
+{
+    // double 형만
+
+    public static partial class LinearAlgebraUtil
+    {
+        public static double Norm(double ax, double ay)
+        {
+            return Math.Sqrt(ax * ax + ay * ay);
+        }
+
+        public static double Norm(double ax, double ay, double az)
+        {
+            return Math.Sqrt(ax * ax + ay * ay + az * az);
+        }
+
+        public static double NormSqure(double ax, double ay)
+        {
+            return ax * ax + ay * ay;
+        }
+
+        public static double NormSqure(double ax, double ay, double az)
+        {
+            return ax * ax + ay * ay + az * az;
+        }
+
+        public static Tuple<double, double> Normalize(double ax, double ay)
+        {
+            double norm = Norm(ax: ax, ay: ay);
+
+            return Tuple.Create(ax / norm, ay / norm);
+        }
+
+        public static Tuple<double, double, double> Normalize(double ax, double ay, double az)
+        {
+            double norm = Norm(ax: ax, ay: ay, az: az);
+
+            return Tuple.Create(ax / norm, ay / norm, az / norm);
+        }
+
+        public static Tuple<double, double> Add(double ax, double ay, double bx, double by)
+        {
+            return Tuple.Create(ax + bx, ay + by);
+        }
+
+        public static Tuple<double, double, double> Add(double ax, double ay, double az, double bx, double by, double bz)
+        {
+            return Tuple.Create(ax + bx, ay + by, az + bz);
+        }
+
+        public static Tuple<double, double> Minus(double ax, double ay, double bx, double by)
+        {
+            return Tuple.Create(ax - bx, ay - by);
+        }
+
+        public static Tuple<double, double, double> Minus(double ax, double ay, double az, double bx, double by, double bz)
+        {
+            return Tuple.Create(ax - bx, ay - by, az - bz);
+        }
+
+        public static Tuple<double, double> Multiply(double ax, double ay, double k)
+        {
+            return Tuple.Create(ax * k, ay * k);
+        }
+
+        public static Tuple<double, double, double> Multiply(double ax, double ay, double az, double k)
+        {
+            return Tuple.Create(ax * k, ay * k, az * k);
+        }
+
+        public static double CosineTheta(double ax, double ay, double bx, double by)
+        {
+            double dot = DotProduct(ax: ax, ay: ay, bx: bx, by: by);
+            double normA = NormSqure(ax: ax, ay: ay);
+            double normB = NormSqure(ax: bx, ay: by);
+
+            return (double)(dot * dot) / (double)(normA * normB);
+        }
+
+        public static double CosineTheta(double ax, double ay, double az, double bx, double by, double bz)
+        {
+            double dot = DotProduct(ax: ax, ay: ay, az: az, bx: bx, by: by, bz: bz);
+            double normA = NormSqure(ax: ax, ay: ay, az: az);
+            double normB = NormSqure(ax: bx, ay: by, az: bz);
+
+            return (double)(dot * dot) / (double)(normA * normB);
+        }
+
+        public static double DotProduct(double ax, double ay, double bx, double by)
+        {
+            return ax * bx + ay * by;
+        }
+
+        public static double DotProduct(double ax, double ay, double az, double bx, double by, double bz)
+        {
+            return ax * bx + ay * by + az * bz;
+        }
+
+        public static Tuple<double, double, double> CrossProduct(double ax, double ay, double bx, double by)
+        {
+            return Tuple.Create(0d, 0d, ax * by - ay * bx);
+        }
+
+        public static Tuple<double, double, double> CrossProduct(double ax, double ay, double az, double bx, double by, double bz)
+        {
+            double i = ay * bz - az * by;
+            double j = -(ax * bz - az * bx);
+            double k = ax * by - ay * bx;
+
+            return Tuple.Create(i, j, k);
+        }
+
+        // cross product에서 z가 0인 경우에 방향만 취하는 것
+        public static double GetCCW(double ax, double ay, double bx, double by)
+        {
+            return ax * by - ay * bx;
+        }
+
+        public static bool IsPodoubleInLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
+        {
+            double vec1X = x - lineStartX;
+            double vec1Y = y - lineStartY;
+
+            double vec2X = lineEndX - lineStartX;
+            double vec2Y = lineEndY - lineStartY;
+
+            double normSquare1 = vec1X * vec1X + vec1Y * vec1Y;
+            double normSquare2 = vec2X * vec2X + vec2Y * vec2Y;
+
+            if (normSquare1 > normSquare2)
+            {
+                return false;
+            }
+
+            double dotProduct = vec1X * vec2X + vec1Y * vec2Y;
+
+            if (dotProduct < 0)
+            {
+                return false;
+            }
+
+            return dotProduct * dotProduct == normSquare1 * normSquare2;
+        }
+
+        public static bool IsCrossLine(double lineAStartX, double lineAStartY, double lineAEndX, double lineAEndY, double lineBStartX, double lineBStartY, double lineBEndX, double lineBEndY)
+        {
+            double abX = lineAEndX - lineAStartX;
+            double abY = lineAEndY - lineAStartY;
+
+            double acX = lineBStartX - lineAStartX;
+            double acY = lineBStartY - lineAStartY;
+
+            double adX = lineBEndX - lineAStartX;
+            double adY = lineBEndY - lineAStartY;
+
+            double cdX = lineBEndX - lineBStartX;
+            double cdY = lineBEndY - lineBStartY;
+
+            double caX = lineAStartX - lineBStartX;
+            double caY = lineAStartY - lineBStartY;
+
+            double cbX = lineAEndX - lineBStartX;
+            double cbY = lineAEndY - lineBStartY;
+
+            double abac = GetCCW(ax: abX, ay: abY, bx: acX, by: acY);
+            double abad = GetCCW(ax: abX, ay: abY, bx: adX, by: adY);
+
+            double cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
+            double cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
+
+            return abac * abad < 0 && cdca * cdcb < 0;
+        }
+    }
+}

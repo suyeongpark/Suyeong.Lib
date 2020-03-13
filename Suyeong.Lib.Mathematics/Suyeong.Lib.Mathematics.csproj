@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LinearAlgebraUtil3.cs" />
+    <Compile Include="LinearAlgebraUtil2.cs" />
+    <Compile Include="LinearAlgebraUtil1.cs" />
+    <Compile Include="LinearAlgebraUtil.cs" />
     <Compile Include="MathUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
