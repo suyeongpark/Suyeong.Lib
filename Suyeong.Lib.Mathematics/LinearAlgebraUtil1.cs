@@ -74,19 +74,19 @@ namespace Suyeong.Lib.Mathematics
         public static double CosineTheta(long ax, long ay, long bx, long by)
         {
             long dot = DotProduct(ax: ax, ay: ay, bx: bx, by: by);
-            long normA = NormSqure(ax: ax, ay: ay);
-            long normB = NormSqure(ax: bx, ay: by);
+            long normSqureA = NormSqure(ax: ax, ay: ay);
+            long normSqureB = NormSqure(ax: bx, ay: by);
 
-            return (double)(dot * dot) / (double)(normA * normB);
+            return (double)(dot * dot) / (double)(normSqureA * normSqureB);
         }
 
         public static double CosineTheta(long ax, long ay, long az, long bx, long by, long bz)
         {
             long dot = DotProduct(ax: ax, ay: ay, az: az, bx: bx, by: by, bz: bz);
-            long normA = NormSqure(ax: ax, ay: ay, az: az);
-            long normB = NormSqure(ax: bx, ay: by, az: bz);
+            long normSqureA = NormSqure(ax: ax, ay: ay, az: az);
+            long normSqureB = NormSqure(ax: bx, ay: by, az: bz);
 
-            return (double)(dot * dot) / (double)(normA * normB);
+            return (double)(dot * dot) / (double)(normSqureA * normSqureB);
         }
 
         public static long DotProduct(long ax, long ay, long bx, long by)
@@ -117,6 +117,34 @@ namespace Suyeong.Lib.Mathematics
         public static long GetCCW(long ax, long ay, long bx, long by)
         {
             return ax * by - ay * bx;
+        }
+
+        public static bool IsVertical(long ax, long ay, long bx, long by)
+        {
+            return DotProduct(ax: ax, ay: ay, bx: bx, by: by) == 0;
+        }
+
+        public static bool IsVertical(long ax, long ay, long az, long bx, long by, long bz)
+        {
+            return DotProduct(ax: ax, ay: ay, az: az, bx: bx, by: by, bz: bz) == 0;
+        }
+
+        public static bool IsParallel(long ax, long ay, long bx, long by)
+        {
+            long dot = DotProduct(ax: ax, ay: ay, bx: bx, by: by);
+            long normSquareA = NormSqure(ax: ax, ay: ay);
+            long normSquareB = NormSqure(ax: bx, ay: by);
+
+            return dot * dot == Math.Abs(normSquareA * normSquareB);
+        }
+
+        public static bool IsParallel(long ax, long ay, long az, long bx, long by, long bz)
+        {
+            long dot = DotProduct(ax: ax, ay: ay, az: az, bx: bx, by: by, bz: bz);
+            long normSquareA = NormSqure(ax: ax, ay: ay, az: az);
+            long normSquareB = NormSqure(ax: bx, ay: by, az: bz);
+
+            return dot * dot == Math.Abs(normSquareA * normSquareB);
         }
 
         public static bool IsPointInLine(long lineStartX, long lineStartY, long lineEndX, long lineEndY, long x, long y)
