@@ -204,5 +204,38 @@ namespace Suyeong.Lib.Mathematics
             return (abac * abad == 0 && cdca * cdcb == 0) ||
                 ((abac > 0 && abad < 0) || (abac < 0 && abad > 0)) && ((cdca > 0 && cdcb < 0) || (cdca < 0 && cdcb > 0));
         }
+
+        // vector가 아니라 직선의 방정식을 만들어서 교점을 구한다. 이때 매개변수를 이용해서 방정식을 구성한다.
+        // http://www.gisdeveloper.co.kr/?p=89
+        public static bool TryGetCrossPoint(int lineAx1, int lineAy1, int lineAx2, int lineAy2, int lineBx1, int lineBy1, int lineBx2, int lineBy2, out int x, out int y)
+        {
+            x = y = 0;
+
+            int denominator = (lineBy2 - lineBy1) * (lineAx2 - lineAx1) - (lineBx2 - lineBx1) * (lineAy2 - lineAy1);
+
+            // 두 선이 평행
+            if (denominator == 0)
+            {
+                return false;
+            }
+
+            // T, S는 두 선에 대한 매개변수
+            int t = (lineBx2 - lineBx1) * (lineAy1 - lineBy1) - (lineBy2 - lineBy1) * (lineAx1 - lineBx1);
+            int s = (lineAx2 - lineAx1) * (lineAy1 - lineBy1) - (lineAy2 - lineAy1) * (lineAx1 - lineBx1);
+
+            double td = (double)t / (double)denominator;
+            double sd = (double)s / (double)denominator;
+
+            // 두 선이 교차하지 않음
+            if (td < 0d || td > 1d || sd < 0d || sd > 1d)
+            {
+                return false;
+            }
+
+            x = lineAx1 + t * (lineAx2 - lineAx1);
+            y = lineAy1 + t * (lineAy2 - lineAy1);
+
+            return true;
+        }
     }
 }
