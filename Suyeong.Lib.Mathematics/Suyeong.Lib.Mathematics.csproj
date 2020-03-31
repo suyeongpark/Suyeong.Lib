@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="LinearAlgebraUtilFloat.cs" />
     <Compile Include="LinearAlgebraUtilDouble.cs" />
-    <Compile Include="LinearAlgebraUtilLong.cs" />
     <Compile Include="LinearAlgebraUtilInt.cs" />
     <Compile Include="MathUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

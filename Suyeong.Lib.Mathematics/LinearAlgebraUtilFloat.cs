@@ -205,35 +205,32 @@ namespace Suyeong.Lib.Mathematics
                 ((abac > 0f && abad < 0f) || (abac < 0f && abad > 0f)) && ((cdca > 0f && cdcb < 0f) || (cdca < 0f && cdcb > 0f));
         }
 
-        // vector가 아니라 직선의 방정식을 만들어서 교점을 구한다. 이때 매개변수를 이용해서 방정식을 구성한다.
-        // http://www.gisdeveloper.co.kr/?p=89
-        public static bool TryGetCrossPoint(float lineAx1, float lineAy1, float lineAx2, float lineAy2, float lineBx1, float lineBy1, float lineBx2, float lineBy2, out float x, out float y)
+        public static bool TryGetCrossPoint(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2, out float x, out float y)
         {
-            x = y = 0f;
+            x = y = 0;
 
-            float denominator = (lineBy2 - lineBy1) * (lineAx2 - lineAx1) - (lineBx2 - lineBx1) * (lineAy2 - lineAy1);
+            float x1 = bx1 - ax1;
+            float y1 = by1 - ay1;
 
-            // 두 선이 평행
-            if (denominator == 0)
+            float dx1 = ax2 - ax1;
+            float dy1 = ay2 - ay1;
+
+            float dx2 = bx2 - bx1;
+            float dy2 = by2 - by1;
+
+            float ccw1 = dx1 * dy2 - dy1 * dx2;
+
+            if (ccw1 == 0)
             {
                 return false;
             }
 
-            // T, S는 두 선에 대한 매개변수
-            float t = (lineBx2 - lineBx1) * (lineAy1 - lineBy1) - (lineBy2 - lineBy1) * (lineAx1 - lineBx1);
-            float s = (lineAx2 - lineAx1) * (lineAy1 - lineBy1) - (lineAy2 - lineAy1) * (lineAx1 - lineBx1);
+            float ccw2 = x1 * dy2 - y1 * dx2;
 
-            float td = (float)t / (float)denominator;
-            float sd = (float)s / (float)denominator;
+            float t = (float)ccw2 / (float)ccw1;
 
-            // 두 선이 교차하지 않음
-            if (td < 0d || td > 1d || sd < 0d || sd > 1d)
-            {
-                return false;
-            }
-
-            x = lineAx1 + t * (lineAx2 - lineAx1);
-            y = lineAy1 + t * (lineAy2 - lineAy1);
+            x = ax1 + dx1 * t;
+            y = ay1 + dy1 * t;
 
             return true;
         }

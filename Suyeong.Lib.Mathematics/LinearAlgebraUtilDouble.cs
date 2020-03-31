@@ -205,35 +205,32 @@ namespace Suyeong.Lib.Mathematics
                 ((abac > 0d && abad < 0d) || (abac < 0d && abad > 0d)) && ((cdca > 0d && cdcb < 0d) || (cdca < 0d && cdcb > 0d));
         }
 
-        // vector가 아니라 직선의 방정식을 만들어서 교점을 구한다. 이때 매개변수를 이용해서 방정식을 구성한다.
-        // http://www.gisdeveloper.co.kr/?p=89
-        public static bool TryGetCrossPoint(double lineAx1, double lineAy1, double lineAx2, double lineAy2, double lineBx1, double lineBy1, double lineBx2, double lineBy2, out double x, out double y)
+        public static bool TryGetCrossPoint(double ax1, double ay1, double ax2, double ay2, double bx1, double by1, double bx2, double by2, out double x, out double y)
         {
-            x = y = 0d;
+            x = y = 0;
 
-            double denominator = (lineBy2 - lineBy1) * (lineAx2 - lineAx1) - (lineBx2 - lineBx1) * (lineAy2 - lineAy1);
+            double x1 = bx1 - ax1;
+            double y1 = by1 - ay1;
 
-            // 두 선이 평행
-            if (denominator == 0)
+            double dx1 = ax2 - ax1;
+            double dy1 = ay2 - ay1;
+
+            double dx2 = bx2 - bx1;
+            double dy2 = by2 - by1;
+
+            double ccw1 = dx1 * dy2 - dy1 * dx2;
+
+            if (ccw1 == 0)
             {
                 return false;
             }
 
-            // T, S는 두 선에 대한 매개변수
-            double t = (lineBx2 - lineBx1) * (lineAy1 - lineBy1) - (lineBy2 - lineBy1) * (lineAx1 - lineBx1);
-            double s = (lineAx2 - lineAx1) * (lineAy1 - lineBy1) - (lineAy2 - lineAy1) * (lineAx1 - lineBx1);
+            double ccw2 = x1 * dy2 - y1 * dx2;
 
-            double td = (double)t / (double)denominator;
-            double sd = (double)s / (double)denominator;
+            double t = ccw2 / ccw1;
 
-            // 두 선이 교차하지 않음
-            if (td < 0d || td > 1d || sd < 0d || sd > 1d)
-            {
-                return false;
-            }
-
-            x = lineAx1 + t * (lineAx2 - lineAx1);
-            y = lineAy1 + t * (lineAy2 - lineAy1);
+            x = ax1 + dx1 * t;
+            y = ay1 + dy1 * t;
 
             return true;
         }
