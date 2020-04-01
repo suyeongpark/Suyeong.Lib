@@ -220,7 +220,7 @@ namespace Suyeong.Lib.Mathematics
 
             float ccw1 = dx1 * dy2 - dy1 * dx2;
 
-            if (ccw1 < float.Epsilon && ccw1 > -float.Epsilon)
+            if (MathUtil.IsEqual(ccw1, 0f))
             {
                 return false;
             }
