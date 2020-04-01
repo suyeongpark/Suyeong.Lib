@@ -147,13 +147,13 @@ namespace Suyeong.Lib.Mathematics
             return MathUtil.IsEqual(dot * dot, Math.Abs(normSquareA * normSquareB));
         }
 
-        public static bool IsPointInLine(float lineStartX, float lineStartY, float lineEndX, float lineEndY, float x, float y)
+        public static bool IsPointInLine(float lineX1, float lineY1, float lineX2, float lineY2, float x, float y)
         {
-            float vec1X = x - lineStartX;
-            float vec1Y = y - lineStartY;
+            float vec1X = x - lineX1;
+            float vec1Y = y - lineY1;
 
-            float vec2X = lineEndX - lineStartX;
-            float vec2Y = lineEndY - lineStartY;
+            float vec2X = lineX2 - lineX1;
+            float vec2Y = lineY2 - lineY1;
 
             float normSquare1 = vec1X * vec1X + vec1Y * vec1Y;
             float normSquare2 = vec2X * vec2X + vec2Y * vec2Y;
@@ -173,25 +173,25 @@ namespace Suyeong.Lib.Mathematics
             return dotProduct * dotProduct == normSquare1 * normSquare2;
         }
 
-        public static bool IsCrossLine(float lineAStartX, float lineAStartY, float lineAEndX, float lineAEndY, float lineBStartX, float lineBStartY, float lineBEndX, float lineBEndY)
+        public static bool IsCrossLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2)
         {
-            float abX = lineAEndX - lineAStartX;
-            float abY = lineAEndY - lineAStartY;
+            float abX = ax2 - ax1;
+            float abY = ay2 - ay1;
 
-            float acX = lineBStartX - lineAStartX;
-            float acY = lineBStartY - lineAStartY;
+            float acX = bx1 - ax1;
+            float acY = by1 - ay1;
 
-            float adX = lineBEndX - lineAStartX;
-            float adY = lineBEndY - lineAStartY;
+            float adX = bx2 - ax1;
+            float adY = by2 - ay1;
 
-            float cdX = lineBEndX - lineBStartX;
-            float cdY = lineBEndY - lineBStartY;
+            float cdX = bx2 - bx1;
+            float cdY = by2 - by1;
 
-            float caX = lineAStartX - lineBStartX;
-            float caY = lineAStartY - lineBStartY;
+            float caX = ax1 - bx1;
+            float caY = ay1 - by1;
 
-            float cbX = lineAEndX - lineBStartX;
-            float cbY = lineAEndY - lineBStartY;
+            float cbX = ax2 - bx1;
+            float cbY = ay2 - by1;
 
             float abac = GetCCW(ax: abX, ay: abY, bx: acX, by: acY);
             float abad = GetCCW(ax: abX, ay: abY, bx: adX, by: adY);
@@ -199,10 +199,22 @@ namespace Suyeong.Lib.Mathematics
             float cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
             float cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
 
-            // 1. 두 선분이 한 점에서 만나는 경우
-            // 2. 두 선분이 교차하는 경우
-            return (MathUtil.IsZero(abac * abad) && MathUtil.IsZero(cdca * cdcb)) ||
-                ((abac > 0f && abad < 0f) || (abac < 0f && abad > 0f)) && ((cdca > 0f && cdcb < 0f) || (cdca < 0f && cdcb > 0f));
+            // 두 선분이 평행한 상태
+            if (abac * abad == 0 && cdca * cdcb == 0)
+            {
+                // 한 선분의 끝 점이 다른 선분 내부에 존재하는지 판단한다. line의 기울기가 -인 경우 min/max 겹치는 것으로는 판정할 수 없음
+                return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx1, y: by1) ||
+                    IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2);
+            }
+            // 교차한 상태
+            else if (abac * abad < 0 && cdca * cdcb < 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public static bool TryGetCrossPoint(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2, out float x, out float y)

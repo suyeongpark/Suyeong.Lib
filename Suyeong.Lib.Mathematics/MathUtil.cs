@@ -16,12 +16,14 @@ namespace Suyeong.Lib.Mathematics
 
         public static bool IsEqual(float val1, float val2)
         {
-            return IsZero(num: val1 - val2);
+            // NaN, Infinity 같은 경우 연산이 안되기 때문
+            return val1 == val2 || IsZero(num: val1 - val2);
         }
 
         public static bool IsEqual(double val1, double val2)
         {
-            return IsZero(num: val1 - val2);
+            // NaN, Infinity 같은 경우 연산이 안되기 때문
+            return val1 == val2 || IsZero(num: val1 - val2);
         }
 
         public static bool IsZero(float num)

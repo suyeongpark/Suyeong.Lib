@@ -147,13 +147,13 @@ namespace Suyeong.Lib.Mathematics
             return MathUtil.IsEqual(dot * dot, Math.Abs(normSquareA * normSquareB));
         }
 
-        public static bool IsPointInLine(double lineStartX, double lineStartY, double lineEndX, double lineEndY, double x, double y)
+        public static bool IsPointInLine(double lineX1, double lineY1, double lineX2, double lineY2, double x, double y)
         {
-            double vec1X = x - lineStartX;
-            double vec1Y = y - lineStartY;
+            double vec1X = x - lineX1;
+            double vec1Y = y - lineY1;
 
-            double vec2X = lineEndX - lineStartX;
-            double vec2Y = lineEndY - lineStartY;
+            double vec2X = lineX2 - lineX1;
+            double vec2Y = lineY2 - lineY1;
 
             double normSquare1 = vec1X * vec1X + vec1Y * vec1Y;
             double normSquare2 = vec2X * vec2X + vec2Y * vec2Y;
@@ -199,10 +199,22 @@ namespace Suyeong.Lib.Mathematics
             double cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
             double cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
 
-            // 1. 두 선분이 한 점에서 만나는 경우
-            // 2. 두 선분이 교차하는 경우
-            return (MathUtil.IsZero(abac * abad) && MathUtil.IsZero(cdca * cdcb)) ||
-                ((abac > 0d && abad < 0d) || (abac < 0d && abad > 0d)) && ((cdca > 0d && cdcb < 0d) || (cdca < 0d && cdcb > 0d));
+            // 두 선분이 평행한 상태
+            if (abac * abad == 0 && cdca * cdcb == 0)
+            {
+                // 한 선분의 끝 점이 다른 선분 내부에 존재하는지 판단한다. line의 기울기가 -인 경우 min/max 겹치는 것으로는 판정할 수 없음
+                return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx1, y: by1) ||
+                    IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2);
+            }
+            // 교차한 상태
+            else if (abac * abad < 0 && cdca * cdcb < 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public static bool TryGetCrossPoint(double ax1, double ay1, double ax2, double ay2, double bx1, double by1, double bx2, double by2, out double x, out double y)
