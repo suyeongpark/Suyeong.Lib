@@ -173,25 +173,25 @@ namespace Suyeong.Lib.Mathematics
             return dotProduct * dotProduct == normSquare1 * normSquare2;
         }
 
-        public static bool IsCrossLine(double lineAStartX, double lineAStartY, double lineAEndX, double lineAEndY, double lineBStartX, double lineBStartY, double lineBEndX, double lineBEndY)
+        public static bool IsCrossLine(double ax1, double ay1, double ax2, double ay2, double bx1, double by1, double bx2, double by2)
         {
-            double abX = lineAEndX - lineAStartX;
-            double abY = lineAEndY - lineAStartY;
+            double abX = ax2 - ax1;
+            double abY = ay2 - ay1;
 
-            double acX = lineBStartX - lineAStartX;
-            double acY = lineBStartY - lineAStartY;
+            double acX = bx1 - ax1;
+            double acY = by1 - ay1;
 
-            double adX = lineBEndX - lineAStartX;
-            double adY = lineBEndY - lineAStartY;
+            double adX = bx2 - ax1;
+            double adY = by2 - ay1;
 
-            double cdX = lineBEndX - lineBStartX;
-            double cdY = lineBEndY - lineBStartY;
+            double cdX = bx2 - bx1;
+            double cdY = by2 - by1;
 
-            double caX = lineAStartX - lineBStartX;
-            double caY = lineAStartY - lineBStartY;
+            double caX = ax1 - bx1;
+            double caY = ay1 - by1;
 
-            double cbX = lineAEndX - lineBStartX;
-            double cbY = lineAEndY - lineBStartY;
+            double cbX = ax2 - bx1;
+            double cbY = ay2 - by1;
 
             double abac = GetCCW(ax: abX, ay: abY, bx: acX, by: acY);
             double abad = GetCCW(ax: abX, ay: abY, bx: adX, by: adY);
