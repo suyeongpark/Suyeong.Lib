@@ -4,7 +4,7 @@
     {
         Horizontal,
         Vertical,
-        Diagonal13,
-        Diagonal24,
+        Positive,
+        Negetive,
     }
 }
