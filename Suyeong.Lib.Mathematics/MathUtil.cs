@@ -34,6 +34,21 @@ namespace Suyeong.Lib.Mathematics
             return Math.Abs(num) < double.Epsilon;
         }
 
+        public static bool IsNegative(int val1, int val2)
+        {
+            return (val1 < 0 && val2 > 0) || (val1 > 0 && val2 < 0);
+        }
+
+        public static bool IsNegative(float val1, float val2)
+        {
+            return (val1 < 0f && val2 > 0f) || (val1 > 0f && val2 < 0f);
+        }
+
+        public static bool IsNegative(double val1, double val2)
+        {
+            return (val1 < 0d && val2 > 0d) || (val1 > 0d && val2 < 0d);
+        }
+
         public static double RadianToDegree(double radian)
         {
             return radian * 180d / Math.PI;

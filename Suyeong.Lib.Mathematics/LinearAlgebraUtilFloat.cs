@@ -163,12 +163,16 @@ namespace Suyeong.Lib.Mathematics
                 return false;
             }
 
-            float dotProduct = vec1X * vec2X + vec1Y * vec2Y;
+            float vecX = vec1X * vec2X;
+            float vecY = vec1Y * vec2Y;
 
-            if (dotProduct < 0)
+            // 곱하기를 하는게 간단하지만 정수형 타입상 숫자가 커져버리면 엉뚱한 숫자가 나올 수 있기 때문에 부호가 반대인지 확인
+            if (MathUtil.IsNegative(vecX, vecY))
             {
                 return false;
             }
+
+            float dotProduct = vecX * vecY;
 
             return dotProduct * dotProduct == normSquare1 * normSquare2;
         }
@@ -199,15 +203,15 @@ namespace Suyeong.Lib.Mathematics
             float cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
             float cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
 
-            // 두 선분이 평행한 상태
-            if (abac * abad == 0 && cdca * cdcb == 0)
+            // 두 선분이 평행한 상태 - 두 곱이 모두 0
+            if (MathUtil.IsZero(abac * abad) && MathUtil.IsZero(cdca * cdcb))
             {
                 // 한 선분의 끝 점이 다른 선분 내부에 존재하는지 판단한다. line의 기울기가 -인 경우 min/max 겹치는 것으로는 판정할 수 없음
                 return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx1, y: by1) ||
                     IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2);
             }
-            // 교차한 상태
-            else if (abac * abad < 0 && cdca * cdcb < 0)
+            // 교차한 상태 - 두 부호가 반대
+            else if (MathUtil.IsNegative(abac, abad) && MathUtil.IsNegative(cdca, cdcb))
             {
                 return true;
             }
@@ -224,25 +228,25 @@ namespace Suyeong.Lib.Mathematics
             float x1 = bx1 - ax1;
             float y1 = by1 - ay1;
 
-            float dx1 = ax2 - ax1;
-            float dy1 = ay2 - ay1;
+            float vec1x = ax2 - ax1;
+            float vec1y = ay2 - ay1;
 
-            float dx2 = bx2 - bx1;
-            float dy2 = by2 - by1;
+            float vec2x = bx2 - bx1;
+            float vec2y = by2 - by1;
 
-            float ccw1 = dx1 * dy2 - dy1 * dx2;
+            float ccw1 = vec1x * vec2y - vec1y * vec2x;
 
             if (MathUtil.IsEqual(ccw1, 0f))
             {
                 return false;
             }
 
-            float ccw2 = x1 * dy2 - y1 * dx2;
+            float ccw2 = x1 * vec2y - y1 * vec2x;
 
             float t = (float)ccw2 / (float)ccw1;
 
-            x = ax1 + dx1 * t;
-            y = ay1 + dy1 * t;
+            x = ax1 + vec1x * t;
+            y = ay1 + vec1y * t;
 
             return true;
         }

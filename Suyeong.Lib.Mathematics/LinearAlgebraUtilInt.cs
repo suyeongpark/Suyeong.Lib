@@ -163,12 +163,16 @@ namespace Suyeong.Lib.Mathematics
                 return false;
             }
 
-            int dotProduct = vec1X * vec2X + vec1Y * vec2Y;
+            int vecX = vec1X * vec2X;
+            int vecY = vec1Y * vec2Y;
 
-            if (dotProduct < 0)
+            // 곱하기를 하는게 간단하지만 정수형 타입상 숫자가 커져버리면 엉뚱한 숫자가 나올 수 있기 때문에 부호가 반대인지 확인
+            if (MathUtil.IsNegative(vecX, vecY))
             {
                 return false;
             }
+
+            int dotProduct = vecX * vecY;
 
             return dotProduct * dotProduct == normSquare1 * normSquare2;
         }
@@ -199,15 +203,15 @@ namespace Suyeong.Lib.Mathematics
             int cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
             int cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
 
-            // 두 선분이 평행한 상태
+            // 두 선분이 평행한 상태 - 두 곱이 모두 0
             if (abac * abad == 0 && cdca * cdcb == 0)
             {
                 // 한 선분의 끝 점이 다른 선분 내부에 존재하는지 판단한다. line의 기울기가 -인 경우 min/max 겹치는 것으로는 판정할 수 없음
                 return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx1, y: by1) ||
                     IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2);
             }
-            // 교차한 상태
-            else if (abac * abad < 0 && cdca * cdcb < 0)
+            // 교차한 상태 - 두 부호가 반대
+            else if (MathUtil.IsNegative(abac, abad) && MathUtil.IsNegative(cdca, cdcb))
             {
                 return true;
             }
@@ -224,25 +228,25 @@ namespace Suyeong.Lib.Mathematics
             int x1 = bx1 - ax1;
             int y1 = by1 - ay1;
 
-            int dx1 = ax2 - ax1;
-            int dy1 = ay2 - ay1;
+            int vec1x = ax2 - ax1;
+            int vec1y = ay2 - ay1;
 
-            int dx2 = bx2 - bx1;
-            int dy2 = by2 - by1;
+            int vec2x = bx2 - bx1;
+            int vec2y = by2 - by1;
 
-            int ccw1 = dx1 * dy2 - dy1 * dx2;
+            int ccw1 = vec1x * vec2y - vec1y * vec2x;
 
             if (ccw1 == 0)
             {
                 return false;
             }
 
-            int ccw2 = x1 * dy2 - y1 * dx2;
+            int ccw2 = x1 * vec2y - y1 * vec2x;
 
             double t = (double)ccw2 / (double)ccw1;
 
-            x = ax1 + (int)(dx1 * t);
-            y = ay1 + (int)(dy1 * t);
+            x = ax1 + (int)(vec1x * t);
+            y = ay1 + (int)(vec1y * t);
 
             return true;
         }
