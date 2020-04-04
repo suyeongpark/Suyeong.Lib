@@ -14,34 +14,24 @@ namespace Suyeong.Lib.Mathematics
             return IsZero(den) ? 0f : Math.Round(num / den) * 1000d * 0.001d;
         }
 
-        public static bool IsEqual(float val1, float val2)
+        public static bool IsEqual(float val1, float val2, float epsilon = float.Epsilon)
         {
-            return IsZero(num: val1 - val2);
+            return Math.Abs(val1) - Math.Abs(val2) <= epsilon;
         }
 
-        public static bool IsEqual(double val1, double val2)
+        public static bool IsEqual(double val1, double val2, double epsilon = double.Epsilon)
         {
-            return IsZero(num: val1 - val2);
+            return Math.Abs(val1) - Math.Abs(val2) <= epsilon;
         }
 
-        public static bool IsEqualAbs(float val1, float val2)
+        public static bool IsZero(float num, float epsilon = float.Epsilon)
         {
-            return IsZero(num: Math.Abs(val1) - Math.Abs(val2));
+            return Math.Abs(num) <= epsilon;
         }
 
-        public static bool IsEqualAbs(double val1, double val2)
+        public static bool IsZero(double num, double epsilon = double.Epsilon)
         {
-            return IsZero(num: Math.Abs(val1) - Math.Abs(val2));
-        }
-
-        public static bool IsZero(float num)
-        {
-            return Math.Abs(num) < float.Epsilon;
-        }
-
-        public static bool IsZero(double num)
-        {
-            return Math.Abs(num) < double.Epsilon;
+            return Math.Abs(num) <= epsilon;
         }
 
         public static bool IsNegative(int val1, int val2)
