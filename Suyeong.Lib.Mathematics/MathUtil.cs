@@ -24,6 +24,16 @@ namespace Suyeong.Lib.Mathematics
             return IsZero(num: val1 - val2);
         }
 
+        public static bool IsEqualAbs(float val1, float val2)
+        {
+            return IsZero(num: Math.Abs(val1) - Math.Abs(val2));
+        }
+
+        public static bool IsEqualAbs(double val1, double val2)
+        {
+            return IsZero(num: Math.Abs(val1) - Math.Abs(val2));
+        }
+
         public static bool IsZero(float num)
         {
             return Math.Abs(num) < float.Epsilon;
