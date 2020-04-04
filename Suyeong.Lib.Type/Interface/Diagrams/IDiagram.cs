@@ -9,5 +9,6 @@
         T MaxY { get; }
         T CenterX { get; }
         T CenterY { get; }
+        T Area { get; }
     }
 }

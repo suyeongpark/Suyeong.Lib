@@ -17,6 +17,5 @@
         T DeltaX { get; }
         T DeltaY { get; }
         T Length { get; }
-        double Tangent { get; }
     }
 }
