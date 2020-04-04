@@ -16,12 +16,12 @@ namespace Suyeong.Lib.Mathematics
 
         public static bool IsEqual(float val1, float val2, float epsilon = float.Epsilon)
         {
-            return Math.Abs(val1) - Math.Abs(val2) <= epsilon;
+            return Math.Abs(Math.Abs(val1) - Math.Abs(val2)) <= epsilon;
         }
 
         public static bool IsEqual(double val1, double val2, double epsilon = double.Epsilon)
         {
-            return Math.Abs(val1) - Math.Abs(val2) <= epsilon;
+            return Math.Abs(Math.Abs(val1) - Math.Abs(val2)) <= epsilon;
         }
 
         public static bool IsZero(float num, float epsilon = float.Epsilon)
