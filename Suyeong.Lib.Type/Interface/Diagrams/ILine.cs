@@ -16,6 +16,6 @@
         T CenterY { get; }
         T DeltaX { get; }
         T DeltaY { get; }
-        T Length { get; }
+        T LengthSquare { get; }
     }
 }
