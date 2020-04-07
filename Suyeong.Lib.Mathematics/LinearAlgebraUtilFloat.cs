@@ -172,7 +172,7 @@ namespace Suyeong.Lib.Mathematics
                 return false;
             }
 
-            float dotProduct = vecX * vecY;
+            float dotProduct = vecX + vecY;
 
             return dotProduct * dotProduct == normSquare1 * normSquare2;
         }
