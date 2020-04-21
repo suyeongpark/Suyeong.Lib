@@ -149,22 +149,26 @@ namespace Suyeong.Lib.Mathematics
 
         public static bool IsPointInLine(int lineX1, int lineY1, int lineX2, int lineY2, int x, int y)
         {
-            int vec1X = x - lineX1;
-            int vec1Y = y - lineY1;
+            int v1X = lineX2 - lineX1;
+            int v1Y = lineY2 - lineY1;
 
-            int vec2X = lineX2 - lineX1;
-            int vec2Y = lineY2 - lineY1;
+            int v2X = x - lineX1;
+            int v2Y = y - lineY1;
 
-            int normSquare1 = vec1X * vec1X + vec1Y * vec1Y;
-            int normSquare2 = vec2X * vec2X + vec2Y * vec2Y;
+            int v3X = x - lineX2;
+            int v3Y = y - lineY2;
 
-            if (normSquare1 > normSquare2)
+            int normSquare1 = v1X * v1X + v1Y * v1Y;
+            int normSquare2 = v2X * v2X + v2Y * v2Y;
+            int normSquare3 = v3X * v3X + v3Y * v3Y;
+
+            if (normSquare2 > normSquare1 || normSquare3 > normSquare1)
             {
                 return false;
             }
 
-            int vecX = vec1X * vec2X;
-            int vecY = vec1Y * vec2Y;
+            int vecX = v2X * v1X;
+            int vecY = v2Y * v1Y;
 
             // 곱하기를 하는게 간단하지만 정수형 타입상 숫자가 커져버리면 엉뚱한 숫자가 나올 수 있기 때문에 부호가 반대인지 확인
             if (MathUtil.IsNegative(vecX, vecY))
@@ -174,7 +178,7 @@ namespace Suyeong.Lib.Mathematics
 
             int dotProduct = vecX + vecY;
 
-            return dotProduct * dotProduct == normSquare1 * normSquare2;
+            return dotProduct * dotProduct == normSquare2 * normSquare1;
         }
 
         public static bool IsCrossLine(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2)
@@ -208,9 +212,7 @@ namespace Suyeong.Lib.Mathematics
             {
                 // 한 선분의 끝 점이 다른 선분 내부에 존재하는지 판단한다. line의 기울기가 -인 경우 min/max 겹치는 것으로는 판정할 수 없음
                 return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx1, y: by1) ||
-                    IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2) ||
-                    IsPointInLine(lineX1: bx1, lineY1: by1, lineX2: bx2, lineY2: by2, x: ax1, y: ay1) ||
-                    IsPointInLine(lineX1: bx1, lineY1: by1, lineX2: bx2, lineY2: by2, x: ax2, y: ay2);
+                    IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2);
             }
             // 교차한 상태 - 두 부호가 반대
             else if (MathUtil.IsNegative(abac, abad) && MathUtil.IsNegative(cdca, cdcb))
