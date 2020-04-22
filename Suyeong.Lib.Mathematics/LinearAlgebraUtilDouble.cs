@@ -214,6 +214,11 @@ namespace Suyeong.Lib.Mathematics
                 return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx1, y: by1) ||
                     IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2);
             }
+            // 한 선의 끝점이 다른 선의 위에 존재
+            else if (MathUtil.IsZero(abac * abad) || MathUtil.IsZero(cdca * cdcb))
+            {
+                return true;
+            }
             // 교차한 상태 - 두 부호가 반대
             else if (MathUtil.IsNegative(abac, abad) && MathUtil.IsNegative(cdca, cdcb))
             {
