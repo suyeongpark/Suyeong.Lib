@@ -7,6 +7,72 @@ namespace Suyeong.Lib.Mathematics
 
     public static partial class LinearAlgebraUtil
     {
+        public static void GetMinMax(float x1, float y1, float x2, float y2, out float minX, out float minY, out float maxX, out float maxY)
+        {
+            minX = minY = maxX = maxY = 0f;
+
+            // line의 boundary를 찾는다.
+            if (x1 < x2)
+            {
+                minX = x1;
+                maxX = x2;
+            }
+            else
+            {
+                minX = x2;
+                maxX = x1;
+            }
+
+            if (y1 < y2)
+            {
+                minY = y1;
+                maxY = y2;
+            }
+            else
+            {
+                minY = y2;
+                maxY = y1;
+            }
+        }
+
+        public static void GetMinMax(float x1, float y1, float z1, float x2, float y2, float z2, out float minX, out float minY, out float minZ, out float maxX, out float maxY, out float maxZ)
+        {
+            minX = minY = minZ = maxX = maxY = maxZ = 0f;
+
+            // line의 boundary를 찾는다.
+            if (x1 < x2)
+            {
+                minX = x1;
+                maxX = x2;
+            }
+            else
+            {
+                minX = x2;
+                maxX = x1;
+            }
+
+            if (y1 < y2)
+            {
+                minY = y1;
+                maxY = y2;
+            }
+            else
+            {
+                minY = y2;
+                maxY = y1;
+            }
+
+            if (z1 < z2)
+            {
+                minZ = z1;
+                maxZ = z2;
+            }
+            else
+            {
+                minZ = z2;
+                maxZ = z1;
+            }
+        }
         public static float Norm(float ax, float ay)
         {
             return (float)Math.Sqrt(ax * ax + ay * ay);
@@ -149,108 +215,99 @@ namespace Suyeong.Lib.Mathematics
 
         public static bool IsPointInLine(float lineX1, float lineY1, float lineX2, float lineY2, float x, float y)
         {
-            float v1X = lineX2 - lineX1;
-            float v1Y = lineY2 - lineY1;
+            float minX, minY, maxX, maxY;
+            GetMinMax(x1: lineX1, y1: lineY1, x2: lineX2, y2: lineY2, minX: out minX, minY: out minY, maxX: out maxX, maxY: out maxY);
 
-            float v2X = x - lineX1;
-            float v2Y = y - lineY1;
-
-            float v3X = x - lineX2;
-            float v3Y = y - lineY2;
-
-            float normSquare1 = v1X * v1X + v1Y * v1Y;
-            float normSquare2 = v2X * v2X + v2Y * v2Y;
-            float normSquare3 = v3X * v3X + v3Y * v3Y;
-
-            if (normSquare2 > normSquare1 || normSquare3 > normSquare1)
+            // 점이 line의 boundary 안에 있는지 찾는다.
+            if (x >= minX && x <= maxX && y >= minY && y <= maxY)
             {
-                return false;
+                float v1X = lineX2 - lineX1;
+                float v1Y = lineY2 - lineY1;
+                float v2X = x - lineX1;
+                float v2Y = y - lineY1;
+
+                // 점이 line의 boundary 안에 존재하는 상태에서 두 vector의 기울기가 평행하다면 점은 line 위에 존재한다.
+                return MathUtil.IsZero(GetCCW(ax: v1X, ay: v1Y, bx: v2X, by: v2Y));
             }
 
-            float vecX = v2X * v1X;
-            float vecY = v2Y * v1Y;
-
-            // 곱하기를 하는게 간단하지만 정수형 타입상 숫자가 커져버리면 엉뚱한 숫자가 나올 수 있기 때문에 부호가 반대인지 확인
-            if (MathUtil.IsNegative(vecX, vecY))
-            {
-                return false;
-            }
-
-            float dotProduct = vecX + vecY;
-
-            return MathUtil.IsEqual(dotProduct * dotProduct, normSquare2 * normSquare1);
+            return false;
         }
 
         public static bool IsCrossLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2)
         {
-            float abX = ax2 - ax1;
-            float abY = ay2 - ay1;
+            float aMinX, aMinY, aMaxX, aMaxY, bMinX, bMinY, bMaxX, bMaxY;
+            GetMinMax(x1: ax1, y1: ay1, x2: ax2, y2: ay2, minX: out aMinX, minY: out aMinY, maxX: out aMaxX, maxY: out aMaxY);
+            GetMinMax(x1: bx1, y1: by1, x2: bx2, y2: by2, minX: out bMinX, minY: out bMinY, maxX: out bMaxX, maxY: out bMaxY);
 
-            float acX = bx1 - ax1;
-            float acY = by1 - ay1;
-
-            float adX = bx2 - ax1;
-            float adY = by2 - ay1;
-
-            float cdX = bx2 - bx1;
-            float cdY = by2 - by1;
-
-            float caX = ax1 - bx1;
-            float caY = ay1 - by1;
-
-            float cbX = ax2 - bx1;
-            float cbY = ay2 - by1;
-
-            float abac = GetCCW(ax: abX, ay: abY, bx: acX, by: acY);
-            float abad = GetCCW(ax: abX, ay: abY, bx: adX, by: adY);
-
-            float cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
-            float cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
-
-            // 두 선분이 평행한 상태 - 두 곱이 모두 0
-            if (MathUtil.IsZero(abac * abad) && MathUtil.IsZero(cdca * cdcb))
+            // 일단 두 line의 boundary가 겹치는지 본다.
+            if (aMinX <= bMaxX && aMaxX >= bMinX && aMinY <= bMinY && aMaxY >= bMaxY)
             {
-                // 한 선분의 끝 점이 다른 선분 내부에 존재하는지 판단한다. line의 기울기가 -인 경우 min/max 겹치는 것으로는 판정할 수 없음
-                return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx1, y: by1) ||
-                    IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2);
+                float abX = ax2 - ax1;
+                float abY = ay2 - ay1;
+                float acX = bx1 - ax1;
+                float acY = by1 - ay1;
+                float adX = bx2 - ax1;
+                float adY = by2 - ay1;
+
+                float abac = GetCCW(ax: abX, ay: abY, bx: acX, by: acY);
+                float abad = GetCCW(ax: abX, ay: abY, bx: adX, by: adY);
+
+                float cdX = bx2 - bx1;
+                float cdY = by2 - by1;
+                float caX = ax1 - bx1;
+                float caY = ay1 - by1;
+                float cbX = ax2 - bx1;
+                float cbY = ay2 - by1;
+
+                float cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
+                float cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
+
+                // 교차한 상태 - 두 부호가 반대
+                if (MathUtil.IsNegative(abac, abad) && MathUtil.IsNegative(cdca, cdcb))
+                {
+                    return true;
+                }
+                // a라인 위에 b의 한 점이 존재
+                else if (MathUtil.IsZero(abac) || MathUtil.IsZero(abad))
+                {
+                    return MathUtil.IsZero(GetCCW(ax: abX, ay: abY, bx: acX, by: acY)) || MathUtil.IsZero(GetCCW(ax: abX, ay: abY, bx: adX, by: adY));
+                }
+                // b라인 위에 a의 한 점이 존재
+                else if (MathUtil.IsZero(cdca) || MathUtil.IsZero(cdcb))
+                {
+                    return MathUtil.IsZero(GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY)) || MathUtil.IsZero(GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY));
+                }
             }
-            // 교차한 상태 - 두 부호가 반대
-            else if (MathUtil.IsNegative(abac, abad) && MathUtil.IsNegative(cdca, cdcb))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public static bool TryGetCrossPoint(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2, out float x, out float y)
         {
-            x = y = 0;
+            x = y = 0f;
 
-            float x1 = bx1 - ax1;
-            float y1 = by1 - ay1;
+            //float x1 = bx1 - ax1;
+            //float y1 = by1 - ay1;
 
-            float vec1x = ax2 - ax1;
-            float vec1y = ay2 - ay1;
+            //float vec1x = ax2 - ax1;
+            //float vec1y = ay2 - ay1;
 
-            float vec2x = bx2 - bx1;
-            float vec2y = by2 - by1;
+            //float vec2x = bx2 - bx1;
+            //float vec2y = by2 - by1;
 
-            float ccw1 = vec1x * vec2y - vec1y * vec2x;
+            //float ccw1 = vec1x * vec2y - vec1y * vec2x;
 
-            if (MathUtil.IsEqual(ccw1, 0f))
-            {
-                return false;
-            }
+            //if (MathUtil.IsEqual(ccw1, 0f))
+            //{
+            //    return false;
+            //}
 
-            float ccw2 = x1 * vec2y - y1 * vec2x;
+            //float ccw2 = x1 * vec2y - y1 * vec2x;
 
-            float t = (float)ccw2 / (float)ccw1;
+            //float t = (float)ccw2 / (float)ccw1;
 
-            x = ax1 + vec1x * t;
-            y = ay1 + vec1y * t;
+            //x = ax1 + vec1x * t;
+            //y = ay1 + vec1y * t;
 
             return true;
         }
