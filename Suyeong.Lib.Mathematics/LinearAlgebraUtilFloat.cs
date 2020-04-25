@@ -213,6 +213,12 @@ namespace Suyeong.Lib.Mathematics
             return MathUtil.IsEqual(dot * dot, Math.Abs(normSquareA * normSquareB));
         }
 
+        public static bool IsSameLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2)
+        {
+            return (MathUtil.IsEqual(ax1, bx1) && MathUtil.IsEqual(ay1, by1) && MathUtil.IsEqual(ax2, bx2) && MathUtil.IsEqual(ay2, by2)) ||
+                (MathUtil.IsEqual(ax1, bx2) && MathUtil.IsEqual(ay1, by2) && MathUtil.IsEqual(ax2, bx1) && MathUtil.IsEqual(ay2, by1));
+        }
+
         public static bool IsPointInLine(float lineX1, float lineY1, float lineX2, float lineY2, float x, float y)
         {
             float minX, minY, maxX, maxY;
@@ -235,6 +241,11 @@ namespace Suyeong.Lib.Mathematics
 
         public static bool IsCrossLine(float ax1, float ay1, float ax2, float ay2, float bx1, float by1, float bx2, float by2)
         {
+            if (IsSameLine(ax1: ax1, ay1: ay1, ax2: ax2, ay2: ay2, bx1: bx1, by1: by1, bx2: bx2, by2: by2))
+            {
+                return true;
+            }
+
             float aMinX, aMinY, aMaxX, aMaxY, bMinX, bMinY, bMaxX, bMaxY;
             GetMinMax(x1: ax1, y1: ay1, x2: ax2, y2: ay2, minX: out aMinX, minY: out aMinY, maxX: out aMaxX, maxY: out aMaxY);
             GetMinMax(x1: bx1, y1: by1, x2: bx2, y2: by2, minX: out bMinX, minY: out bMinY, maxX: out bMaxX, maxY: out bMaxY);
@@ -287,24 +298,91 @@ namespace Suyeong.Lib.Mathematics
         {
             x = y = 0f;
 
-            // 두 선이 평행하면 false
-            if (MathUtil.IsZero(GetCCW(ax: ax2 - ax1, ay: ay2 - ay1, bx: bx2 - bx1, by: by2 - by1)))
+            // 두 직선이 동일한 경우
+            if (IsSameLine(ax1: ax1, ay1: ay1, ax2: ax2, ay2: ay2, bx1: bx1, by1: by1, bx2: bx2, by2: by2))
             {
-                return false;
-            }
-            else
-            {
-                // 직선의 방정식을 만들어서 교점을 구한다.
-                float a1 = (ay2 - ay1) / (ax2 - ax1);
-                float b1 = ay1 - ax1 * a1;
-
-                float a2 = (by2 - by1) / (bx2 - bx1);
-                float b2 = by1 - bx1 * a2;
-
-                x = -(b1 - b2) / (a1 - a2);
-                y = a1 * x + b1;
+                // 중점을 반환한다.
+                x = (ax1 + ax2) * 0.5f;
+                y = (ay1 + ay2) * 0.5f;
 
                 return true;
             }
+
+            // 우선 교차하는지 본다.
+            if (IsCrossLine(ax1: ax1, ay1: ay1, ax2: ax2, ay2: ay2, bx1: bx1, by1: by1, bx2: bx2, by2: by2))
+            {
+                float v1X = ax2 - ax1;
+                float v1Y = ay2 - ay1;
+                float v2X = bx2 - bx1;
+                float v2Y = by2 - by1;
+
+                bool horizontalA = MathUtil.IsZero(v1X);
+                bool verticalA = MathUtil.IsZero(v1Y);
+                bool horizontalB = MathUtil.IsZero(v2X);
+                bool verticalB = MathUtil.IsZero(v2Y);
+
+                // 두 라인이 수평-수직인 경우 수평의 y, 수직의 x를 쓴다.
+                if (horizontalA && verticalB)
+                {
+                    x = bx1;
+                    y = ay1;
+                }
+                else if (horizontalB && verticalA)
+                {
+                    x = ax1;
+                    y = by1;
+                }
+                // 한쪽 선만 수평인 경우 수평의 y를 쓰고 x는 수평이 아닌 라인에 직선의 방정식을 쓴다.
+                else if (horizontalA && !horizontalB)
+                {
+                    float a2 = v2Y / v2X;
+                    float b2 = by1 - (a2 * bx1);
+
+                    y = ay1;
+                    x = (y - b2) / a2;
+                }
+                else if (!horizontalA && horizontalB)
+                {
+                    float a1 = v1Y / v1X;
+                    float b1 = ay1 - (a1 * ax1);
+
+                    y = by1;
+                    x = (y - b1) / a1;
+                }
+                // 한쪽 선만 수직인 경우 수직의 x를 쓰고 y는 수직이 아닌 라인에 직선의 방정식을 쓴다.
+                else if (verticalA && !verticalB)
+                {
+                    float a2 = v2Y / v2X;
+                    float b2 = by1 - (a2 * bx1);
+
+                    x = ax1;
+                    y = a2 * x + b2;
+                }
+                else if (!verticalA && verticalB)
+                {
+                    float a1 = v1Y / v1X;
+                    float b1 = ay1 - (a1 * ax1);
+
+                    x = bx1;
+                    y = a1 * x + b1;
+                }
+                else
+                {
+                    // 두 라인이 모두 수평/ 수직이 아닌 경우 두 라인 모두 직선의 방정식으로 푼다.
+                    float a1 = v1Y / v1X;
+                    float b1 = ay1 - (a1 * ax1);
+
+                    float a2 = v2Y / v2X;
+                    float b2 = by1 - (a2 * bx1);
+
+                    x = -(b1 - b2) / (a1 - a2);
+                    y = a1 * x + b1;
+                }
+
+                return true;
+            }
+
+            return false;
         }
+    }
 }
