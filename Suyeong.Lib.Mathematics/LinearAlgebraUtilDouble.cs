@@ -283,34 +283,30 @@ namespace Suyeong.Lib.Mathematics
             return false;
         }
 
+        /// 나눗셈 연산이 필요하므로 교점을 구하는 것 단순 교차 판정만 하는거라면 CCW를 이용한 Cross Line을 이용하자
         public static bool TryGetCrossPoint(double ax1, double ay1, double ax2, double ay2, double bx1, double by1, double bx2, double by2, out double x, out double y)
         {
             x = y = 0d;
 
-            //double x1 = bx1 - ax1;
-            //double y1 = by1 - ay1;
+            // 두 선이 평행하면 false
+            if (MathUtil.IsZero(GetCCW(ax: ax2 - ax1, ay: ay2 - ay1, bx: bx2 - bx1, by: by2 - by1)))
+            {
+                return false;
+            }
+            else
+            {
+                // 직선의 방정식을 만들어서 교점을 구한다.
+                double a1 = (ay2 - ay1) / (ax2 - ax1);
+                double b1 = ay1 - ax1 * a1;
 
-            //double vec1x = ax2 - ax1;
-            //double vec1y = ay2 - ay1;
+                double a2 = (by2 - by1) / (bx2 - bx1);
+                double b2 = by1 - bx1 * a2;
 
-            //double vec2x = bx2 - bx1;
-            //double vec2y = by2 - by1;
+                x = -(b1 - b2) / (a1 - a2);
+                y = a1 * x + b1;
 
-            //double ccw1 = vec1x * vec2y - vec1y * vec2x;
-
-            //if (MathUtil.IsEqual(ccw1, 0d))
-            //{
-            //    return false;
-            //}
-
-            //double ccw2 = x1 * vec2y - y1 * vec2x;
-
-            //double t = ccw2 / ccw1;
-
-            //x = ax1 + vec1x * t;
-            //y = ay1 + vec1y * t;
-
-            return true;
+                return true;
+            }
         }
     }
 }

@@ -283,35 +283,30 @@ namespace Suyeong.Lib.Mathematics
             return false;
         }
 
-        // 요거는 식이 잘못됐다. negative인 방향과 평행선에 대해 정리가 잘못 됨
+        /// 나눗셈 연산이 필요하므로 교점을 구하는 것 단순 교차 판정만 하는거라면 CCW를 이용한 Cross Line을 이용하자
         public static bool TryGetCrossPoint(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2, out int x, out int y)
         {
             x = y = 0;
 
-            //int v1X = ax2 - ax1;
-            //int v1Y = ay2 - ay1;
+            // 두 선이 평행하면 false
+            if (GetCCW(ax: ax2 - ax1, ay: ay2 - ay1, bx: bx2 - bx1, by: by2 - by1) == 0)
+            {
+                return false;
+            }
+            else
+            {
+                // 직선의 방정식을 만들어서 교점을 구한다.
+                double a1 = (double)(ay2 - ay1) / (double)(ax2 - ax1);
+                double b1 = ay1 - ax1 * a1;
 
-            //int v2X = bx2 - bx1;
-            //int v2Y = by2 - by1;
+                double a2 = (double)(by2 - by1) / (double)(bx2 - bx1);
+                double b2 = by1 - bx1 * a2;
 
-            //int v3X = bx1 - ax1;
-            //int v3Y = by1 - ay1;
+                x = (int)(-(b1 - b2) / (a1 - a2));
+                y = (int)(a1 * x + b1);
 
-            //int ccw1 = GetCCW(ax: v1X, ay: v1Y, bx: v2X, by: v2Y);
-
-            //if (ccw1 == 0)
-            //{
-            //    return false;
-            //}
-
-            //int ccw2 = GetCCW(ax: v3X, ay: v3Y, bx: v2X, by: v2Y);
-
-            //double t = (double)ccw2 / (double)ccw1;
-
-            //x = ax1 + (int)(v1X * t);
-            //y = ay1 + (int)(v1Y * t);
-
-            return true;
+                return true;
+            }
         }
     }
 }
