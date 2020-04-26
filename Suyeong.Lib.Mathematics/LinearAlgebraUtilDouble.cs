@@ -252,7 +252,7 @@ namespace Suyeong.Lib.Mathematics
             GetMinMax(x1: bx1, y1: by1, x2: bx2, y2: by2, minX: out bMinX, minY: out bMinY, maxX: out bMaxX, maxY: out bMaxY);
 
             // 일단 두 line의 boundary가 겹치는지 본다.
-            if (aMinX <= bMaxX && aMaxX >= bMinX && aMinY <= bMinY && aMaxY >= bMaxY)
+            if (aMinX <= bMaxX && aMaxX >= bMinX && aMinY <= bMaxY && aMaxY >= bMinY)
             {
                 double abX = ax2 - ax1;
                 double abY = ay2 - ay1;
