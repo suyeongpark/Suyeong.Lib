@@ -180,6 +180,24 @@ namespace Suyeong.Lib.Mathematics
             return Tuple.Create(i, j, k);
         }
 
+        public static Tuple<double, double> Projection(double ax, double ay, double bx, double by)
+        {
+            double dotBA = DotProduct(ax: ax, ay: ay, bx: bx, by: by);
+            double dotBB = DotProduct(ax: bx, ay: by, bx: bx, by: by);
+            double scalar = dotBA / dotBB;
+
+            return Tuple.Create(bx * scalar, by * scalar);
+        }
+
+        public static Tuple<double, double, double> Projection(double ax, double ay, double az, double bx, double by, double bz)
+        {
+            double dotBA = DotProduct(ax: ax, ay: ay, az: az, bx: bx, by: by, bz: bz);
+            double dotBB = DotProduct(ax: bx, ay: by, az: bz, bx: bx, by: by, bz: bz);
+            double scalar = dotBA / dotBB;
+
+            return Tuple.Create(bx * scalar, by * scalar, bz * scalar);
+        }
+
         // cross product에서 z가 0인 경우에 방향만 취하는 것
         public static double GetCCW(double ax, double ay, double bx, double by)
         {
@@ -270,7 +288,7 @@ namespace Suyeong.Lib.Mathematics
                 double caY = ay1 - by1;
                 double cbX = ax2 - bx1;
                 double cbY = ay2 - by1;
-                
+
                 double cdca = GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY);
                 double cdcb = GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY);
 

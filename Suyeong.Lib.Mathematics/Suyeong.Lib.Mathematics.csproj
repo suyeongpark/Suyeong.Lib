@@ -42,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LinearAlgebraUtilFloat.cs" />
     <Compile Include="LinearAlgebraUtilDouble.cs" />
     <Compile Include="LinearAlgebraUtilInt.cs" />
     <Compile Include="MathUtil.cs" />

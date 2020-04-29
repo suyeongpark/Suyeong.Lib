@@ -180,6 +180,24 @@ namespace Suyeong.Lib.Mathematics
             return Tuple.Create(i, j, k);
         }
 
+        public static Tuple<int, int> Projection(int ax, int ay, int bx, int by)
+        {
+            int dotBA = DotProduct(ax: ax, ay: ay, bx: bx, by: by);
+            int dotBB = DotProduct(ax: bx, ay: by, bx: bx, by: by);
+            double scalar = (double)dotBA / (double)dotBB;
+
+            return Tuple.Create(MathUtil.ConvertToInt(bx * scalar), MathUtil.ConvertToInt(by * scalar));
+        }
+
+        public static Tuple<int, int, int> Projection(int ax, int ay, int az, int bx, int by, int bz)
+        {
+            int dotBA = DotProduct(ax: ax, ay: ay, az: az, bx: bx, by: by, bz: bz);
+            int dotBB = DotProduct(ax: bx, ay: by, az: bz, bx: bx, by: by, bz: bz);
+            double scalar = (double)dotBA / (double)dotBB;
+
+            return Tuple.Create(MathUtil.ConvertToInt(bx * scalar), MathUtil.ConvertToInt(by * scalar), MathUtil.ConvertToInt(bz * scalar));
+        }
+
         // cross product에서 z가 0인 경우에 방향만 취하는 것
         public static int GetCCW(int ax, int ay, int bx, int by)
         {
@@ -302,8 +320,8 @@ namespace Suyeong.Lib.Mathematics
             if (IsSameLine(ax1: ax1, ay1: ay1, ax2: ax2, ay2: ay2, bx1: bx1, by1: by1, bx2: bx2, by2: by2))
             {
                 // 중점을 반환한다.
-                x = (int)((ax1 + ax2) * 0.5d);
-                y = (int)((ay1 + ay2) * 0.5d);
+                x = MathUtil.ConvertToInt((ax1 + ax2) * 0.5d);
+                y = MathUtil.ConvertToInt((ay1 + ay2) * 0.5d);
 
                 return true;
             }
@@ -339,7 +357,7 @@ namespace Suyeong.Lib.Mathematics
                     double b2 = by1 - (a2 * bx1);
 
                     y = ay1;
-                    x = (int)((y - b2) / a2);
+                    x = MathUtil.ConvertToInt((y - b2) / a2);
                 }
                 else if (!horizontalA && horizontalB)
                 {
@@ -347,7 +365,7 @@ namespace Suyeong.Lib.Mathematics
                     double b1 = ay1 - (a1 * ax1);
 
                     y = by1;
-                    x = (int)((y - b1) / a1);
+                    x = MathUtil.ConvertToInt((y - b1) / a1);
                 }
                 // 한쪽 선만 수직인 경우 수직의 x를 쓰고 y는 수직이 아닌 라인에 직선의 방정식을 쓴다.
                 else if (verticalA && !verticalB)
@@ -356,7 +374,7 @@ namespace Suyeong.Lib.Mathematics
                     double b2 = by1 - (a2 * bx1);
 
                     x = ax1;
-                    y = (int)(a2 * x + b2);
+                    y = MathUtil.ConvertToInt(a2 * x + b2);
                 }
                 else if (!verticalA && verticalB)
                 {
@@ -364,7 +382,7 @@ namespace Suyeong.Lib.Mathematics
                     double b1 = ay1 - (a1 * ax1);
 
                     x = bx1;
-                    y = (int)(a1 * x + b1);
+                    y = MathUtil.ConvertToInt(a1 * x + b1);
                 }
                 else
                 {
@@ -375,8 +393,8 @@ namespace Suyeong.Lib.Mathematics
                     double a2 = (double)v2Y / (double)v2X;
                     double b2 = by1 - (a2 * bx1);
 
-                    x = (int)(-(b1 - b2) / (a1 - a2));
-                    y = (int)(a1 * x + b1);
+                    x = MathUtil.ConvertToInt(-(b1 - b2) / (a1 - a2));
+                    y = MathUtil.ConvertToInt(a1 * x + b1);
                 }
 
                 return true;
