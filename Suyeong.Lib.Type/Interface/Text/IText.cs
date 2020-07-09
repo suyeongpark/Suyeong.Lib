@@ -3,7 +3,7 @@
     public interface IText<T> : IRect<T>
     {
         Orientation Orientation { get; }
-        int Rotate { get; }
+        T Rotate { get; }
         string Text { get; }
     }
 }
