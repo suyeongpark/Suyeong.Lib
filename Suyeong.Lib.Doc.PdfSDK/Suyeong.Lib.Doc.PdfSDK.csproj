@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5D2438F2-2DF6-4837-B9BC-92F0C8A125C8}</ProjectGuid>
+    <ProjectGuid>{69C9C608-04F9-4DA6-A62A-9B23681FADC9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Suyeong.Lib.Type</RootNamespace>
-    <AssemblyName>Suyeong.Lib.Type</AssemblyName>
+    <RootNamespace>Suyeong.Lib.Doc.PdfSDK</RootNamespace>
+    <AssemblyName>Suyeong.Lib.Doc.PdfSDK</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,6 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.Acrobat">
+      <HintPath>..\references\InteropAcrobat\Interop.Acrobat.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.ACROIEHELPERLib">
+      <HintPath>..\references\InteropAcrobat\Interop.ACROIEHELPERLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.AFORMAUTLib">
+      <HintPath>..\references\InteropAcrobat\Interop.AFORMAUTLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,17 +53,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enum\Orientation.cs" />
-    <Compile Include="Interface\Diagrams\ICircle.cs" />
-    <Compile Include="Interface\Diagrams\IDiagram.cs" />
-    <Compile Include="Interface\Diagrams\IEllipse.cs" />
-    <Compile Include="Interface\Diagrams\IMultiLine.cs" />
-    <Compile Include="Interface\Diagrams\ILine.cs" />
-    <Compile Include="Interface\Diagrams\IPoint.cs" />
-    <Compile Include="Interface\Diagrams\IPoly.cs" />
-    <Compile Include="Interface\Diagrams\IRect.cs" />
-    <Compile Include="Interface\Text\IText.cs" />
+    <Compile Include="PdfSDK.cs" />
+    <Compile Include="Internal\PdfTextRect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Type\PdfPage.cs" />
+    <Compile Include="Type\PdfText.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Suyeong.Lib.Type\Suyeong.Lib.Type.csproj">
+      <Project>{5d2438f2-2df6-4837-b9bc-92f0c8a125c8}</Project>
+      <Name>Suyeong.Lib.Type</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

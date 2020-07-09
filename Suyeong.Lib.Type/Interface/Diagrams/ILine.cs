@@ -3,7 +3,7 @@
     public interface ILine<T>
     {
         int Index { get; }
-        LineOrientation LineOrientation { get; }
+        Orientation Orientation { get; }
         T StartX { get; }
         T StartY { get; }
         T EndX { get; }

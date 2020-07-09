@@ -1,6 +1,6 @@
 ﻿namespace Suyeong.Lib.Type
 {
-    public enum LineOrientation
+    public enum Orientation
     {
         Horizontal,
         Vertical,
