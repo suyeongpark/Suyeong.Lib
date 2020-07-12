@@ -8,8 +8,8 @@ namespace Suyeong.Lib.Doc.PdfSDK
         public PdfText(
             int index,
             int groupIndex,
-            int rotate,
             Orientation orientation,
+            double rotate,
             double ltX,
             double ltY,
             double lbX,
@@ -113,8 +113,8 @@ namespace Suyeong.Lib.Doc.PdfSDK
 
         public int Index { get; private set; }
         public int GroupIndex { get; private set; }
-        public int Rotate { get; private set; }
         public Orientation Orientation { get; private set; }
+        public double Rotate { get; private set; }
         public double LTX { get; private set; }
         public double LTY { get; private set; }
         public double LBX { get; private set; }
