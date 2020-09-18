@@ -297,15 +297,25 @@ namespace Suyeong.Lib.Mathematics
                 {
                     return true;
                 }
-                // a라인 위에 b의 한 점이 존재
-                else if (MathUtil.IsZero(abac) || MathUtil.IsZero(abad))
+                // a라인 위에 b의 c점이 존재
+                else if (abac == 0)
                 {
-                    return MathUtil.IsZero(GetCCW(ax: abX, ay: abY, bx: acX, by: acY)) || MathUtil.IsZero(GetCCW(ax: abX, ay: abY, bx: adX, by: adY));
+                    return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx1, y: by1);
                 }
-                // b라인 위에 a의 한 점이 존재
-                else if (MathUtil.IsZero(cdca) || MathUtil.IsZero(cdcb))
+                // a라인 위에 b의 d점이 존재
+                else if (abad == 0)
                 {
-                    return MathUtil.IsZero(GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY)) || MathUtil.IsZero(GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY));
+                    return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2);
+                }
+                // b라인 위에 a의 a점이 존재
+                else if (cdca == 0)
+                {
+                    return IsPointInLine(lineX1: bx1, lineY1: by1, lineX2: bx2, lineY2: by2, x: ax1, y: ay1);
+                }
+                // b라인 위에 a의 b점이 존재
+                else if (cdcb == 0)
+                {
+                    return IsPointInLine(lineX1: bx1, lineY1: by1, lineX2: bx2, lineY2: by2, x: ax2, y: ay2);
                 }
             }
 
@@ -335,10 +345,10 @@ namespace Suyeong.Lib.Mathematics
                 double v2X = bx2 - bx1;
                 double v2Y = by2 - by1;
 
-                bool horizontalA = MathUtil.IsZero(v1X);
-                bool verticalA = MathUtil.IsZero(v1Y);
-                bool horizontalB = MathUtil.IsZero(v2X);
-                bool verticalB = MathUtil.IsZero(v2Y);
+                bool horizontalA = MathUtil.IsZero(v1Y);
+                bool verticalA = MathUtil.IsZero(v1X);
+                bool horizontalB = MathUtil.IsZero(v2Y);
+                bool verticalB = MathUtil.IsZero(v2X);
 
                 // 두 라인이 수평-수직인 경우 수평의 y, 수직의 x를 쓴다.
                 if (horizontalA && verticalB)

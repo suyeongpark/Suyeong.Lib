@@ -296,15 +296,25 @@ namespace Suyeong.Lib.Mathematics
                 {
                     return true;
                 }
-                // a라인 위에 b의 한 점이 존재
-                else if (abac == 0 || abad == 0)
+                // a라인 위에 b의 c점이 존재
+                else if (abac == 0)
                 {
-                    return GetCCW(ax: abX, ay: abY, bx: acX, by: acY) == 0 || GetCCW(ax: abX, ay: abY, bx: adX, by: adY) == 0;
+                    return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx1, y: by1);
                 }
-                // b라인 위에 a의 한 점이 존재
-                else if (cdca == 0 || cdcb == 0)
+                // a라인 위에 b의 d점이 존재
+                else if (abad == 0)
                 {
-                    return GetCCW(ax: cdX, ay: cdY, bx: caX, by: caY) == 0 || GetCCW(ax: cdX, ay: cdY, bx: cbX, by: cbY) == 0;
+                    return IsPointInLine(lineX1: ax1, lineY1: ay1, lineX2: ax2, lineY2: ay2, x: bx2, y: by2);
+                }
+                // b라인 위에 a의 a점이 존재
+                else if (cdca == 0)
+                {
+                    return IsPointInLine(lineX1: bx1, lineY1: by1, lineX2: bx2, lineY2: by2, x: ax1, y: ay1);
+                }
+                // b라인 위에 a의 b점이 존재
+                else if (cdcb == 0)
+                {
+                    return IsPointInLine(lineX1: bx1, lineY1: by1, lineX2: bx2, lineY2: by2, x: ax2, y: ay2);
                 }
             }
 
@@ -334,10 +344,10 @@ namespace Suyeong.Lib.Mathematics
                 int v2X = bx2 - bx1;
                 int v2Y = by2 - by1;
 
-                bool horizontalA = v1X == 0;
-                bool verticalA = v1Y == 0;
-                bool horizontalB = v2X == 0;
-                bool verticalB = v2Y == 0;
+                bool horizontalA = v1Y == 0;
+                bool verticalA = v1X == 0;
+                bool horizontalB = v2Y == 0;
+                bool verticalB = v2X == 0;
 
                 // 두 라인이 수평-수직인 경우 수평의 y, 수직의 x를 쓴다.
                 if (horizontalA && verticalB)
