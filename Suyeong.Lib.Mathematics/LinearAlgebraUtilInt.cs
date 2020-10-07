@@ -412,5 +412,45 @@ namespace Suyeong.Lib.Mathematics
 
             return false;
         }
+
+        public static double CosineSimilarity(int ax, int ay, int bx, int by)
+        {
+            int dot = DotProduct(ax: ax, ay: ay, bx: bx, by: by);
+            double dotSquare = dot * dot;
+
+            double normSquareA = NormSqure(ax: ax, ay: ay);
+            double normSquareB = NormSqure(ax: bx, ay: by);
+
+            return dotSquare / (normSquareA * normSquareB);
+        }
+
+        public static double CosineSimilarity(int ax, int ay, int az, int bx, int by, int bz)
+        {
+            int dot = DotProduct(ax: ax, ay: ay, az: az, bx: bx, by: by, bz: bz);
+            double dotSquare = dot * dot;
+
+            double normSquareA = NormSqure(ax: ax, ay: ay, az: az);
+            double normSquareB = NormSqure(ax: bx, ay: by, az: bz);
+
+            return dotSquare / (normSquareA * normSquareB);
+        }
+
+        public static bool TryGetLineSlopeAndIntercept(int ax, int ay, int bx, int by, out double slope, out double intercept)
+        {
+            slope = intercept = 0d;
+
+            if (ax == bx)
+            {
+                return false;
+            }
+
+            double dx = bx - ax;
+            double dy = by - ay;
+
+            slope = dy / dx;
+            intercept = ay - (slope * ax);
+
+            return true;
+        }
     }
 }
