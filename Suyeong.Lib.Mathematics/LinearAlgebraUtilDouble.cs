@@ -1,78 +1,13 @@
 ﻿using System;
-using System.Numerics;
 
 namespace Suyeong.Lib.Mathematics
 {
-    // double 형만
+    /// <summary>
+    /// double 형만
+    /// </summary>
 
     public static partial class LinearAlgebraUtil
     {
-        public static void GetMinMax(double x1, double y1, double x2, double y2, out double minX, out double minY, out double maxX, out double maxY)
-        {
-            minX = minY = maxX = maxY = 0d;
-
-            // line의 boundary를 찾는다.
-            if (x1 < x2)
-            {
-                minX = x1;
-                maxX = x2;
-            }
-            else
-            {
-                minX = x2;
-                maxX = x1;
-            }
-
-            if (y1 < y2)
-            {
-                minY = y1;
-                maxY = y2;
-            }
-            else
-            {
-                minY = y2;
-                maxY = y1;
-            }
-        }
-
-        public static void GetMinMax(double x1, double y1, double z1, double x2, double y2, double z2, out double minX, out double minY, out double minZ, out double maxX, out double maxY, out double maxZ)
-        {
-            minX = minY = minZ = maxX = maxY = maxZ = 0d;
-
-            // line의 boundary를 찾는다.
-            if (x1 < x2)
-            {
-                minX = x1;
-                maxX = x2;
-            }
-            else
-            {
-                minX = x2;
-                maxX = x1;
-            }
-
-            if (y1 < y2)
-            {
-                minY = y1;
-                maxY = y2;
-            }
-            else
-            {
-                minY = y2;
-                maxY = y1;
-            }
-
-            if (z1 < z2)
-            {
-                minZ = z1;
-                maxZ = z2;
-            }
-            else
-            {
-                minZ = z2;
-                maxZ = z1;
-            }
-        }
 
         public static double Norm(double ax, double ay)
         {
@@ -452,6 +387,95 @@ namespace Suyeong.Lib.Mathematics
             intercept = ay - (slope * ax);
 
             return true;
+        }
+
+        public static void GetMinMax(
+            double x1,
+            double y1,
+            double x2,
+            double y2,
+            out double minX,
+            out double minY,
+            out double maxX,
+            out double maxY
+        )
+        {
+            minX = minY = maxX = maxY = 0d;
+
+            // line의 boundary를 찾는다.
+            if (x1 < x2)
+            {
+                minX = x1;
+                maxX = x2;
+            }
+            else
+            {
+                minX = x2;
+                maxX = x1;
+            }
+
+            if (y1 < y2)
+            {
+                minY = y1;
+                maxY = y2;
+            }
+            else
+            {
+                minY = y2;
+                maxY = y1;
+            }
+        }
+
+        public static void GetMinMax(
+            double x1,
+            double y1,
+            double z1,
+            double x2,
+            double y2,
+            double z2,
+            out double minX,
+            out double minY,
+            out double minZ,
+            out double maxX,
+            out double maxY,
+            out double maxZ
+        )
+        {
+            minX = minY = minZ = maxX = maxY = maxZ = 0d;
+
+            // line의 boundary를 찾는다.
+            if (x1 < x2)
+            {
+                minX = x1;
+                maxX = x2;
+            }
+            else
+            {
+                minX = x2;
+                maxX = x1;
+            }
+
+            if (y1 < y2)
+            {
+                minY = y1;
+                maxY = y2;
+            }
+            else
+            {
+                minY = y2;
+                maxY = y1;
+            }
+
+            if (z1 < z2)
+            {
+                minZ = z1;
+                maxZ = z2;
+            }
+            else
+            {
+                minZ = z2;
+                maxZ = z1;
+            }
         }
     }
 }

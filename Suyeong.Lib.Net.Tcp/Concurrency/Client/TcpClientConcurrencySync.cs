@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Suyeong.Lib.Net.Lib;
+using Suyeong.Lib.Net.Type;
 
 namespace Suyeong.Lib.Net.Tcp
 {

@@ -21,9 +21,9 @@ namespace Suyeong.Lib.Util
             return value * dpi / pointPerInch;
         }
 
-        public static double ExponentialStringToDouble(string value)
+        public static double ExponentialStringToDouble(string value, double valueOfFailure = -1d)
         {
-            double result = 0d;
+            double result = valueOfFailure;
 
             if (!double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
             {
@@ -33,9 +33,9 @@ namespace Suyeong.Lib.Util
             return result;
         }
 
-        public static float ExponentialStringToFloat(string value)
+        public static float ExponentialStringToFloat(string value, float valueOfFailure = -1f)
         {
-            float result = 0f;
+            float result = valueOfFailure;
 
             if (!float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result))
             {
@@ -45,9 +45,9 @@ namespace Suyeong.Lib.Util
             return result;
         }
 
-        public static int StringToInt(string str)
+        public static int StringToInt(string str, int valueOfFailure = -1)
         {
-            int num = -1;
+            int num = valueOfFailure;
 
             if (!int.TryParse(str, out num))
             {
@@ -57,9 +57,9 @@ namespace Suyeong.Lib.Util
             return num;
         }
 
-        public static uint StringToUint(string str)
+        public static uint StringToUint(string str, uint valueOfFailure = 0)
         {
-            uint num = 0;
+            uint num = valueOfFailure;
 
             if (!uint.TryParse(str, out num))
             {
@@ -69,9 +69,9 @@ namespace Suyeong.Lib.Util
             return num;
         }
 
-        public static long StringToLong(string str)
+        public static long StringToLong(string str, long valueOfFailure = -1)
         {
-            long num = -1;
+            long num = valueOfFailure;
 
             if (!long.TryParse(str, out num))
             {
@@ -81,9 +81,9 @@ namespace Suyeong.Lib.Util
             return num;
         }
 
-        public static ulong StringToUlong(string str)
+        public static ulong StringToUlong(string str, ulong valueOfFailure = 0)
         {
-            ulong num = 0;
+            ulong num = valueOfFailure;
 
             if (!ulong.TryParse(str, out num))
             {
@@ -93,33 +93,33 @@ namespace Suyeong.Lib.Util
             return num;
         }
 
-        public static float StringToFloat(string str)
+        public static float StringToFloat(string str, float valueOfFailure = -1f)
         {
-            float num = -1f;
+            float num = valueOfFailure;
 
             if (!float.TryParse(str, out num))
             {
                 // error!
             }
 
-            return !float.IsNaN(num) ? num : -1f;
+            return !float.IsNaN(num) ? num : valueOfFailure;
         }
 
-        public static double StringToDouble(string str)
+        public static double StringToDouble(string str, double valueOfFailure = -1d)
         {
-            double num = -1d;
+            double num = valueOfFailure;
 
             if (!double.TryParse(str, out num))
             {
                 // error!
             }
 
-            return !double.IsNaN(num) ? num : -1d;
+            return !double.IsNaN(num) ? num : valueOfFailure;
         }
 
-        public static decimal StringToDecimal(string str)
+        public static decimal StringToDecimal(string str, decimal valueOfFailure = -1)
         {
-            decimal num = -1;
+            decimal num = valueOfFailure;
 
             if (!decimal.TryParse(str, out num))
             {
@@ -131,7 +131,7 @@ namespace Suyeong.Lib.Util
 
         public static DateTime StringToDateTime(string str)
         {
-            DateTime dateTime = new DateTime();
+            DateTime dateTime = DateTime.MinValue;
 
             if (!DateTime.TryParse(str, out dateTime))
             {
@@ -153,91 +153,64 @@ namespace Suyeong.Lib.Util
 
         public static string DataSetToCsv(DataSet dataSet)
         {
-            if (dataSet == null)
-            {
-                throw new NullReferenceException();
-            }
-
             return DataSetToSeparateValue(dataSet: dataSet, separate: ",");
         }
 
         public static string DataSetToTsv(DataSet dataSet)
         {
-            if (dataSet == null)
-            {
-                throw new NullReferenceException();
-            }
-
             return DataSetToSeparateValue(dataSet: dataSet, separate: "\t");
         }
 
         public static string DataTableToCsv(DataTable table)
         {
-            if (table == null)
-            {
-                throw new NullReferenceException();
-            }
-
             return DataTableToSeparateValue(table: table, separate: ",");
         }
 
         public static string DataTableToTsv(DataTable table)
         {
-            if (table == null)
-            {
-                throw new NullReferenceException();
-            }
-
             return DataTableToSeparateValue(table: table, separate: "\t");
         }
 
         public static string ListToCsv<T>(IEnumerable<T> dataList)
         {
-            if (dataList == null)
-            {
-                throw new NullReferenceException();
-            }
-
             return ListToSeparateValue(list: dataList, separate: ",");
         }
 
         public static string ListToTsv<T>(IEnumerable<T> dataList)
         {
-            if (dataList == null)
-            {
-                throw new NullReferenceException();
-            }
-
             return ListToSeparateValue(list: dataList, separate: "\t");
         }
 
         public static DataTable ListToDataTable<T>(IEnumerable<T> list)
         {
-            if (list == null)
-            {
-                throw new NullReferenceException();
-            }
-
             DataTable table = new DataTable();
 
-            FieldInfo[] fieldInfos = typeof(T).GetFields();
-            PropertyInfo[] propertyInfos = typeof(T).GetProperties();
-
-            List<string> columns = fieldInfos.Select(field => field.Name).ToList();
-            columns.AddRange(propertyInfos.Select(property => property.Name).ToList());
-
-            foreach (string column in columns)
+            try
             {
-                table.Columns.Add(new DataColumn(column) { AllowDBNull = true });
+                FieldInfo[] fieldInfos = typeof(T).GetFields();
+                PropertyInfo[] propertyInfos = typeof(T).GetProperties();
+
+                List<string> columns = new List<string>();
+                columns.AddRange(fieldInfos.Select(field => field.Name));
+                columns.AddRange(propertyInfos.Select(property => property.Name));
+
+                foreach (string column in columns)
+                {
+                    table.Columns.Add(new DataColumn(column) { AllowDBNull = true });
+                }
+
+                List<object> values;
+
+                foreach (T row in list)
+                {
+                    values = fieldInfos.Select(field => field.GetValue(row)).ToList();
+                    values.AddRange(propertyInfos.Select(property => property.GetValue(row)));
+                    table.Rows.Add(values.ToArray());
+                }
             }
-
-            List<object> values;
-
-            foreach (T row in list)
+            catch (Exception)
             {
-                values = fieldInfos.Select(field => field.GetValue(row)).ToList();
-                values.AddRange(propertyInfos.Select(property => property.GetValue(row)));
-                table.Rows.Add(values.ToArray());
+                throw;
             }
 
             return table;
@@ -245,25 +218,27 @@ namespace Suyeong.Lib.Util
 
         public static DataTable ListToDataTableFieldOnly<T>(IEnumerable<T> list)
         {
-            if (list == null)
-            {
-                throw new NullReferenceException();
-            }
-
             DataTable table = new DataTable();
 
-            FieldInfo[] fieldInfos = typeof(T).GetFields();
-
-            List<string> columns = fieldInfos.Select(field => field.Name).ToList();
-
-            foreach (string column in columns)
+            try
             {
-                table.Columns.Add(new DataColumn(column) { AllowDBNull = true });
+                FieldInfo[] fieldInfos = typeof(T).GetFields();
+
+                List<string> columns = fieldInfos.Select(field => field.Name).ToList();
+
+                foreach (string column in columns)
+                {
+                    table.Columns.Add(new DataColumn(column) { AllowDBNull = true });
+                }
+
+                foreach (T row in list)
+                {
+                    table.Rows.Add(fieldInfos.Select(field => field.GetValue(row)).ToArray());
+                }
             }
-
-            foreach (T row in list)
+            catch (Exception)
             {
-                table.Rows.Add(fieldInfos.Select(field => field.GetValue(row)).ToArray());
+                throw;
             }
 
             return table;
@@ -359,21 +334,27 @@ namespace Suyeong.Lib.Util
             return sb.ToString();
         }
 
-
         static string DataTableToSeparateValue(DataTable table, string separate)
         {
             StringBuilder sb = new StringBuilder();
 
-            string title = string.Join(separate, Utils.GetColNamesFromDataTable(table: table));
-
-            if (!string.IsNullOrWhiteSpace(title))
+            try
             {
-                sb.AppendLine(title);
+                string title = string.Join(separate, SystemUtil.GetColumnNamesFromDataTable(table: table));
+
+                if (!string.IsNullOrWhiteSpace(title))
+                {
+                    sb.AppendLine(title);
+                }
+
+                foreach (DataRow row in table.Rows)
+                {
+                    sb.AppendLine(string.Join(separate, row.ItemArray));
+                }
             }
-
-            foreach (DataRow row in table.Rows)
+            catch (Exception)
             {
-                sb.AppendLine(string.Join(separate, row.ItemArray));
+                throw;
             }
 
             return sb.ToString();

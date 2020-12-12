@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Suyeong.Lib.Util
 {
@@ -87,16 +86,6 @@ namespace Suyeong.Lib.Util
             }
 
             return source.IndexOf(text, StringComparison.OrdinalIgnoreCase) > -1;
-        }
-
-        public static bool IsOnlyNumber(string text)
-        {
-            return Regex.IsMatch(text, @"^\d+$");
-        }
-
-        public static bool IsOnlyText(string text)
-        {
-            return Regex.IsMatch(text, @"^[A-z]+$");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -10,36 +11,59 @@ namespace Suyeong.Lib.Util
     {
         public static string GetChecksumByMD5(byte[] file)
         {
-            using (MD5 md5 = MD5.Create())
+            string result = string.Empty;
+            
+            try
             {
-                byte[] hash = md5.ComputeHash(buffer: file);
-
-                StringBuilder sb = new StringBuilder();
-
-                foreach (byte b in hash)
+                using (MD5 md5 = MD5.Create())
                 {
-                    // 16진수로 변환
-                    sb.Append(value: b.ToString("X2", CultureInfo.InvariantCulture));
-                }
+                    byte[] hash = md5.ComputeHash(buffer: file);
 
-                return sb.ToString();
+                    StringBuilder sb = new StringBuilder();
+
+                    foreach (byte b in hash)
+                    {
+                        // 16진수로 변환
+                        sb.Append(value: b.ToString("X2", CultureInfo.InvariantCulture));
+                    }
+
+                    result = sb.ToString();
+                }
             }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
         }
 
         public static string CryptText(string text, byte[] key, byte[] iv)
         {
-            MemoryStream memoryStream = new MemoryStream();
+            string result = string.Empty;
 
-            using (Aes algorithm = Aes.Create())
-            using (ICryptoTransform encryptor = algorithm.CreateEncryptor(key, iv))
-            using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-            using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Compress))
+            try
             {
-                byte[] data = StreamUtil.SerializeObject(text);
-                deflateStream.Write(data, 0, data.Length);
+
+                MemoryStream memoryStream = new MemoryStream();
+
+                using (Aes algorithm = Aes.Create())
+                using (ICryptoTransform encryptor = algorithm.CreateEncryptor(key, iv))
+                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                using (DeflateStream deflateStream = new DeflateStream(cryptoStream, CompressionMode.Compress))
+                {
+                    byte[] data = StreamUtil.SerializeObject(text);
+                    deflateStream.Write(data, 0, data.Length);
+                }
+
+                result = string.Join("", memoryStream.ToArray());
+            }
+            catch (Exception)
+            {
+                throw;
             }
 
-            return string.Join("", memoryStream.ToArray());
+            return result;
         }
     }
 }
