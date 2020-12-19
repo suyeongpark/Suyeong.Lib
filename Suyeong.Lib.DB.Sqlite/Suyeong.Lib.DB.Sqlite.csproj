@@ -8,4 +8,8 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetDir)&quot; &quot;E:\Dev\Suyeong\Suyeong.Engine\references\Suyeong.Lib.DB.Sqlite&quot;" />
+  </Target>
+
 </Project>
