@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using Suyeong.Lib.Net.Type;
+using Suyeong.Lib.Net.Shared;
 
 namespace Suyeong.Lib.Net.Tcp
 {

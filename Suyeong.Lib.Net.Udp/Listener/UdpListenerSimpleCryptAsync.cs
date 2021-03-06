@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Suyeong.Lib.Net.Type;
+using Suyeong.Lib.Net.Shared;
 
 namespace Suyeong.Lib.Net.Udp
 {
