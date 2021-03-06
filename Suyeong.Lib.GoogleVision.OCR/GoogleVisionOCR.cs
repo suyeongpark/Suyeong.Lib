@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Google.Cloud.Vision.V1;
-using Suyeong.Lib.Google.Type;
+using Suyeong.Lib.Google.Shared;
 
 namespace Suyeong.Lib.GoogleVision.OCR
 {

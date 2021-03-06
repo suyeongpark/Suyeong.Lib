@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Suyeong.Lib.Google.Type\Suyeong.Lib.Google.Type.csproj" />
+    <ProjectReference Include="..\Suyeong.Lib.Google.Shared\Suyeong.Lib.Google.Shared.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

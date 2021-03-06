@@ -2,7 +2,7 @@
 using System.Linq;
 using Google.Api.Gax.ResourceNames;
 using Google.Cloud.Translate.V3;
-using Suyeong.Lib.Google.Type;
+using Suyeong.Lib.Google.Shared;
 
 namespace Suyeong.Lib.GoogleVision.Translate
 {

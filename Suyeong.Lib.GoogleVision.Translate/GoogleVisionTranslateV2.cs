@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Google.Cloud.Translation.V2;
-using Suyeong.Lib.Google.Type;
+using Suyeong.Lib.Google.Shared;
 
 namespace Suyeong.Lib.GoogleVision.Translate
 {

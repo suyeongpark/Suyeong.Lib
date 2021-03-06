@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Text;
-using Suyeong.Lib.Google.Type;
+using Suyeong.Lib.Google.Shared;
 
 namespace Suyeong.Lib.Google.Translate
 {

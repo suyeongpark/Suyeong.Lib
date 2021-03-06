@@ -1,4 +1,4 @@
-﻿namespace Suyeong.Lib.Google.Type
+﻿namespace Suyeong.Lib.Google.Shared
 {
     public enum GoogleLanguage
     {

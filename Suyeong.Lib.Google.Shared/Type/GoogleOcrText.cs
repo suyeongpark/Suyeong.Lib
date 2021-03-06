@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Suyeong.Lib.Google.Type
+namespace Suyeong.Lib.Google.Shared
 {
     public struct GoogleOcrText
     {
